@@ -34,7 +34,7 @@ class _AutherPageState extends State<AutherPage> {
         context: context,
         builder: (context) {
           return AlertDialog(
-            title: const Text('Saisisez votre code'),
+            title: const Text('Entrer code agent'),
             content: TextField(
               onChanged: (value) {
                 setState(() {
@@ -42,7 +42,6 @@ class _AutherPageState extends State<AutherPage> {
                 });
               },
               controller: _textFieldController,
-              maxLength: 4,
               keyboardType: TextInputType.number,
               inputFormatters: <TextInputFormatter>[
                 FilteringTextInputFormatter.digitsOnly
@@ -79,7 +78,7 @@ class _AutherPageState extends State<AutherPage> {
                   });
                 },
                 style: ElevatedButton.styleFrom(
-                  primary: Colors.green.shade400,
+                  primary: primary,
                   padding: const EdgeInsets.all(15),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(5.0),
@@ -91,7 +90,6 @@ class _AutherPageState extends State<AutherPage> {
         });
   }
 
-  String codeDialog = "";
   String valueText = "";
 
   void getCred() async {

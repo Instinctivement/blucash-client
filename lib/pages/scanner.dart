@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
 
@@ -109,7 +110,7 @@ class _QrScanPageState extends State<QrScanPage> {
         color: Colors.white24,
       ),
       child: Text(
-        barcode != null ? "Résult : ${barcode!.code}" : "Scan a code !",
+        barcode != null ? "Résult : ${barcode!.code} \n Barcode Type: ${describeEnum(barcode!.format)}"    : "Scan a code !",
         maxLines: 3,
       ),
     );
