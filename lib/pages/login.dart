@@ -3,8 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:blucash_client/pages/homepage.dart';
 import 'package:blucash_client/tools/colors.dart';
+import 'package:blucash_client/tools/header.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
+
 
 //import http package manually
 class LoginPage extends StatefulWidget {
@@ -19,85 +21,91 @@ class LoginPage extends StatefulWidget {
 class _LoginPage extends State<LoginPage> {
   late String errormsg;
   late bool error, showprogress;
-  late String userPhone, userPin;
+  late String phone, pin;
 
-  final _userPhone = TextEditingController();
-  final _userPin = TextEditingController();
+  final _phone = TextEditingController();
+  final _pin = TextEditingController();
 
-  void saveSession(String id, String name, String email, String phone,
-      String gender, String pin, String token) async {
+  void saveSession(String id, String name, String phone, String bid,
+      String bname, String balance, String token) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setString("id", json.encode(id));
     prefs.setString("name", json.encode(name));
-    prefs.setString("email", json.encode(email));
-    prefs.setString("gender", json.encode(gender));
     prefs.setString("phone", json.encode(phone));
-    prefs.setString("pin", json.encode(pin));
+    prefs.setString("bid", json.encode(bid));
+    prefs.setString("bname", json.encode(bname));
+    prefs.setString("balance", json.encode(balance));
     prefs.setString("login", json.encode(token));
   }
 
   void login() async {
-    if (_userPhone.text.isNotEmpty && _userPin.text.isNotEmpty) {
-      String apiurl = "http://192.168.8.110"; //api url
-      //dont use http://localhost , because emulator don't get that gender
-      var response = await http.post(Uri.parse(apiurl), body: {
-        'userPhone': userPhone, //get the userPhone text
-        'userPin': userPin //get userPin text
-      });
+    if (_phone.text.isNotEmpty && _pin.text.isNotEmpty) {
+      // String apiurl = "http://192.168.8.110"; //api url
+      //dont use http://localhost , because emulator don't get that bname
+      var url = Uri.parse('https://www.blucash.net/client/connect');
+        
+      var response = await http.post(url, headers: header, body: {'phone': phone, 'pin': pin});
 
-      if (response.statusCode == 200) {
-        final jsondata = json.decode(response.body);
-        ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text("Token : ${jsondata['token']}")));
 
-        if (jsondata["error"]) {
-          setState(() {
-            showprogress = false; //don't show progress indicator
-            error = true;
-            errormsg = jsondata["message"];
-          });
-        } else {
-          if (jsondata["success"]) {
-            setState(() {
-              error = false;
-              showprogress = false;
-            });
-            //Here we will store a differents values and token in a shared_preferences
-            pageroute(
-                jsondata["id"],
-                jsondata["name"],
-                jsondata["email"],
-                jsondata["phone"],
-                jsondata["gender"],
-                jsondata["pin"],
-                jsondata['token']);
-          } else {
-            showprogress = false; //don't show progress indicator
-            error = true;
-            errormsg = "Something went wrong.";
-          }
-        }
-      } else {
-        setState(() {
-          showprogress = false; //don't show progress indicator
-          error = true;
-          errormsg = "Error during connecting to server.";
-        });
-      }
+      print('Response status: ${response.statusCode}');
+      print('Response body: ${response.body}');
+      final jsondata = json.decode(response.body);
+             ScaffoldMessenger.of(context).showSnackBar(
+             SnackBar(content: Text("Token : ${jsondata['status']}")));
+
+        // try {
+        //   final response = await http.post(Uri.parse(apiurl), body: {
+        //         'phone': phone, //get the phone text
+        //         'pin': pin //get pin text
+        //       });
+
+        //   final jsondata = json.decode(response.body);
+        //         if (jsondata["error"]) {
+        //           setState(() {
+        //             showprogress = false; //don't show progress indicator
+        //             error = true;
+        //             errormsg = jsondata["message"];
+        //           });
+        //         } else {
+        //           if (jsondata["success"]) {
+        //             setState(() {
+        //               error = false;
+        //               showprogress = false;
+        //             });
+        //             //Here we will store a differents values and token in a shared_preferences
+        //             pageroute(
+        //                 jsondata["id"],
+        //                 jsondata["name"],
+        //                 jsondata["phone"],
+        //                 jsondata["bid"],
+        //                 jsondata["bname"],
+        //                 jsondata["balance"],
+        //                 jsondata['token']);
+        //           } else {
+        //             showprogress = false; //don't show progress indicator
+        //             error = true;
+        //             errormsg = "Something went wrong.";
+        //           }
+        //         }
+        // } catch (e) {
+        //   setState(() {
+        //     showprogress = false; //don't show progress indicator
+        //     error = true;
+        //     errormsg = "Pas de connexion internet !";
+        //   });
+        // }
     } else {
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-          content: Text(
-              "Remplissez les différents champs avant de soumettre le formulaire")));
       setState(() {
-        //hide progress indicator on click
-        showprogress = false;
-      });
+            showprogress = false; //don't show progress indicator
+            error = true;
+            errormsg = "Remplir le formulaire !";
+          });
     }
   }
 
-  void pageroute(String id, String name, String email, String phone,
-      String gender, String pin, String token) async {
-    saveSession(id, name, email, phone, gender, pin, token);
+  void pageroute(String id, String name, String phone, String bid,
+      String bname, String balance, String token) async {
+    saveSession(id, name,  phone, bid, bname, balance, token);
     Navigator.of(context).pushAndRemoveUntil(
         MaterialPageRoute(builder: (context) => const HomePage()),
         (route) => false);
@@ -106,8 +114,8 @@ class _LoginPage extends State<LoginPage> {
   @override
   void initState() {
     super.initState();
-    userPhone = "";
-    userPin = "";
+    phone = "";
+    pin = "";
     errormsg = "";
     error = false;
     showprogress = false;
@@ -185,8 +193,8 @@ class _LoginPage extends State<LoginPage> {
             padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
             margin: const EdgeInsets.only(top: 10),
             child: TextField(
-              controller: _userPhone, //set userPhone controller
-              maxLength: 24,
+              controller: _phone, //set phone controller
+              maxLength: 32,
               keyboardType: TextInputType.number,
               inputFormatters: <TextInputFormatter>[
                 FilteringTextInputFormatter.digitsOnly
@@ -198,22 +206,22 @@ class _LoginPage extends State<LoginPage> {
                 icon: Icons.person,
               ),
               onChanged: (value) {
-                //set userPhone  text on change
-                userPhone = value;
+                //set phone  text on change
+                phone = value;
               },
             ),
           ),
           Container(
             padding: const EdgeInsets.only(top: 20, bottom: 10),
             child: TextField(
-              controller: _userPin, //set userPin controller
+              controller: _pin, //set pin controller
               style: const TextStyle(color: Colors.black45, fontSize: 20),
               keyboardType: TextInputType.number,
               inputFormatters: <TextInputFormatter>[
                 FilteringTextInputFormatter.digitsOnly
               ],
               obscureText: _obscureText,
-              maxLength: 4,
+              maxLength: 32,
               decoration: InputDecoration(
                 hintText: 'PIN', //show label as placeholder
                 hintStyle: TextStyle(
@@ -226,15 +234,16 @@ class _LoginPage extends State<LoginPage> {
                     )
                     //padding and icon for prefix
                     ),
+                    counter: const Offstage(),
 
                 contentPadding: const EdgeInsets.fromLTRB(30, 20, 30, 20),
                 enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(30),
+                    borderRadius: BorderRadius.circular(0.0),
                     borderSide: const BorderSide(
                         color: dark, width: 1)), //default border of input
 
                 focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(30),
+                    borderRadius: BorderRadius.circular(0.0),
                     borderSide: const BorderSide(
                         color: Colors.blueAccent, width: 1)), //focus border
 
@@ -258,8 +267,8 @@ class _LoginPage extends State<LoginPage> {
                 ), //set true if you want to show input background
               ),
               onChanged: (value) {
-                // change userPin text
-                userPin = value;
+                // change pin text
+                pin = value;
               },
             ),
           ),
@@ -274,7 +283,9 @@ class _LoginPage extends State<LoginPage> {
               width: double.infinity,
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  shape: const StadiumBorder(),
+                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(0.0),
+                                  ),
                   primary: dark,
                 ),
                 onPressed: () async {
@@ -332,8 +343,7 @@ class _LoginPage extends State<LoginPage> {
     );
   }
 
-  InputDecoration myInputDecoration(
-      {required String label, required IconData icon}) {
+  InputDecoration myInputDecoration({required String label, required IconData icon}) {
     return InputDecoration(
       hintText: label, //show label as placeholder
       hintStyle:
@@ -346,15 +356,16 @@ class _LoginPage extends State<LoginPage> {
           )
           //padding and icon for prefix
           ),
+          counter: const Offstage(),
 
       contentPadding: const EdgeInsets.fromLTRB(30, 20, 30, 20),
       enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(30),
+          borderRadius: BorderRadius.circular(0.0),
           borderSide: const BorderSide(
               color: dark, width: 1)), //default border of input
 
       focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(30),
+          borderRadius: BorderRadius.circular(0.0),
           borderSide: const BorderSide(
               color: Colors.blueAccent, width: 1)), //focus border
 
@@ -372,7 +383,7 @@ class _LoginPage extends State<LoginPage> {
           borderRadius: BorderRadius.circular(30),
           color: alert,
           border: Border.all(color: Colors.yellowAccent, width: 2)),
-      child: Row(children: <Widget>[
+      child: Row(children:[
         Container(
           margin: const EdgeInsets.only(right: 6.00),
           child: const Icon(Icons.info, color: dark),

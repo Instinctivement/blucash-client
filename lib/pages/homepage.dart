@@ -14,13 +14,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  String token = "";
-  String id = "";
-  String name = "";
-  String email = "";
-  String phone = "";
-  String gender = "";
-  String pin = "";
+  late String id ="", name="", phone="", bid="", bname="", balance="", token="";
   bool isVisible = true;
 
   @override
@@ -32,13 +26,13 @@ class _HomePageState extends State<HomePage> {
   void getCred() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
-      token = prefs.getString("login")!;
-      id = prefs.getString("id")!;
-      name = prefs.getString("name")!;
-      email = prefs.getString("email")!;
-      phone = prefs.getString("phone")!;
-      gender = prefs.getString("gender")!;
-      pin = prefs.getString("pin")!;
+      id = prefs.getString("id")!.replaceAll("\"", "");
+      name = prefs.getString("name")!.replaceAll("\"", "");
+      phone = prefs.getString("phone")!.replaceAll("\"", "");
+      bid = prefs.getString("bid")!.replaceAll("\"", "");
+      bname = prefs.getString("bname")!.replaceAll("\"", "");
+      balance = prefs.getString("balance")!.replaceAll("\"", "");
+      token = prefs.getString("login")!.replaceAll("\"", "");
     });
   }
 
@@ -134,13 +128,13 @@ class _HomePageState extends State<HomePage> {
               child: TextButton(
                   onPressed: () async {
                     SharedPreferences prefs =
-                        await SharedPreferences.getInstance();
+                    await SharedPreferences.getInstance();
                     await prefs.remove('id');
                     await prefs.remove('name');
-                    await prefs.remove('email');
+                    await prefs.remove('bid');
                     await prefs.remove('phone');
-                    await prefs.remove('gender');
-                    await prefs.remove('pin');
+                    await prefs.remove('bname');
+                    await prefs.remove('balance');
                     await prefs.remove('login');
                     Navigator.of(context).pushAndRemoveUntil(
                         MaterialPageRoute(
@@ -176,15 +170,14 @@ class _HomePageState extends State<HomePage> {
                   child: SizedBox(
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
-                      children: const [
-                        Icon(Icons.home_work),
-                        SizedBox(
+                      children: [
+                        const Icon(Icons.home_work),
+                        const SizedBox(
                           width: 10,
                         ),
-                        Text(
-                          "ATANGANA Sarl ET SES",
+                        Text(bname,
                           textAlign: TextAlign.center,
-                          style: TextStyle(
+                          style: const TextStyle(
                               fontSize: 20,
                               color: dark,
                               fontWeight: FontWeight.w400),
@@ -217,9 +210,8 @@ class _HomePageState extends State<HomePage> {
                                   fontWeight: FontWeight.w400,
                                   color: Colors.black54),
                             ),
-                            const Text(
-                              "1,000 FCFA",
-                              style: TextStyle(
+                            Text(balance,
+                              style: const TextStyle(
                                 fontSize: 30,
                                 fontWeight: FontWeight.w700,
                               ),
@@ -319,7 +311,7 @@ class _HomePageState extends State<HomePage> {
                 //       fontSize: 20, color: dark, fontWeight: FontWeight.w400),
                 // ),
                 // Text(
-                //   email,
+                //   bid,
                 //   textAlign: TextAlign.center,
                 //   style: const TextStyle(
                 //       fontSize: 20, color: dark, fontWeight: FontWeight.w400),
@@ -331,13 +323,13 @@ class _HomePageState extends State<HomePage> {
                 //       fontSize: 20, color: dark, fontWeight: FontWeight.w400),
                 // ),
                 // Text(
-                //   gender,
+                //   bname,
                 //   textAlign: TextAlign.center,
                 //   style: const TextStyle(
                 //       fontSize: 20, color: dark, fontWeight: FontWeight.w400),
                 // ),
                 // Text(
-                //   pin,
+                //   balance,
                 //   textAlign: TextAlign.center,
                 //   style: const TextStyle(
                 //       fontSize: 20, color: dark, fontWeight: FontWeight.w400),
