@@ -41,6 +41,10 @@ dependencies:
   flutter_native_splash: ^2.1.2+1
   qr_code_scanner: ^0.7.0
 
+flutter_native_splash:
+  color: "#49BAEB"
+  image: assets/white.png
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

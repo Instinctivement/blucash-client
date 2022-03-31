@@ -26,74 +26,50 @@ class _LoginPage extends State<LoginPage> {
   final _phone = TextEditingController();
   final _pin = TextEditingController();
 
-  void saveSession(String id, String name, String phone, String bid,
-      String bname, String balance, String token) async {
+  void saveSession(String name, String phone, String code,
+      String business, String balance, String token) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.setString("id", json.encode(id));
     prefs.setString("name", json.encode(name));
     prefs.setString("phone", json.encode(phone));
-    prefs.setString("bid", json.encode(bid));
-    prefs.setString("bname", json.encode(bname));
+    prefs.setString("code", json.encode(code));
+    prefs.setString("business", json.encode(business));
     prefs.setString("balance", json.encode(balance));
     prefs.setString("login", json.encode(token));
   }
 
+
+
   void login() async {
     if (_phone.text.isNotEmpty && _pin.text.isNotEmpty) {
       // String apiurl = "http://192.168.8.110"; //api url
-      //dont use http://localhost , because emulator don't get that bname
+      //dont use http://localhost , because emulator don't get that business
       var url = Uri.parse('https://www.blucash.net/client/connect');
-        
-      var response = await http.post(url, headers: header, body: {'phone': phone, 'pin': pin});
+         try {
+            var response = await http.post(url, headers: header, body: {'phone': phone, 'pin': pin});
+          
+            final jsondata = json.decode(response.body);
 
-
-      print('Response status: ${response.statusCode}');
-      print('Response body: ${response.body}');
-      final jsondata = json.decode(response.body);
-             ScaffoldMessenger.of(context).showSnackBar(
-             SnackBar(content: Text("Token : ${jsondata['status']}")));
-
-        // try {
-        //   final response = await http.post(Uri.parse(apiurl), body: {
-        //         'phone': phone, //get the phone text
-        //         'pin': pin //get pin text
-        //       });
-
-        //   final jsondata = json.decode(response.body);
-        //         if (jsondata["error"]) {
-        //           setState(() {
-        //             showprogress = false; //don't show progress indicator
-        //             error = true;
-        //             errormsg = jsondata["message"];
-        //           });
-        //         } else {
-        //           if (jsondata["success"]) {
-        //             setState(() {
-        //               error = false;
-        //               showprogress = false;
-        //             });
-        //             //Here we will store a differents values and token in a shared_preferences
-        //             pageroute(
-        //                 jsondata["id"],
-        //                 jsondata["name"],
-        //                 jsondata["phone"],
-        //                 jsondata["bid"],
-        //                 jsondata["bname"],
-        //                 jsondata["balance"],
-        //                 jsondata['token']);
-        //           } else {
-        //             showprogress = false; //don't show progress indicator
-        //             error = true;
-        //             errormsg = "Something went wrong.";
-        //           }
-        //         }
-        // } catch (e) {
-        //   setState(() {
-        //     showprogress = false; //don't show progress indicator
-        //     error = true;
-        //     errormsg = "Pas de connexion internet !";
-        //   });
-        // }
+             
+                  if (jsondata["status"] != 'true') {
+                    setState(() {
+                      showprogress = false; //don't show progress indicator
+                      error = true;
+                      errormsg = jsondata["error"];
+                    });
+                  } else {
+                      setState(() {
+                        error = false;
+                        showprogress = false;
+                      });
+                      pageroute(jsondata["name"],jsondata["phone"],jsondata["code"],jsondata["business"],jsondata["balance"],jsondata['token']);
+                  }
+         } catch (e) {
+           setState(() {
+             showprogress = false; //don't show progress indicator
+             error = true;
+             errormsg = "Pas de connexion internet !";
+           });
+         }
     } else {
       setState(() {
             showprogress = false; //don't show progress indicator
@@ -103,9 +79,8 @@ class _LoginPage extends State<LoginPage> {
     }
   }
 
-  void pageroute(String id, String name, String phone, String bid,
-      String bname, String balance, String token) async {
-    saveSession(id, name,  phone, bid, bname, balance, token);
+  void pageroute(String name, String phone, String code, String business, String balance, String token) async {
+    saveSession(name, phone, code, business, balance, token);
     Navigator.of(context).pushAndRemoveUntil(
         MaterialPageRoute(builder: (context) => const HomePage()),
         (route) => false);
@@ -158,10 +133,13 @@ class _LoginPage extends State<LoginPage> {
             child: SizedBox(
                 width: 200,
                 height: 120,
-                child: Image.asset(
-                  'assets/img/blucash.png',
-                  width: 150,
-                  height: 1,
+                child: Hero(
+                  tag: "logo",
+                  child: Image.asset(
+                    'assets/img/blucash.png',
+                    width: 150,
+                    height: 1,
+                  ),
                 )),
           ),
           Container(

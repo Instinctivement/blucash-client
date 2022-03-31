@@ -1,7 +1,10 @@
+import 'dart:convert';
+
+import 'package:blucash_client/method/creditation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:blucash_client/pages/login.dart';
-import 'package:blucash_client/pages/otherhomepage.dart';
+import 'package:http/http.dart' as http;
 import 'package:blucash_client/pages/scanner.dart';
 import 'package:blucash_client/tools/colors.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -14,7 +17,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  late String id ="", name="", phone="", bid="", bname="", balance="", token="";
+  late String name="", phone="", code="", business="", balance="", token="";
   bool isVisible = true;
 
   @override
@@ -26,11 +29,10 @@ class _HomePageState extends State<HomePage> {
   void getCred() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
-      id = prefs.getString("id")!.replaceAll("\"", "");
       name = prefs.getString("name")!.replaceAll("\"", "");
       phone = prefs.getString("phone")!.replaceAll("\"", "");
-      bid = prefs.getString("bid")!.replaceAll("\"", "");
-      bname = prefs.getString("bname")!.replaceAll("\"", "");
+      code = prefs.getString("code")!.replaceAll("\"", "");
+      business = prefs.getString("business")!.replaceAll("\"", "");
       balance = prefs.getString("balance")!.replaceAll("\"", "");
       token = prefs.getString("login")!.replaceAll("\"", "");
     });
@@ -100,6 +102,26 @@ class _HomePageState extends State<HomePage> {
 
   String valueText = "";
 
+    Future<List<Credit>> getRequest() async {
+    //replace your restFull API here.
+    var url = Uri.parse('https://www.blucash.net/client/connect');
+    final response = await http.get(url);
+    var responseData = json.decode(response.body);
+  
+    //Creating a list to store input data;
+    List<Credit> credits = [];
+    for (var singleCredit in responseData) {
+      Credit credit = Credit(
+          status: singleCredit["status"],
+          balance: singleCredit["balance"],
+          date: singleCredit["date"]);
+  
+      //Adding user to the list.
+      credits.add(credit);
+    }
+    return credits;
+  }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -113,8 +135,11 @@ class _HomePageState extends State<HomePage> {
             width: 150,
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 10.0),
-              child: Image.asset(
-                'assets/img/blucash.png',
+              child: Hero(
+                tag: "logo",
+                child: Image.asset(
+                  'assets/img/blucash.png',
+                ),
               ),
             ),
           ),
@@ -131,9 +156,9 @@ class _HomePageState extends State<HomePage> {
                     await SharedPreferences.getInstance();
                     await prefs.remove('id');
                     await prefs.remove('name');
-                    await prefs.remove('bid');
+                    await prefs.remove('code');
                     await prefs.remove('phone');
-                    await prefs.remove('bname');
+                    await prefs.remove('business');
                     await prefs.remove('balance');
                     await prefs.remove('login');
                     Navigator.of(context).pushAndRemoveUntil(
@@ -175,7 +200,7 @@ class _HomePageState extends State<HomePage> {
                         const SizedBox(
                           width: 10,
                         ),
-                        Text(bname,
+                        Text(business,
                           textAlign: TextAlign.center,
                           style: const TextStyle(
                               fontSize: 20,
@@ -298,42 +323,6 @@ class _HomePageState extends State<HomePage> {
                     height: 2,
                   ),
                 ),
-                // Text(
-                //   token,
-                //   textAlign: TextAlign.center,
-                //   style: const TextStyle(
-                //       fontSize: 20, color: dark, fontWeight: FontWeight.w400),
-                // ),
-                // Text(
-                //   phone,
-                //   textAlign: TextAlign.center,
-                //   style: const TextStyle(
-                //       fontSize: 20, color: dark, fontWeight: FontWeight.w400),
-                // ),
-                // Text(
-                //   bid,
-                //   textAlign: TextAlign.center,
-                //   style: const TextStyle(
-                //       fontSize: 20, color: dark, fontWeight: FontWeight.w400),
-                // ),
-                // Text(
-                //   id,
-                //   textAlign: TextAlign.center,
-                //   style: const TextStyle(
-                //       fontSize: 20, color: dark, fontWeight: FontWeight.w400),
-                // ),
-                // Text(
-                //   bname,
-                //   textAlign: TextAlign.center,
-                //   style: const TextStyle(
-                //       fontSize: 20, color: dark, fontWeight: FontWeight.w400),
-                // ),
-                // Text(
-                //   balance,
-                //   textAlign: TextAlign.center,
-                //   style: const TextStyle(
-                //       fontSize: 20, color: dark, fontWeight: FontWeight.w400),
-                // ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -639,28 +628,20 @@ class _HomePageState extends State<HomePage> {
                   ),
                 ),
                 Container(
-                  width: 150,
-                  height: 36,
+                  width: double.infinity,
+                  height: 30,
+                  margin: const EdgeInsets.symmetric(horizontal: 40),
                   decoration: BoxDecoration(
                     color: container,
                     borderRadius: BorderRadius.circular(50),
                   ),
                   child: Center(
-                    child: TextButton(
-                      onPressed: () {
-                        Navigator.of(context).push(MaterialPageRoute(
-                            builder: (context) => const AutherPage()));
-                      },
-                      style: const ButtonStyle(
-                        splashFactory: NoSplash.splashFactory,
-                      ),
-                      child: Text(
-                        'Imprimer',
-                        style: TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.w400,
-                          color: isVisible ? Colors.black : Colors.black,
-                        ),
+                    child: Text(
+                      'Vous etes connecté(e) en tant que $name',
+                      style: TextStyle(
+                        fontSize: 10,
+                        fontWeight: FontWeight.w400,
+                        color: isVisible ? Colors.black : Colors.black,
                       ),
                     ),
                   ),
