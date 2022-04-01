@@ -1,6 +1,8 @@
 import 'dart:convert';
 
 import 'package:blucash_client/method/creditation.dart';
+import 'package:blucash_client/pages/scanerror.dart';
+import 'package:blucash_client/pages/scansuccess.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:blucash_client/pages/login.dart';
@@ -44,25 +46,64 @@ class _HomePageState extends State<HomePage> {
         context: context,
         builder: (context) {
           return AlertDialog(
-            title: const Text('Entrer code agent'),
-            content: TextField(
-              onChanged: (value) {
-                setState(() {
-                  valueText = value;
-                });
-              },
-              controller: _textFieldController,
+            title: const Center(child: Text('Entrer code agent', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 25, color: primary,),),),
+            content: Container(
+            padding: const EdgeInsets.only(top: 20, bottom: 10),
+            child: TextField(
+              controller: _textFieldController, //set pin controller
+              style: const TextStyle(color: Colors.black45, fontSize: 20),
               keyboardType: TextInputType.number,
               inputFormatters: <TextInputFormatter>[
                 FilteringTextInputFormatter.digitsOnly
               ],
-              decoration: const InputDecoration(hintText: "Code..."),
+              obscureText: true,
+              maxLength: 32,
+              decoration: InputDecoration(
+                hintText: 'PIN', //show label as placeholder
+                hintStyle: TextStyle(
+                    color: Colors.grey[500], fontSize: 20), //hint text style
+                prefixIcon: Padding(
+                    padding: const EdgeInsets.only(left: 20, right: 10),
+                    child: Icon(
+                      Icons.lock,
+                      color: Colors.grey[300],
+                    )
+                    //padding and icon for prefix
+                    ),
+                    counter: const Offstage(),
+
+                contentPadding: const EdgeInsets.fromLTRB(30, 20, 30, 20),
+                enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(0.0),
+                    borderSide: const BorderSide(
+                        color: dark, width: 1)), //default border of input
+
+                focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(0.0),
+                    borderSide: const BorderSide(
+                        color: Colors.blueAccent, width: 1)), //focus border
+
+                fillColor: white,
+                filled: true,//set true if you want to show input background
+              ),
+              onChanged: (value) {
+                // change pin text
+                setState(() {
+                   valueText = value;
+                 });
+              },
             ),
-            actions: <Widget>[
-              ElevatedButton(
+          ),
+          
+            
+            actions: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                ElevatedButton(
                 child: Text(
                   'Annuler'.toUpperCase(),
-                  style: TextStyle(color: white),
+                  style: TextStyle(color: Colors.red.shade400, fontWeight: FontWeight.bold),
                 ),
                 onPressed: () {
                   setState(() {
@@ -70,17 +111,17 @@ class _HomePageState extends State<HomePage> {
                   });
                 },
                 style: ElevatedButton.styleFrom(
-                  primary: Colors.red.shade400,
-                  padding: const EdgeInsets.all(15),
+                  primary: white,
+                  padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 30),
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(5.0),
+                    borderRadius: BorderRadius.circular(0.0),
                   ),
                 ),
               ),
               ElevatedButton(
                 child: Text(
                   'Valider'.toUpperCase(),
-                  style: TextStyle(color: white),
+                  style: TextStyle(color: white, fontWeight: FontWeight.bold),
                 ),
                 onPressed: () {
                   setState(() {
@@ -89,13 +130,16 @@ class _HomePageState extends State<HomePage> {
                 },
                 style: ElevatedButton.styleFrom(
                   primary: primary,
-                  padding: const EdgeInsets.all(15),
+                  padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 30),
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(5.0),
+                    borderRadius: BorderRadius.circular(0.0),
                   ),
                 ),
               ),
-            ],
+            
+                ],
+              ),
+              ],
           );
         });
   }
@@ -241,16 +285,11 @@ class _HomePageState extends State<HomePage> {
                                 fontWeight: FontWeight.w700,
                               ),
                             ),
-                            Padding(
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 60.0, vertical: 8),
-                              child: Container(
-                                color: Colors.grey[200],
-                                height: 2,
-                              ),
-                            ),
                           ],
                         ),
+                        const SizedBox(
+                  height: 8.0,
+                ),
                         Center(
                           child: Row(
                             children: [
@@ -270,7 +309,7 @@ class _HomePageState extends State<HomePage> {
                                 },
                                 style: ElevatedButton.styleFrom(
                                   primary: primary,
-                                  padding: const EdgeInsets.all(15),
+                                  padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(0.0),
                                   ),
@@ -282,11 +321,13 @@ class _HomePageState extends State<HomePage> {
                                   style: TextStyle(fontSize: 20, color: white),
                                 ),
                                 onPressed: () {
-                                  _displayTextInputDialog(context);
+                                  Navigator.of(context).push(MaterialPageRoute(
+                            builder: (context) => const ScanSuccess()));
+                                  //  _displayTextInputDialog(context);
                                 },
                                 style: ElevatedButton.styleFrom(
                                   primary: secondary,
-                                  padding: const EdgeInsets.all(15),
+                                  padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(0.0),
                                   ),
@@ -630,16 +671,17 @@ class _HomePageState extends State<HomePage> {
                 Container(
                   width: double.infinity,
                   height: 30,
-                  margin: const EdgeInsets.symmetric(horizontal: 40),
+                  margin: const EdgeInsets.symmetric(horizontal: 20),
+                  padding: const EdgeInsets.symmetric(horizontal: 10),
                   decoration: BoxDecoration(
                     color: container,
                     borderRadius: BorderRadius.circular(50),
                   ),
                   child: Center(
                     child: Text(
-                      'Vous etes connecté(e) en tant que $name',
+                      'Vous etes connecté en tant que $name',
                       style: TextStyle(
-                        fontSize: 10,
+                        fontSize: 12,
                         fontWeight: FontWeight.w400,
                         color: isVisible ? Colors.black : Colors.black,
                       ),
