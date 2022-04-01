@@ -22,17 +22,17 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
         (route) => false);
   }
 
-  Widget _buildImage(String assetName, [double width = 350]) {
+  Widget _buildImage(String assetName, [double width = 150]) {
     return Image.asset('assets/img/$assetName', width: width);
   }
 
   @override
   Widget build(BuildContext context) {
-    const bodyStyle = TextStyle(fontSize: 30.0);
+    const bodyStyle = TextStyle(fontSize: 20.0);
 
     const pageDecoration = PageDecoration(
       bodyTextStyle: bodyStyle,
-      bodyPadding: EdgeInsets.fromLTRB(16.0, 100.0, 16.0, 30.0),
+      bodyPadding: EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 30.0),
       pageColor: Colors.white,
       imagePadding: EdgeInsets.zero,
     );
@@ -77,7 +77,10 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
           title: "",
           body: "Sécurisez vos transactions",
           image: Center(
-            child: Image.asset("assets/img/blucash.png"),
+            child: Image.asset(
+              "assets/img/blucash.png",
+              width: 150,
+            ),
           ),
           footer: ElevatedButton(
             onPressed: () {
@@ -85,10 +88,11 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
             },
             child: const Text(
               "Suivant",
-              style: TextStyle(fontSize: 20, color: Colors.white),
+              style: TextStyle(fontSize: 15, color: Colors.white),
             ),
             style: ElevatedButton.styleFrom(
-              padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 10),
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 50, vertical: 0.0),
               primary: Colors.lightBlue,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(50),
@@ -100,15 +104,15 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
         PageViewModel(
           title: "",
           bodyWidget: const Text(
-            "Sécurisez vos transactions",
-            style: TextStyle(fontSize: 30),
+            "Optimisez votre gestion",
+            style: TextStyle(fontSize: 20),
           ),
           image: _buildImage("blucash.png"),
           footer: ElevatedButton(
             onPressed: () => _onIntroEnd(context),
             child: const Text(
               "Connexion",
-              style: TextStyle(fontSize: 20, color: Colors.white),
+              style: TextStyle(fontSize: 15, color: Colors.white),
             ),
             style: ElevatedButton.styleFrom(
               padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 10),

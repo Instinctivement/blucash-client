@@ -7,7 +7,6 @@ import 'package:blucash_client/tools/header.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
-
 //import http package manually
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
@@ -26,8 +25,8 @@ class _LoginPage extends State<LoginPage> {
   final _phone = TextEditingController();
   final _pin = TextEditingController();
 
-  void saveSession(String name, String phone, String code,
-      String business, String balance, String token) async {
+  void saveSession(String name, String phone, String code, String business,
+      String balance, String token) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setString("name", json.encode(name));
     prefs.setString("phone", json.encode(phone));
@@ -37,49 +36,49 @@ class _LoginPage extends State<LoginPage> {
     prefs.setString("login", json.encode(token));
   }
 
-
-
   void login() async {
     if (_phone.text.isNotEmpty && _pin.text.isNotEmpty) {
       // String apiurl = "http://192.168.8.110"; //api url
       //dont use http://localhost , because emulator don't get that business
       var url = Uri.parse('https://www.blucash.net/client/connect');
-         try {
-            var response = await http.post(url, headers: header, body: {'phone': phone, 'pin': pin});
-          
-            final jsondata = json.decode(response.body);
+      try {
+        var response = await http
+            .post(url, headers: header, body: {'phone': phone, 'pin': pin});
 
-             
-                  if (jsondata["status"] != 'true') {
-                    setState(() {
-                      showprogress = false; //don't show progress indicator
-                      error = true;
-                      errormsg = jsondata["error"];
-                    });
-                  } else {
-                      setState(() {
-                        error = false;
-                        showprogress = false;
-                      });
-                      pageroute(jsondata["name"],jsondata["phone"],jsondata["code"],jsondata["business"],jsondata["balance"],jsondata['token']);
-                  }
-         } catch (e) {
-           setState(() {
-             showprogress = false; //don't show progress indicator
-             error = true;
-             errormsg = "Pas de connexion internet !";
-           });
-         }
-    } else {
-      setState(() {
+        final jsondata = json.decode(response.body);
+
+        if (jsondata["status"] != 'true') {
+          setState(() {
             showprogress = false; //don't show progress indicator
             error = true;
-            errormsg = "Remplir le formulaire !";
+            errormsg = jsondata["error"];
           });
+        } else {
+          setState(() {
+            error = false;
+            showprogress = false;
+          });
+          pageroute(jsondata["name"], jsondata["phone"], jsondata["code"],
+              jsondata["business"], jsondata["balance"], jsondata['token']);
+        }
+      } catch (e) {
+        setState(() {
+          showprogress = false; //don't show progress indicator
+          error = true;
+          errormsg = "Pas de connexion internet !";
+        });
+      }
+    } else {
+      setState(() {
+        showprogress = false; //don't show progress indicator
+        error = true;
+        errormsg = "Remplir le formulaire !";
+      });
     }
   }
 
-  void pageroute(String name, String phone, String code, String business, String balance, String token) async {
+  void pageroute(String name, String phone, String code, String business,
+      String balance, String token) async {
     saveSession(name, phone, code, business, balance, token);
     Navigator.of(context).pushAndRemoveUntil(
         MaterialPageRoute(builder: (context) => const HomePage()),
@@ -212,7 +211,7 @@ class _LoginPage extends State<LoginPage> {
                     )
                     //padding and icon for prefix
                     ),
-                    counter: const Offstage(),
+                counter: const Offstage(),
 
                 contentPadding: const EdgeInsets.fromLTRB(30, 20, 30, 20),
                 enabledBorder: OutlineInputBorder(
@@ -262,8 +261,8 @@ class _LoginPage extends State<LoginPage> {
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
                   shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(0.0),
-                                  ),
+                    borderRadius: BorderRadius.circular(0.0),
+                  ),
                   primary: dark,
                 ),
                 onPressed: () async {
@@ -314,14 +313,15 @@ class _LoginPage extends State<LoginPage> {
           ),
           const Text(
             "Blucash Solutions v1.125 — OPENXTECH SARL.",
-            style: TextStyle(color: Colors.grey),
+            style: TextStyle(color: Colors.grey, fontSize: 12),
           ),
         ]),
       )),
     );
   }
 
-  InputDecoration myInputDecoration({required String label, required IconData icon}) {
+  InputDecoration myInputDecoration(
+      {required String label, required IconData icon}) {
     return InputDecoration(
       hintText: label, //show label as placeholder
       hintStyle:
@@ -334,7 +334,7 @@ class _LoginPage extends State<LoginPage> {
           )
           //padding and icon for prefix
           ),
-          counter: const Offstage(),
+      counter: const Offstage(),
 
       contentPadding: const EdgeInsets.fromLTRB(30, 20, 30, 20),
       enabledBorder: OutlineInputBorder(
@@ -361,7 +361,7 @@ class _LoginPage extends State<LoginPage> {
           borderRadius: BorderRadius.circular(30),
           color: alert,
           border: Border.all(color: Colors.yellowAccent, width: 2)),
-      child: Row(children:[
+      child: Row(children: [
         Container(
           margin: const EdgeInsets.only(right: 6.00),
           child: const Icon(Icons.info, color: dark),

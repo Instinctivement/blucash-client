@@ -19,7 +19,12 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  late String name="", phone="", code="", business="", balance="", token="";
+  late String name = "",
+      phone = "",
+      code = "",
+      business = "",
+      balance = "",
+      token = "";
   bool isVisible = true;
 
   @override
@@ -46,112 +51,123 @@ class _HomePageState extends State<HomePage> {
         context: context,
         builder: (context) {
           return AlertDialog(
-            title: const Center(child: Text('Entrer code agent', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 25, color: primary,),),),
-            content: Container(
-            padding: const EdgeInsets.only(top: 20, bottom: 10),
-            child: TextField(
-              controller: _textFieldController, //set pin controller
-              style: const TextStyle(color: Colors.black45, fontSize: 20),
-              keyboardType: TextInputType.number,
-              inputFormatters: <TextInputFormatter>[
-                FilteringTextInputFormatter.digitsOnly
-              ],
-              obscureText: true,
-              maxLength: 32,
-              decoration: InputDecoration(
-                hintText: 'PIN', //show label as placeholder
-                hintStyle: TextStyle(
-                    color: Colors.grey[500], fontSize: 20), //hint text style
-                prefixIcon: Padding(
-                    padding: const EdgeInsets.only(left: 20, right: 10),
-                    child: Icon(
-                      Icons.lock,
-                      color: Colors.grey[300],
-                    )
-                    //padding and icon for prefix
-                    ),
-                    counter: const Offstage(),
-
-                contentPadding: const EdgeInsets.fromLTRB(30, 20, 30, 20),
-                enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(0.0),
-                    borderSide: const BorderSide(
-                        color: dark, width: 1)), //default border of input
-
-                focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(0.0),
-                    borderSide: const BorderSide(
-                        color: Colors.blueAccent, width: 1)), //focus border
-
-                fillColor: white,
-                filled: true,//set true if you want to show input background
+            title: const Center(
+              child: Text(
+                'Entrer code agent',
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 25,
+                  color: primary,
+                ),
               ),
-              onChanged: (value) {
-                // change pin text
-                setState(() {
-                   valueText = value;
-                 });
-              },
             ),
-          ),
-          
-            
+            content: Container(
+              padding: const EdgeInsets.only(top: 20, bottom: 10),
+              child: TextField(
+                controller: _textFieldController, //set pin controller
+                style: const TextStyle(color: Colors.black45, fontSize: 20),
+                keyboardType: TextInputType.number,
+                inputFormatters: <TextInputFormatter>[
+                  FilteringTextInputFormatter.digitsOnly
+                ],
+                obscureText: true,
+                maxLength: 32,
+                decoration: InputDecoration(
+                  hintText: 'PIN', //show label as placeholder
+                  hintStyle: TextStyle(
+                      color: Colors.grey[500], fontSize: 20), //hint text style
+                  prefixIcon: Padding(
+                      padding: const EdgeInsets.only(left: 20, right: 10),
+                      child: Icon(
+                        Icons.lock,
+                        color: Colors.grey[300],
+                      )
+                      //padding and icon for prefix
+                      ),
+                  counter: const Offstage(),
+
+                  contentPadding: const EdgeInsets.fromLTRB(30, 20, 30, 20),
+                  enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(0.0),
+                      borderSide: const BorderSide(
+                          color: dark, width: 1)), //default border of input
+
+                  focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(0.0),
+                      borderSide: const BorderSide(
+                          color: Colors.blueAccent, width: 1)), //focus border
+
+                  fillColor: white,
+                  filled: true, //set true if you want to show input background
+                ),
+                onChanged: (value) {
+                  // change pin text
+                  setState(() {
+                    valueText = value;
+                  });
+                },
+              ),
+            ),
             actions: [
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                ElevatedButton(
-                child: Text(
-                  'Annuler'.toUpperCase(),
-                  style: TextStyle(color: Colors.red.shade400, fontWeight: FontWeight.bold),
-                ),
-                onPressed: () {
-                  setState(() {
-                    Navigator.pop(context);
-                  });
-                },
-                style: ElevatedButton.styleFrom(
-                  primary: white,
-                  padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 30),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(0.0),
+                  ElevatedButton(
+                    child: Text(
+                      'Annuler'.toUpperCase(),
+                      style: TextStyle(
+                          color: Colors.red.shade400,
+                          fontWeight: FontWeight.bold),
+                    ),
+                    onPressed: () {
+                      setState(() {
+                        Navigator.pop(context);
+                      });
+                    },
+                    style: ElevatedButton.styleFrom(
+                      primary: white,
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 15, horizontal: 30),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(0.0),
+                      ),
+                    ),
                   ),
-                ),
-              ),
-              ElevatedButton(
-                child: Text(
-                  'Valider'.toUpperCase(),
-                  style: TextStyle(color: white, fontWeight: FontWeight.bold),
-                ),
-                onPressed: () {
-                  setState(() {
-                    Navigator.pop(context);
-                  });
-                },
-                style: ElevatedButton.styleFrom(
-                  primary: primary,
-                  padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 30),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(0.0),
+                  ElevatedButton(
+                    child: Text(
+                      'Valider'.toUpperCase(),
+                      style:
+                          TextStyle(color: white, fontWeight: FontWeight.bold),
+                    ),
+                    onPressed: () {
+                      setState(() {
+                        Navigator.pop(context);
+                      });
+                    },
+                    style: ElevatedButton.styleFrom(
+                      primary: primary,
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 15, horizontal: 30),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(0.0),
+                      ),
+                    ),
                   ),
-                ),
-              ),
-            
                 ],
               ),
-              ],
+            ],
           );
         });
   }
 
   String valueText = "";
 
-    Future<List<Credit>> getRequest() async {
+  Future<List<Credit>> getRequest() async {
     //replace your restFull API here.
     var url = Uri.parse('https://www.blucash.net/client/connect');
     final response = await http.get(url);
     var responseData = json.decode(response.body);
-  
+
     //Creating a list to store input data;
     List<Credit> credits = [];
     for (var singleCredit in responseData) {
@@ -159,7 +175,7 @@ class _HomePageState extends State<HomePage> {
           status: singleCredit["status"],
           balance: singleCredit["balance"],
           date: singleCredit["date"]);
-  
+
       //Adding user to the list.
       credits.add(credit);
     }
@@ -197,7 +213,7 @@ class _HomePageState extends State<HomePage> {
               child: TextButton(
                   onPressed: () async {
                     SharedPreferences prefs =
-                    await SharedPreferences.getInstance();
+                        await SharedPreferences.getInstance();
                     await prefs.remove('id');
                     await prefs.remove('name');
                     await prefs.remove('code');
@@ -225,14 +241,14 @@ class _HomePageState extends State<HomePage> {
             constraints: BoxConstraints(
               minHeight: MediaQuery.of(context).size.height,
             ), //set minimum height equal to 100% of VH
-        
+
             width: MediaQuery.of(context).size.width,
             //make width of outer wrapper to 100%
             decoration: BoxDecoration(
               color: white,
             ), //show linear gradient background of page
-            padding:
-                const EdgeInsets.only(top: 15.0, bottom: 10, left: 32, right: 32),
+            padding: const EdgeInsets.only(
+                top: 15.0, bottom: 10, left: 32, right: 32),
             child: Column(
               children: [
                 Center(
@@ -244,7 +260,8 @@ class _HomePageState extends State<HomePage> {
                         const SizedBox(
                           width: 10,
                         ),
-                        Text(business,
+                        Text(
+                          business,
                           textAlign: TextAlign.center,
                           style: const TextStyle(
                               fontSize: 20,
@@ -279,7 +296,8 @@ class _HomePageState extends State<HomePage> {
                                   fontWeight: FontWeight.w400,
                                   color: Colors.black54),
                             ),
-                            Text(balance,
+                            Text(
+                              balance,
                               style: const TextStyle(
                                 fontSize: 30,
                                 fontWeight: FontWeight.w700,
@@ -288,28 +306,31 @@ class _HomePageState extends State<HomePage> {
                           ],
                         ),
                         const SizedBox(
-                  height: 8.0,
-                ),
+                          height: 8.0,
+                        ),
                         Center(
                           child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               ElevatedButton.icon(
                                 icon: const Icon(
                                   Icons.qr_code,
                                   color: Colors.white,
-                                  size: 20.0,
+                                  size: 15.0,
                                 ),
                                 label: Text(
                                   'Scanner'.toUpperCase(),
-                                  style: const TextStyle(fontSize: 20),
+                                  style: const TextStyle(fontSize: 13),
                                 ),
                                 onPressed: () {
                                   Navigator.of(context).push(MaterialPageRoute(
-                                      builder: (context) => const QrScanPage()));
+                                      builder: (context) =>
+                                          const QrScanPage()));
                                 },
                                 style: ElevatedButton.styleFrom(
                                   primary: primary,
-                                  padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 15, vertical: 10),
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(0.0),
                                   ),
@@ -318,16 +339,18 @@ class _HomePageState extends State<HomePage> {
                               ElevatedButton(
                                 child: Text(
                                   'Saisir code'.toUpperCase(),
-                                  style: TextStyle(fontSize: 20, color: white),
+                                  style: TextStyle(fontSize: 13, color: white),
                                 ),
                                 onPressed: () {
                                   Navigator.of(context).push(MaterialPageRoute(
-                            builder: (context) => const ScanSuccess()));
+                                      builder: (context) =>
+                                          const ScanSuccess()));
                                   //  _displayTextInputDialog(context);
                                 },
                                 style: ElevatedButton.styleFrom(
                                   primary: secondary,
-                                  padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 15, vertical: 10),
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(0.0),
                                   ),
@@ -368,7 +391,7 @@ class _HomePageState extends State<HomePage> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Container(
-                      width: 150,
+                      width: MediaQuery.of(context).size.width * 0.4,
                       height: 36,
                       decoration: BoxDecoration(
                           color: isVisible ? container : Colors.transparent,
@@ -386,7 +409,7 @@ class _HomePageState extends State<HomePage> {
                           child: Text(
                             'Créditations',
                             style: TextStyle(
-                              fontSize: 20,
+                              fontSize: 15,
                               fontWeight: FontWeight.w400,
                               color: isVisible ? Colors.black : Colors.black,
                             ),
@@ -395,7 +418,7 @@ class _HomePageState extends State<HomePage> {
                       ),
                     ),
                     Container(
-                      width: 150,
+                      width: MediaQuery.of(context).size.width * 0.4,
                       height: 36,
                       decoration: BoxDecoration(
                           color: isVisible ? Colors.transparent : container,
@@ -413,7 +436,7 @@ class _HomePageState extends State<HomePage> {
                           child: const Text(
                             'Transactions',
                             style: TextStyle(
-                                fontSize: 20,
+                                fontSize: 15,
                                 color: dark,
                                 fontWeight: FontWeight.w400),
                           ),
@@ -439,8 +462,8 @@ class _HomePageState extends State<HomePage> {
                           ListTile(
                             contentPadding:
                                 const EdgeInsets.symmetric(horizontal: 2),
-                            visualDensity:
-                                const VisualDensity(horizontal: 0, vertical: -4),
+                            visualDensity: const VisualDensity(
+                                horizontal: 0, vertical: -4),
                             title: Text(
                               "50,000,000 FCFA",
                               style: TextStyle(
@@ -481,8 +504,8 @@ class _HomePageState extends State<HomePage> {
                           ListTile(
                             contentPadding:
                                 const EdgeInsets.symmetric(horizontal: 2),
-                            visualDensity:
-                                const VisualDensity(horizontal: 0, vertical: -4),
+                            visualDensity: const VisualDensity(
+                                horizontal: 0, vertical: -4),
                             title: Text(
                               "50,000,000 FCFA",
                               style: TextStyle(
@@ -523,8 +546,8 @@ class _HomePageState extends State<HomePage> {
                           ListTile(
                             contentPadding:
                                 const EdgeInsets.symmetric(horizontal: 2),
-                            visualDensity:
-                                const VisualDensity(horizontal: 0, vertical: -4),
+                            visualDensity: const VisualDensity(
+                                horizontal: 0, vertical: -4),
                             title: Text(
                               "50,000,000 FCFA",
                               style: TextStyle(
@@ -565,8 +588,8 @@ class _HomePageState extends State<HomePage> {
                           ListTile(
                             contentPadding:
                                 const EdgeInsets.symmetric(horizontal: 2),
-                            visualDensity:
-                                const VisualDensity(horizontal: 0, vertical: -4),
+                            visualDensity: const VisualDensity(
+                                horizontal: 0, vertical: -4),
                             title: Text(
                               "50,000,000 FCFA",
                               style: TextStyle(
@@ -624,8 +647,8 @@ class _HomePageState extends State<HomePage> {
                           ListTile(
                             contentPadding:
                                 const EdgeInsets.symmetric(horizontal: 2),
-                            visualDensity:
-                                const VisualDensity(horizontal: 0, vertical: -4),
+                            visualDensity: const VisualDensity(
+                                horizontal: 0, vertical: -4),
                             title: Text(
                               "50,000,000 FCFA",
                               style: TextStyle(
@@ -677,15 +700,26 @@ class _HomePageState extends State<HomePage> {
                     color: container,
                     borderRadius: BorderRadius.circular(50),
                   ),
-                  child: Center(
-                    child: Text(
-                      'Vous etes connecté en tant que $name',
-                      style: TextStyle(
-                        fontSize: 12,
-                        fontWeight: FontWeight.w400,
-                        color: isVisible ? Colors.black : Colors.black,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Text(
+                        'Vous etes connecté en tant que :',
+                        style: TextStyle(
+                          fontSize: 12,
+                          fontWeight: FontWeight.w400,
+                          color: isVisible ? Colors.black : Colors.black,
+                        ),
                       ),
-                    ),
+                      Text(
+                        name,
+                        style: TextStyle(
+                          fontSize: 12,
+                          fontWeight: FontWeight.w400,
+                          color: isVisible ? Colors.black : Colors.black,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ],
