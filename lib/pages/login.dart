@@ -363,7 +363,7 @@ class _LoginPage extends State<LoginPage> {
           border: Border.all(color: Colors.yellowAccent, width: 2)),
       child: Row(children: [
         Container(
-          margin: const EdgeInsets.only(right: 6.00),
+          margin: const EdgeInsets.only(right: 0.00),
           child: const Icon(Icons.info, color: dark),
         ), // icon for error message
 

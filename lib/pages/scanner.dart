@@ -6,6 +6,7 @@ import 'package:qr_code_scanner/qr_code_scanner.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:vibration/vibration.dart';
 
 class QrScanPage extends StatefulWidget {
   const QrScanPage({Key? key}) : super(key: key);
@@ -15,18 +16,19 @@ class QrScanPage extends StatefulWidget {
 }
 
 class _QrScanPageState extends State<QrScanPage> {
-  final qrKey = GlobalKey(debugLabel: "QR");
-  Barcode? barcode;
+  Barcode? result;
   QRViewController? controller;
   late String token = "";
   late bool showprogress;
-  bool gotValidQR = false;
+  final GlobalKey qrKey = GlobalKey(debugLabel: 'QR');
 
-  @override
-  void initState() {
-    super.initState();
-    showprogress = false;
-    getCred();
+  void _onQRViewCreated(QRViewController controller) {
+    setState(() => this.controller = controller);
+    controller.scannedDataStream.listen((scanData) {
+      setState(() {
+        result = scanData;
+      });
+    });
   }
 
   void getCred() async {
@@ -59,22 +61,49 @@ class _QrScanPageState extends State<QrScanPage> {
   }
 
   @override
-  void dispose() {
-    controller?.dispose();
-    super.dispose();
+  void initState() {
+    super.initState();
+    showprogress = false;
+    getCred();
   }
 
+  // In order to get hot reload to work we need to pause the camera if the platform
+  // is android, or resume the camera if the platform is iOS.
   @override
-  void reassemble() async {
+  void reassemble() {
     super.reassemble();
     if (Platform.isAndroid) {
-      await controller!.pauseCamera();
+      controller!.pauseCamera();
+    } else if (Platform.isIOS) {
+      controller!.resumeCamera();
     }
-    controller!.resumeCamera();
+  }
+
+  void readQr() async {
+    if (result != null) {
+      String? code = result!.code;
+      if (checkcode(code)) {
+        print('true');
+        showprogress = true;
+        Vibration.vibrate(duration: 100);
+        controller!.pauseCamera();
+        print("Le code est : ${result!.code}");
+        controller!.dispose();
+        // sendcode(code);
+      } else {
+        showprogress = true;
+        Vibration.vibrate(duration: 100);
+        controller!.pauseCamera();
+        print('false');
+        print(code);
+        controller!.dispose();
+      }
+    }
   }
 
   @override
   Widget build(BuildContext context) {
+    readQr();
     return SafeArea(
       child: Scaffold(
         body: Stack(
@@ -129,18 +158,29 @@ class _QrScanPageState extends State<QrScanPage> {
               ),
             ),
             Positioned(
-              bottom: MediaQuery.of(context).size.height * 0.20,
+              bottom: MediaQuery.of(context).size.height * 0.15,
               child: buildControlButtons(),
             ),
             Positioned(
               bottom: 10,
               child: buildResult(),
             ),
-            // Positioned(top: 10, child: buildControlButtons()),
-            // buildQrView(context),
-            // Positioned(bottom: 10, child: buildResult()),
           ],
         ),
+      ),
+    );
+  }
+
+  Widget buildQrView(BuildContext context) {
+    return QRView(
+      key: qrKey,
+      onQRViewCreated: _onQRViewCreated,
+      overlay: QrScannerOverlayShape(
+        borderColor: Colors.white,
+        borderRadius: 2,
+        borderLength: 20,
+        borderWidth: 10,
+        cutOutSize: MediaQuery.of(context).size.width * 0.7,
       ),
     );
   }
@@ -181,9 +221,9 @@ class _QrScanPageState extends State<QrScanPage> {
 
   Widget buildResult() {
     return Container(
-      padding: const EdgeInsets.all(12),
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(8),
+        borderRadius: BorderRadius.circular(30),
         color: Colors.white24,
       ),
       child: showprogress
@@ -197,55 +237,16 @@ class _QrScanPageState extends State<QrScanPage> {
               ),
             )
           : Text(
-              barcode != null
-                  ? "Résult : ${barcode!.code} \n Barcode Type: ${describeEnum(barcode!.format)}"
+              result != null
+                  ? "Type: ${describeEnum(result!.format)}"
                   : "Scan a code !",
-              maxLines: 3,
             ),
     );
   }
 
-  Widget buildQrView(BuildContext context) {
-    return QRView(
-      key: qrKey,
-      onQRViewCreated: onQRViewCreated,
-      overlay: QrScannerOverlayShape(
-        borderColor: Colors.white,
-        borderRadius: 2,
-        borderLength: 20,
-        borderWidth: 10,
-        cutOutSize: MediaQuery.of(context).size.width * 0.7,
-      ),
-    );
-  }
-
-  void onQRViewCreated(QRViewController controller) {
-    setState(() {
-      this.controller = controller;
-    });
-
-    controller.scannedDataStream.listen((barcode) {
-      setState(() {
-        if (gotValidQR) {
-          return;
-        }
-        gotValidQR = true;
-        this.barcode = barcode;
-        String? code = this.barcode!.code;
-        if (checkcode(code)) {
-          // print('true');
-          // print(code);
-          showprogress = true;
-          //  await Future.delayed(const Duration(seconds: 2));
-          // showprogress = false;
-          sendcode(code);
-        } else {
-          // print('false');
-          // print(code);
-          showprogress = false;
-        }
-        gotValidQR = false;
-      });
-    });
+  @override
+  void dispose() {
+    controller?.dispose();
+    super.dispose();
   }
 }

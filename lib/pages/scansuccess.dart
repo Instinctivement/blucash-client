@@ -56,13 +56,13 @@ class _ScanSuccessState extends State<ScanSuccess> {
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
             const CircleAvatar(
-    radius: 110,
-    backgroundColor: container,
-    child: CircleAvatar(
-      radius: 100,
-      backgroundImage: NetworkImage("https://s3.o7planning.com/images/boy-128.png"),
-    )
-),
+                radius: 110,
+                backgroundColor: container,
+                child: CircleAvatar(
+                  radius: 100,
+                  backgroundImage: NetworkImage(
+                      "https://s3.o7planning.com/images/boy-128.png"),
+                )),
             // Container(
             //   width: MediaQuery.of(context).size.width,
             //   height: MediaQuery.of(context).size.height * 0.38,
@@ -88,14 +88,14 @@ class _ScanSuccessState extends State<ScanSuccess> {
                   children: const [
                     Text(
                       'Nom agent: Stanley',
-                      style:  TextStyle(
+                      style: TextStyle(
                           fontSize: 20,
                           color: secondary,
                           fontWeight: FontWeight.bold),
                     ),
-                     Text(
+                    Text(
                       "Date d'assignation: 27 mai 2022",
-                      style:  TextStyle(
+                      style: TextStyle(
                           fontSize: 20,
                           color: secondary,
                           fontWeight: FontWeight.bold),
@@ -105,48 +105,51 @@ class _ScanSuccessState extends State<ScanSuccess> {
               ),
             ),
             Center(
-              child:  Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-              ElevatedButton(
-              child: Text(
-                'Accueil'.toUpperCase(),
-                style: TextStyle(color: Colors.red.shade400, fontWeight: FontWeight.bold),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  ElevatedButton(
+                    child: Text(
+                      'Accueil'.toUpperCase(),
+                      style: TextStyle(
+                          color: Colors.red.shade400,
+                          fontWeight: FontWeight.bold),
+                    ),
+                    onPressed: () {
+                      Navigator.of(context).push(MaterialPageRoute(
+                          builder: (context) => const HomePage()));
+                    },
+                    style: ElevatedButton.styleFrom(
+                      primary: white,
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 15, horizontal: 30),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(0.0),
+                      ),
+                    ),
+                  ),
+                  ElevatedButton(
+                    child: Text(
+                      'Confirmer'.toUpperCase(),
+                      style:
+                          TextStyle(color: white, fontWeight: FontWeight.bold),
+                    ),
+                    onPressed: () {
+                      setState(() {
+                        // Navigator.pop(context);
+                      });
+                    },
+                    style: ElevatedButton.styleFrom(
+                      primary: primary,
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 15, horizontal: 20),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(0.0),
+                      ),
+                    ),
+                  ),
+                ],
               ),
-              onPressed: () {
-                Navigator.of(context).push(MaterialPageRoute(
-                      builder: (context) => const HomePage()));
-              },
-              style: ElevatedButton.styleFrom(
-                primary: white,
-                 padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 30),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(0.0),
-                ),
-              ),
-            ),
-            ElevatedButton(
-              child: Text(
-                'Confirmer'.toUpperCase(),
-                style: TextStyle(color: white, fontWeight: FontWeight.bold),
-              ),
-              onPressed: () {
-                setState(() {
-                  // Navigator.pop(context);
-                });
-              },
-              style: ElevatedButton.styleFrom(
-                primary: primary,
-                 padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 20),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(0.0),
-                ),
-              ),
-            ),
-            
-              ],
-            ),
-            
             ),
           ],
         ),
