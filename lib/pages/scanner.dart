@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:blucash_client/pages/homepage.dart';
 import 'package:blucash_client/tools/colors.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -96,6 +97,9 @@ class _QrScanPageState extends State<QrScanPage> {
         controller!.pauseCamera();
         print('false');
         print(code);
+        WidgetsBinding.instance?.addPostFrameCallback((_) {
+                _showDialog(context);
+        });
         controller!.dispose();
       }
     }
@@ -243,6 +247,55 @@ class _QrScanPageState extends State<QrScanPage> {
             ),
     );
   }
+
+  void _showDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text("Qr Code Erroné"),
+          content: const Text(
+              "Ceci n'est pas un Qr Code valide, merci de réessayer."),
+          actions: <Widget>[
+            TextButton(
+              child: const Text("OK"),
+              onPressed: () {
+                Navigator.of(context).push(MaterialPageRoute(builder: (context) => const HomePage()));
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Future<void> _showMyDialog() async {
+  return showDialog<void>(
+    context: context,
+    barrierDismissible: false, // user must tap button!
+    builder: (BuildContext context) {
+      return AlertDialog(
+        title: const Text('AlertDialog Title'),
+        content: SingleChildScrollView(
+          child: ListBody(
+            children: const <Widget>[
+              Text('This is a demo alert dialog.'),
+              Text('Would you like to approve of this message?'),
+            ],
+          ),
+        ),
+        actions: <Widget>[
+          TextButton(
+            child: const Text('Approve'),
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+          ),
+        ],
+      );
+    },
+  );
+}
 
   @override
   void dispose() {

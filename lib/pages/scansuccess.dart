@@ -62,18 +62,8 @@ class _ScanSuccessState extends State<ScanSuccess> {
                   radius: 100,
                   backgroundImage: NetworkImage(
                       "https://s3.o7planning.com/images/boy-128.png"),
-                )),
-            // Container(
-            //   width: MediaQuery.of(context).size.width,
-            //   height: MediaQuery.of(context).size.height * 0.38,
-            //   // padding: const EdgeInsets.symmetric(vertical: 20),
-            //   decoration: const BoxDecoration(
-            //     image: DecorationImage(
-            //       image: AssetImage('assets/img/scanerror.png'),
-            //       fit: BoxFit.cover,
-            //     ),
-            //   ),
-            // ),
+                ),),
+            
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 15.0),
               width: double.infinity,

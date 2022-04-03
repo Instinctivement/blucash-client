@@ -85,27 +85,27 @@ class _LoginPage extends State<LoginPage> {
         (route) => false);
   }
 
-  @override
-  void initState() {
-    super.initState();
-    phone = "";
-    pin = "";
-    errormsg = "";
-    error = false;
-    showprogress = false;
-    checkLogin();
-  }
+   @override
+   void initState() {
+     super.initState();
+     phone = "";
+     pin = "";
+     errormsg = "";
+     error = false;
+     showprogress = false;
+  //   checkLogin();
+   }
 
-  void checkLogin() async {
-    //here we will check if the user is alrady login
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    String? val = prefs.getString("login");
-    if (val != null) {
-      Navigator.of(context).pushAndRemoveUntil(
-          MaterialPageRoute(builder: (context) => const HomePage()),
-          (route) => false);
-    }
-  }
+  // void checkLogin() async {
+  //   //here we will check if the user is alrady login
+  //   SharedPreferences prefs = await SharedPreferences.getInstance();
+  //   String? val = prefs.getString("login");
+  //   if (val != null) {
+  //     Navigator.of(context).pushAndRemoveUntil(
+  //         MaterialPageRoute(builder: (context) => const HomePage()),
+  //         (route) => false);
+  //   }
+  // }
 
   var _obscureText = true;
 
@@ -170,6 +170,7 @@ class _LoginPage extends State<LoginPage> {
             padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
             margin: const EdgeInsets.only(top: 10),
             child: TextField(
+              autofocus: true,
               controller: _phone, //set phone controller
               maxLength: 32,
               keyboardType: TextInputType.number,

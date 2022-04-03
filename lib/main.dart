@@ -1,3 +1,4 @@
+import 'package:blucash_client/pages/otherhomepage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:blucash_client/pages/login.dart';
@@ -28,7 +29,7 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
         fontFamily: 'Lexend',
       ),
-      home: show ? const OnBoardingPage() : const LoginPage(),
+      home: show ? const OnBoardingPage() : const OtherPage(),
     );
   }
 }
