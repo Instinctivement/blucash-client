@@ -33,7 +33,6 @@ class _LoginPage extends State<LoginPage> {
     prefs.setString("business", json.encode(business));
     prefs.setString("balance", json.encode(balance));
     prefs.setString("login", json.encode(token));
-    prefs.setBool("agent", false);
   }
 
   void login() async {

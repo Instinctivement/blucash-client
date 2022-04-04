@@ -30,14 +30,13 @@ class _HomePageState extends State<HomePage> {
       token = "";
 
   bool isVisible = true;
-  late String imgAgent, agent = "", date = "";
+  late String imgAgent= "", agent = "", date = "";
 
   @override
   void initState() {
     super.initState();
     showAgent = false;
     getCred();
-    getAgent();
     checkAgent();
   }
 
@@ -67,6 +66,7 @@ class _HomePageState extends State<HomePage> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? val = prefs.getString("imgAgent");
     if (val != null) {
+      getAgent();
       showAgent = true;
     } else {
       showAgent = false;
@@ -478,6 +478,7 @@ class _HomePageState extends State<HomePage> {
     return showDialog<String>(
       context: context,
       builder: (BuildContext context) => AlertDialog(
+        actionsPadding: const EdgeInsets.symmetric(horizontal: 8.0),
         title: const Text('Entrer code agent'),
         content: Container(
           padding: const EdgeInsets.only(top: 20, bottom: 10),
@@ -531,12 +532,51 @@ class _HomePageState extends State<HomePage> {
             child: const Text('Annuler'),
           ),
           TextButton(
-            onPressed: () async {},
+            onPressed: () async {
+              verifyCode(valueText);
+            },
             child: const Text('Valider'),
           ),
         ],
       ),
     );
+  }
+
+    void verifyCode(String? code) async {
+    var url = Uri.parse('http://192.168.8.110');
+
+    try {
+      var response = await http.post(url, body: {'st': token, 'code': code});
+
+      final jsondata = json.decode(response.body);
+      if (jsondata["status"] == true) {
+        print('true');
+        print(jsondata);
+        pageroute(jsondata["imgAgent"], jsondata["agent"], jsondata["date"]);
+      } else {
+        print('false');
+        print(jsondata);
+        Navigator.of(context)
+          .push(MaterialPageRoute(builder: (context) => const ScanError()));
+      }
+    } catch (e) {
+      Navigator.of(context)
+          .push(MaterialPageRoute(builder: (context) => const ScanError()));
+    }
+  }
+
+  void pageroute(String imgAgent, String agent, String date) async {
+    saveSession(imgAgent, agent, date);
+    Navigator.of(context).pushAndRemoveUntil(
+        MaterialPageRoute(builder: (context) => const HomePage()),
+        (route) => false);
+  }
+
+  void saveSession(String imgAgent, String agent, String date) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setString("imgAgent", json.encode(imgAgent));
+    prefs.setString("agent", json.encode(agent));
+    prefs.setString("date", json.encode(date));
   }
 
   Future<void> logOut(BuildContext context) async {
@@ -547,6 +587,9 @@ class _HomePageState extends State<HomePage> {
     await prefs.remove('phone');
     await prefs.remove('business');
     await prefs.remove('balance');
+    await prefs.remove('imgAgent');
+    await prefs.remove('agent');
+    await prefs.remove('date');
     await prefs.remove('login');
     Navigator.of(context).pushAndRemoveUntil(
         MaterialPageRoute(builder: (context) => const LoginPage()),

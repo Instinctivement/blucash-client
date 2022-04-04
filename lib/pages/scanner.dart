@@ -1,10 +1,12 @@
+import 'dart:convert';
 import 'dart:io';
 import 'package:blucash_client/pages/homepage.dart';
+import 'package:blucash_client/pages/scanerror.dart';
 import 'package:blucash_client/tools/colors.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
-import 'dart:convert';
+import 'dart:convert' as convert;
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:vibration/vibration.dart';
@@ -40,25 +42,40 @@ class _QrScanPageState extends State<QrScanPage> {
   }
 
   void sendcode(String? code) async {
-    var url = Uri.parse('https://www.blucash.net/client/identify');
+    var url = Uri.parse('http://192.168.8.110');
+
     try {
       var response = await http.post(url, body: {'st': token, 'code': code});
 
       final jsondata = json.decode(response.body);
-      print(jsondata);
-      //         if (jsondata["status"] != 'true') {
-      //           print('true');
-      // print(jsondata);
-      //           // Navigator.of(context).push(MaterialPageRoute(builder: (context) =>  ScanResult(status: jsondata["status"])));
-      //         } else {
-      //            print('false');
-      // print(jsondata);
-      //             // Navigator.of(context).push(MaterialPageRoute(builder: (context) =>  ScanResult(status: jsondata["status"])));
-      //         }
+      if (jsondata["status"] == true) {
+        print('true');
+        print(jsondata);
+        pageroute(jsondata["imgAgent"], jsondata["agent"], jsondata["date"]);
+      } else {
+        print('false');
+        print(jsondata);
+        Navigator.of(context)
+          .push(MaterialPageRoute(builder: (context) => const ScanError()));
+      }
     } catch (e) {
-      print('cash error');
-      //  Navigator.of(context).push(MaterialPageRoute(builder: (context) => const ScanResult(status: 'invalid')));
+      Navigator.of(context)
+          .push(MaterialPageRoute(builder: (context) => const ScanError()));
     }
+  }
+
+  void pageroute(String imgAgent, String agent, String date) async {
+    saveSession(imgAgent, agent, date);
+    Navigator.of(context).pushAndRemoveUntil(
+        MaterialPageRoute(builder: (context) => const HomePage()),
+        (route) => false);
+  }
+
+  void saveSession(String imgAgent, String agent, String date) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setString("imgAgent", json.encode(imgAgent));
+    prefs.setString("agent", json.encode(agent));
+    prefs.setString("date", json.encode(date));
   }
 
   @override
@@ -90,7 +107,7 @@ class _QrScanPageState extends State<QrScanPage> {
         controller!.pauseCamera();
         print("Le code est : ${result!.code}");
         controller!.dispose();
-        // sendcode(code);
+        sendcode(code);
       } else {
         showprogress = true;
         Vibration.vibrate(duration: 100);
@@ -98,7 +115,7 @@ class _QrScanPageState extends State<QrScanPage> {
         // print('false');
         // print(code);
         WidgetsBinding.instance?.addPostFrameCallback((_) {
-                _showDialog(context);
+          _showDialog(context);
         });
         controller!.dispose();
       }
@@ -260,7 +277,8 @@ class _QrScanPageState extends State<QrScanPage> {
             TextButton(
               child: const Text("OK"),
               onPressed: () {
-                Navigator.of(context).push(MaterialPageRoute(builder: (context) => const HomePage()));
+                Navigator.of(context).push(
+                    MaterialPageRoute(builder: (context) => const HomePage()));
               },
             ),
           ],
@@ -270,32 +288,32 @@ class _QrScanPageState extends State<QrScanPage> {
   }
 
   Future<void> _showMyDialog() async {
-  return showDialog<void>(
-    context: context,
-    barrierDismissible: false, // user must tap button!
-    builder: (BuildContext context) {
-      return AlertDialog(
-        title: const Text('AlertDialog Title'),
-        content: SingleChildScrollView(
-          child: ListBody(
-            children: const <Widget>[
-              Text('This is a demo alert dialog.'),
-              Text('Would you like to approve of this message?'),
-            ],
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('AlertDialog Title'),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: const <Widget>[
+                Text('This is a demo alert dialog.'),
+                Text('Would you like to approve of this message?'),
+              ],
+            ),
           ),
-        ),
-        actions: <Widget>[
-          TextButton(
-            child: const Text('Approve'),
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
-          ),
-        ],
-      );
-    },
-  );
-}
+          actions: <Widget>[
+            TextButton(
+              child: const Text('Approve'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
 
   @override
   void dispose() {
