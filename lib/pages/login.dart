@@ -25,8 +25,7 @@ class _LoginPage extends State<LoginPage> {
   final _phone = TextEditingController();
   final _pin = TextEditingController();
 
-  void saveSession(String name, String phone, String code, String business,
-      String balance, String token) async {
+  void saveSession(String name, String phone, String code, String business, String balance, String token) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setString("name", json.encode(name));
     prefs.setString("phone", json.encode(phone));
@@ -34,6 +33,7 @@ class _LoginPage extends State<LoginPage> {
     prefs.setString("business", json.encode(business));
     prefs.setString("balance", json.encode(balance));
     prefs.setString("login", json.encode(token));
+    prefs.setBool("agent", false);
   }
 
   void login() async {
@@ -93,19 +93,7 @@ class _LoginPage extends State<LoginPage> {
      errormsg = "";
      error = false;
      showprogress = false;
-  //   checkLogin();
    }
-
-  // void checkLogin() async {
-  //   //here we will check if the user is alrady login
-  //   SharedPreferences prefs = await SharedPreferences.getInstance();
-  //   String? val = prefs.getString("login");
-  //   if (val != null) {
-  //     Navigator.of(context).pushAndRemoveUntil(
-  //         MaterialPageRoute(builder: (context) => const HomePage()),
-  //         (route) => false);
-  //   }
-  // }
 
   var _obscureText = true;
 

@@ -1,6 +1,7 @@
 import 'package:blucash_client/pages/homepage.dart';
 import 'package:blucash_client/pages/login.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class OtherPage extends StatefulWidget {
@@ -35,6 +36,9 @@ class _OtherPageState extends State<OtherPage> {
 
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setSystemUIOverlayStyle(
+      SystemUiOverlayStyle.dark.copyWith(statusBarColor: Colors.transparent),
+    );
     return const Scaffold(
       
     );

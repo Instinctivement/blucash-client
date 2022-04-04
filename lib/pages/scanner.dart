@@ -95,8 +95,8 @@ class _QrScanPageState extends State<QrScanPage> {
         showprogress = true;
         Vibration.vibrate(duration: 100);
         controller!.pauseCamera();
-        print('false');
-        print(code);
+        // print('false');
+        // print(code);
         WidgetsBinding.instance?.addPostFrameCallback((_) {
                 _showDialog(context);
         });
