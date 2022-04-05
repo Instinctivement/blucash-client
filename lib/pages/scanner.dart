@@ -7,7 +7,6 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
-import 'dart:convert' as convert;
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:vibration/vibration.dart';
@@ -92,8 +91,6 @@ class _QrScanPageState extends State<QrScanPage> {
     getCred();
   }
 
-  // In order to get hot reload to work we need to pause the camera if the platform
-  // is android, or resume the camera if the platform is iOS.
   @override
   void reassemble() {
     super.reassemble();
@@ -286,34 +283,6 @@ class _QrScanPageState extends State<QrScanPage> {
               onPressed: () {
                 Navigator.of(context).push(
                     MaterialPageRoute(builder: (context) => const HomePage()));
-              },
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-  Future<void> _showMyDialog() async {
-    return showDialog<void>(
-      context: context,
-      barrierDismissible: false, // user must tap button!
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('AlertDialog Title'),
-          content: SingleChildScrollView(
-            child: ListBody(
-              children: const <Widget>[
-                Text('This is a demo alert dialog.'),
-                Text('Would you like to approve of this message?'),
-              ],
-            ),
-          ),
-          actions: <Widget>[
-            TextButton(
-              child: const Text('Approve'),
-              onPressed: () {
-                Navigator.of(context).pop();
               },
             ),
           ],

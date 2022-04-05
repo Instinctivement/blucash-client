@@ -116,17 +116,16 @@ class _LoginPage extends State<LoginPage> {
         padding: const EdgeInsets.all(32.0),
         child: Column(children: [
           Center(
-            child: SizedBox(
-                width: 200,
+            child: Expanded(
+              child: Container(
+                width: 120,
                 height: 120,
-                child: Hero(
-                  tag: "logo",
-                  child: Image.asset(
-                    'assets/img/blucash.png',
-                    width: 150,
-                    height: 1,
-                  ),
-                )),
+                margin: const EdgeInsets.symmetric(vertical: 20),   
+                child: Image.asset(
+                  'assets/icon/icon.png',
+                ),
+              ),
+            ),
           ),
           Container(
             margin: const EdgeInsets.only(top: 10),
@@ -255,14 +254,8 @@ class _LoginPage extends State<LoginPage> {
                 ),
                 onPressed: () async {
                   setState(() {
-                    //show progress indicator on click
                     showprogress = true;
                   });
-                  // await Future.delayed(const Duration(seconds: 2));
-                  // setState(() {
-                  //   showprogress = false;
-                  // });
-                  // _showSnackBarMsgDeleted(context);
                   login();
                 },
                 child: showprogress
@@ -279,10 +272,6 @@ class _LoginPage extends State<LoginPage> {
                         "Connexion",
                         style: TextStyle(fontSize: 24),
                       ),
-                // if showprogress == true then show progress indicator
-                // else show "LOGIN NOW" text
-
-                //button corner radius
               ),
             ),
           ),
@@ -382,15 +371,4 @@ class _LoginPage extends State<LoginPage> {
     );
   }
 
-  void _showSnackBarMsgDeleted(BuildContext context) {
-    // Create a SnackBar.
-    const snackBar = SnackBar(
-      backgroundColor: primary,
-      content: Text(
-          "Désolé ! Nous n'avons pas pu procéder à l'authentification. Merci de vérifier votre connexion internet.",
-          style: TextStyle(fontSize: 20, fontWeight: FontWeight.w400)),
-      padding: EdgeInsets.all(20),
-    );
-    ScaffoldMessenger.of(context).showSnackBar(snackBar);
-  }
 }
