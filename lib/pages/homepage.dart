@@ -228,7 +228,7 @@ class _HomePageState extends State<HomePage> {
               child: Hero(
                 tag: "logo",
                 child: Image.asset(
-                  'assets/white.png',
+                  'assets/icon/logo.png',
                 ),
               ),
             ),
@@ -245,6 +245,7 @@ class _HomePageState extends State<HomePage> {
                     showDialog<String>(
                       context: context,
                       builder: (BuildContext context) => AlertDialog(
+                        shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(0.0))),
                         title: const Text('Confirmation'),
                         content: const Text(
                             'Vous êtes sur le point de vous déconnecter.'),
@@ -478,6 +479,7 @@ class _HomePageState extends State<HomePage> {
     return showDialog<String>(
       context: context,
       builder: (BuildContext context) => AlertDialog(
+        shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(0.0))),
         actionsPadding: const EdgeInsets.symmetric(horizontal: 8.0),
         title: const Text('Entrer code agent'),
         content: Container(
@@ -552,6 +554,10 @@ class _HomePageState extends State<HomePage> {
       if (jsondata["status"] == true) {
         print('true');
         print(jsondata);
+        String? val = imgAgent;
+        if (val != "") {
+          CachedNetworkImage.evictFromCache(imgAgent);
+        }
         pageroute(jsondata["imgAgent"], jsondata["agent"], jsondata["date"]);
       } else {
         print('false');
@@ -591,6 +597,10 @@ class _HomePageState extends State<HomePage> {
     await prefs.remove('agent');
     await prefs.remove('date');
     await prefs.remove('login');
+    String? val = imgAgent;
+        if (val != "") {
+          CachedNetworkImage.evictFromCache(imgAgent);
+        }
     Navigator.of(context).pushAndRemoveUntil(
         MaterialPageRoute(builder: (context) => const LoginPage()),
         (route) => false);
@@ -642,16 +652,25 @@ class _HomePageState extends State<HomePage> {
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
             CircleAvatar(
+              backgroundColor: container,
               radius: 110,
               child: CachedNetworkImage(
                 fit: BoxFit.cover,
                 imageUrl: imgAgent,
                 progressIndicatorBuilder: (context, url, downloadProgress) =>
                     CircularProgressIndicator(value: downloadProgress.progress),
-                errorWidget: (context, url, error) => const Icon(
-                  Icons.error,
-                  size: 100,
-                  color: Colors.red,
+                errorWidget: (context, url, error) => const CircleAvatar(
+                  backgroundColor: Colors.white,
+                  radius: 110,
+                  child: CircleAvatar(
+                    backgroundColor: Color.fromARGB(255, 250, 249, 249),
+                    radius: 110,
+                    child: Icon(
+                      Icons.error_outline_sharp,
+                      size: 100,
+                      color: Color.fromARGB(255, 189, 187, 187),
+                    ),
+                  ),
                 ),
               ),
             ),

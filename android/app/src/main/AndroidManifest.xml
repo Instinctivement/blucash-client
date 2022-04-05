@@ -2,9 +2,9 @@
     package="com.example.blucash_client">
     <uses-permission android:name="android.permission.VIBRATE" />
    <application
-        android:label="blucash_client"
+        android:label="Blucash Client"
         android:name="${applicationName}"
-        android:icon="@mipmap/ic_launcher">
+        android:icon="@mipmap/launcher_icon">
         <activity
             android:name=".MainActivity"
             android:exported="true"

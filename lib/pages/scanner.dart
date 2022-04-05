@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:blucash_client/pages/homepage.dart';
 import 'package:blucash_client/pages/scanerror.dart';
 import 'package:blucash_client/tools/colors.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
@@ -22,6 +23,7 @@ class _QrScanPageState extends State<QrScanPage> {
   Barcode? result;
   QRViewController? controller;
   late String token = "";
+  late String imgAgent = "";
   late bool showprogress;
   final GlobalKey qrKey = GlobalKey(debugLabel: 'QR');
 
@@ -38,6 +40,7 @@ class _QrScanPageState extends State<QrScanPage> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
       token = prefs.getString("login")!.replaceAll("\"", "");
+      imgAgent = prefs.getString("imgAgent")!.replaceAll("\"", "");
     });
   }
 
@@ -51,6 +54,10 @@ class _QrScanPageState extends State<QrScanPage> {
       if (jsondata["status"] == true) {
         print('true');
         print(jsondata);
+        String? val = imgAgent;
+        if (val != "") {
+          CachedNetworkImage.evictFromCache(imgAgent);
+        }
         pageroute(jsondata["imgAgent"], jsondata["agent"], jsondata["date"]);
       } else {
         print('false');

@@ -45,9 +45,15 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
           title: "",
           body: "",
           image: Center(
-            child: Image.asset(
-              "assets/img/blucash.png",
-              width: 800,
+            child: Container(
+              width: MediaQuery.of(context).size.width *0.75,
+              height: 80,
+              decoration: const BoxDecoration(
+                image: DecorationImage(
+                  fit: BoxFit.fill,
+                  image: AssetImage("assets/img/blucash.png"),
+                ),
+              ),
             ),
           ),
           footer: ElevatedButton(
@@ -103,11 +109,13 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
         ),
         PageViewModel(
           title: "",
-          bodyWidget: const Text(
-            "Optimisez votre gestion",
-            style: TextStyle(fontSize: 20),
+          body: "Optimisez votre gestion",
+          image: Center(
+            child: Image.asset(
+              "assets/img/blucash.png",
+              width: 150,
+            ),
           ),
-          image: _buildImage("blucash.png"),
           footer: ElevatedButton(
             onPressed: () => _onIntroEnd(context),
             child: const Text(
@@ -115,7 +123,8 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
               style: TextStyle(fontSize: 15, color: Colors.white),
             ),
             style: ElevatedButton.styleFrom(
-              padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 10),
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 50, vertical: 0.0),
               primary: Colors.lightBlue,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(50),
