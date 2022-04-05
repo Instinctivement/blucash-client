@@ -9,6 +9,8 @@ import 'package:http/http.dart' as http;
 import 'package:blucash_client/pages/scanner.dart';
 import 'package:blucash_client/tools/colors.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:url_launcher/link.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 bool showAgent = false;
 
@@ -26,9 +28,10 @@ class _HomePageState extends State<HomePage> {
       business = "",
       balance = "",
       token = "";
+  Future<void>? _launched;
 
   bool isVisible = true;
-  late String imgAgent= "", agent = "", date = "";
+  late String imgAgent = "", agent = "", date = "";
 
   @override
   void initState() {
@@ -71,6 +74,17 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
+    Future<void> _launchInBrowser(String url) async {
+    if (!await launch(
+      url,
+      forceSafariVC: false,
+      forceWebView: false,
+      headers: <String, String>{'my_header_key': 'my_header_value'},
+    )) {
+      throw 'Could not launch $url';
+    }
+  }
+
   final TextEditingController _textFieldController = TextEditingController();
 
   String valueText = "";
@@ -79,6 +93,7 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     SystemChrome.setSystemUIOverlayStyle(
         const SystemUiOverlayStyle(statusBarColor: primary));
+    const String toLaunch = 'https://blucash.net';
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
@@ -100,9 +115,33 @@ class _HomePageState extends State<HomePage> {
           ),
           actions: <Widget>[
             IconButton(
-                icon: const Icon(Icons.info_outline_rounded),
-                color: Colors.white,
-                onPressed: () {}),
+              icon: const Icon(Icons.info_outline_rounded),
+              color: Colors.white,
+              onPressed: () {
+                showDialog<String>(
+                  context: context,
+                  builder: (BuildContext context) => AlertDialog(
+                    shape: const RoundedRectangleBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(0.0))),
+                    title: const Text('Confirmation'),
+                    content: const Text(
+                        'Vous allez être redirigé.'),
+                    actions: <Widget>[
+                      TextButton(
+                        onPressed: () => Navigator.pop(context, 'Annuler'),
+                        child: const Text('Annuler'),
+                      ),
+                      TextButton(
+                        onPressed: () {
+                            _launched = _launchInBrowser(toLaunch);
+                        },
+                        child: const Text('Allez'),
+                      ),
+                    ],
+                  ),
+                );
+              },
+            ),
             Padding(
               padding: const EdgeInsets.only(right: 25.0),
               child: TextButton(
@@ -110,7 +149,9 @@ class _HomePageState extends State<HomePage> {
                     showDialog<String>(
                       context: context,
                       builder: (BuildContext context) => AlertDialog(
-                        shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(0.0))),
+                        shape: const RoundedRectangleBorder(
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(0.0))),
                         title: const Text('Confirmation'),
                         content: const Text(
                             'Vous êtes sur le point de vous déconnecter.'),
@@ -140,17 +181,14 @@ class _HomePageState extends State<HomePage> {
           ],
         ),
         resizeToAvoidBottomInset: false,
-        
         body: Container(
           constraints: BoxConstraints(
             minHeight: MediaQuery.of(context).size.height,
           ),
-        
           width: MediaQuery.of(context).size.width,
-          
           decoration: BoxDecoration(
             color: white,
-          ), 
+          ),
           padding:
               const EdgeInsets.only(top: 15.0, bottom: 10, left: 24, right: 24),
           child: Column(
@@ -324,7 +362,7 @@ class _HomePageState extends State<HomePage> {
               const Padding(
                 padding: EdgeInsets.only(top: 30.0),
                 child: Text(
-                  "Blucash Solutions v1.125 — OPENXTECH SARL.",
+                  "Blucash Client v1.125 — OPENXTECH SARL.",
                   style: TextStyle(color: Colors.grey, fontSize: 12),
                 ),
               ),
@@ -339,7 +377,8 @@ class _HomePageState extends State<HomePage> {
     return showDialog<String>(
       context: context,
       builder: (BuildContext context) => AlertDialog(
-        shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(0.0))),
+        shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(0.0))),
         actionsPadding: const EdgeInsets.symmetric(horizontal: 8.0),
         title: const Text('Entrer code agent'),
         content: Container(
@@ -404,7 +443,7 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-    void verifyCode(String? code) async {
+  void verifyCode(String? code) async {
     var url = Uri.parse('http://192.168.8.110');
 
     try {
@@ -423,7 +462,7 @@ class _HomePageState extends State<HomePage> {
         print('false');
         print(jsondata);
         Navigator.of(context)
-          .push(MaterialPageRoute(builder: (context) => const ScanError()));
+            .push(MaterialPageRoute(builder: (context) => const ScanError()));
       }
     } catch (e) {
       Navigator.of(context)
@@ -458,9 +497,9 @@ class _HomePageState extends State<HomePage> {
     await prefs.remove('date');
     await prefs.remove('login');
     String? val = imgAgent;
-        if (val != "") {
-          CachedNetworkImage.evictFromCache(imgAgent);
-        }
+    if (val != "") {
+      CachedNetworkImage.evictFromCache(imgAgent);
+    }
     Navigator.of(context).pushAndRemoveUntil(
         MaterialPageRoute(builder: (context) => const LoginPage()),
         (route) => false);
