@@ -109,12 +109,11 @@ class _LoginPage extends State<LoginPage> {
         constraints: BoxConstraints(
             minHeight: MediaQuery.of(context)
                 .size
-                .height), //set minimum height equal to 100% of VH
+                .height),
         width: MediaQuery.of(context).size.width,
-        //make width of outer wrapper to 100%
-        decoration: BoxDecoration(
+        decoration: const BoxDecoration(
           color: white,
-        ), //show linear gradient background of page
+        ), 
         padding: const EdgeInsets.all(32.0),
         child: Column(children: [
           Center(
@@ -258,7 +257,7 @@ class _LoginPage extends State<LoginPage> {
                   login();
                 },
                 child: showprogress
-                    ? SizedBox(
+                    ? const SizedBox(
                         height: 24,
                         width: 24,
                         child: CircularProgressIndicator(

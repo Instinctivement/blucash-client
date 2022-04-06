@@ -1,6 +1,4 @@
 import 'dart:convert';
-
-import 'package:blucash_client/pages/scanerror.dart';
 import 'package:blucash_client/tools/error.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
@@ -116,7 +114,7 @@ class _HomePageState extends State<HomePage> {
           tooltip: 'Rafraîchir',
           onPressed: () {
             setState(() {
-              print('object');
+              refresh();
             });
           },
         ),
@@ -130,7 +128,8 @@ class _HomePageState extends State<HomePage> {
               itemBuilder: (context) => [
                 PopupMenuItem<int>(
                     value: 0,
-                    child: Row(
+                    child: support != "" ?
+                    Row(
                       children:const [
                         Icon(
                           Icons.phone,
@@ -141,7 +140,7 @@ class _HomePageState extends State<HomePage> {
                         ),
                         Text("Assistance")
                       ],
-                    ),
+                    ): Container(),
                 ),
                 PopupMenuItem<int>(
                     value: 1,
@@ -283,7 +282,7 @@ class _HomePageState extends State<HomePage> {
                             ElevatedButton(
                               child: Text(
                                 'Saisir code'.toUpperCase(),
-                                style: TextStyle(fontSize: 18, color: white),
+                                style: const TextStyle(fontSize: 18, color: white),
                               ),
                               onPressed: () {
                                 enterCode(context);
@@ -493,6 +492,34 @@ class _HomePageState extends State<HomePage> {
       }
   }
 
+  void refresh() async {
+      if (_textFieldController.text.isNotEmpty) {
+      var url = Uri.parse('https://www.blucash.net/client/identify/code');
+        try {
+          var response = await http.post(url, body: {'st': token, 'code': code});
+          final jsondata = json.decode(response.body);
+          if (jsondata["status"] == true) {
+            String? val = image;
+            if (val != "") {
+              CachedNetworkImage.evictFromCache(image);
+            }
+            pageroute(jsondata["image"], jsondata["user"], jsondata["dateof"], jsondata["role"]);
+          } else {
+              String? errorM = errorMap[jsondata["error"]];
+              SharedPreferences prefs = await SharedPreferences.getInstance();
+              if (errorM != null) {
+                prefs.setString("scanerror", json.encode(errorM));
+              }
+            Navigator.pop(context, 'Error');
+          }
+        } catch (e) {
+          _internetDialog(context);
+        }
+      } else {
+        emptyForm();
+      }
+  }
+
   Future<String?> emptyForm() {
     return showDialog<String>(
           context: context,
@@ -548,7 +575,6 @@ class _HomePageState extends State<HomePage> {
   }
 
   static const String toLaunch = 'https://blucash.net';
-  String phoneSuper = '+237656541861';
   Future<void>? launched;
 
   void selectedItem(BuildContext context, item) {
@@ -569,9 +595,8 @@ class _HomePageState extends State<HomePage> {
               ),
               TextButton(
                 onPressed: () {
-                    setState(() {
-                          launched = _makePhoneCall(support);
-                        });
+                  Navigator.pop(context, 'Annuler');
+                  setState(() {launched = _makePhoneCall(support);});
                 },
                 child: const Text('Allez'),
               ),
@@ -595,6 +620,7 @@ class _HomePageState extends State<HomePage> {
               ),
               TextButton(
                 onPressed: () {
+                  Navigator.pop(context, 'Annuler');
                     launched = _launchInBrowser(toLaunch);
                 },
                 child: const Text('Allez'),
@@ -776,24 +802,24 @@ class _HomePageState extends State<HomePage> {
   }
 
   void _internetDialog(BuildContext context) {
-      showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            title: const Text("Erreur de connexion"),
-            content: const Text(
-                "Vérifier votre connexion puis réessayer."),
-            actions: <Widget>[
-              TextButton(
-                child: const Text("OK"),
-                onPressed: () {
-                  Navigator.pop(context, 'Annuler');
-                },
-              ),
-            ],
-          );
-        },
-      );
-    }
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text("Erreur de connexion"),
+          content: const Text(
+              "Vérifier votre connexion puis réessayer."),
+          actions: <Widget>[
+            TextButton(
+              child: const Text("OK"),
+              onPressed: () {
+                Navigator.pop(context, 'Annuler');
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
 
 }

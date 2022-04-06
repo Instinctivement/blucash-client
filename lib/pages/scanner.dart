@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:blucash_client/pages/homepage.dart';
-import 'package:blucash_client/pages/scanerror.dart';
 import 'package:blucash_client/tools/colors.dart';
 import 'package:blucash_client/tools/error.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -74,8 +73,7 @@ class _QrScanPageState extends State<QrScanPage> {
          Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) => const HomePage()),(route) => false);
        }
      } catch (e) {
-       Navigator.of(context)
-           .push(MaterialPageRoute(builder: (context) => const ScanError()));
+       _internetDialog(context);
      }
   }
 
@@ -276,6 +274,28 @@ class _QrScanPageState extends State<QrScanPage> {
           title: const Text("Qr Code Erroné"),
           content: const Text(
               "Ceci n'est pas un Qr Code valide, merci de réessayer."),
+          actions: <Widget>[
+            TextButton(
+              child: const Text("OK"),
+              onPressed: () {
+                Navigator.of(context).push(
+                    MaterialPageRoute(builder: (context) => const HomePage()));
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _internetDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text("Erreur de connexion"),
+          content: const Text(
+              "Vérifier votre connexion puis réessayer."),
           actions: <Widget>[
             TextButton(
               child: const Text("OK"),

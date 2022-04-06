@@ -5,3 +5,4 @@ Map<String, String> errorMap = {
   'no_agent': "QR Code invalide.",
   'no_client': "QR Code invalide"
 };
+
