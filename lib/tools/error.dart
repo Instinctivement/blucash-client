@@ -1,9 +1,11 @@
-  // Map<String,dynamic> errorm={
-  //   'invalid':'Identifants incorrects',
-  //   '404':'Page not found',
-  //   'database':'Erreur lors de la connexion à la base de données',
-  
-  
-  //  geterror(String index){
-  //    for
-  // }
+var errorMap = {
+  "db": "Echec de la connexion à la base de données", 
+  'invalid': 'Identifiants invalides',
+  'codenotmatch': 'Qr code invalid'
+};
+
+var msgMap = {
+  "name": "Proto Coders Point ", 
+  'Website': 'https://protocoderspoint.com/',
+  'Website': 'https://protocoderspoint.com/'
+};

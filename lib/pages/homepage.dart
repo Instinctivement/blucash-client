@@ -9,7 +9,6 @@ import 'package:http/http.dart' as http;
 import 'package:blucash_client/pages/scanner.dart';
 import 'package:blucash_client/tools/colors.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:url_launcher/link.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 bool showAgent = false;
@@ -27,11 +26,11 @@ class _HomePageState extends State<HomePage> {
       code = "",
       business = "",
       balance = "",
+      support = "",
       token = "";
-  Future<void>? _launched;
 
   bool isVisible = true;
-  late String imgAgent = "", agent = "", date = "";
+  late String image = "", agent = "", dateof = "", type = "";
 
   @override
   void initState() {
@@ -49,6 +48,7 @@ class _HomePageState extends State<HomePage> {
       code = prefs.getString("code")!.replaceAll("\"", "");
       business = prefs.getString("business")!.replaceAll("\"", "");
       balance = prefs.getString("balance")!.replaceAll("\"", "");
+      support = prefs.getString("support")!.replaceAll("\"", "");
       token = prefs.getString("login")!.replaceAll("\"", "");
     });
   }
@@ -56,16 +56,17 @@ class _HomePageState extends State<HomePage> {
   void getAgent() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
-      imgAgent = prefs.getString("imgAgent")!.replaceAll("\"", "");
+      image = prefs.getString("image")!.replaceAll("\"", "");
       agent = prefs.getString("agent")!.replaceAll("\"", "");
-      date = prefs.getString("date")!.replaceAll("\"", "");
+      dateof = prefs.getString("dateof")!.replaceAll("\"", "");
+      type = prefs.getString("type")!.replaceAll("\"", "");
     });
   }
 
   void checkAgent() async {
     //here we will check if the user is alrady login
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    String? val = prefs.getString("imgAgent");
+    String? val = prefs.getString("image");
     if (val != null) {
       getAgent();
       showAgent = true;
@@ -75,15 +76,23 @@ class _HomePageState extends State<HomePage> {
   }
 
     Future<void> _launchInBrowser(String url) async {
-    if (!await launch(
-      url,
-      forceSafariVC: false,
-      forceWebView: false,
-      headers: <String, String>{'my_header_key': 'my_header_value'},
-    )) {
-      throw 'Could not launch $url';
+      if (!await launch(
+        url,
+        forceSafariVC: false,
+        forceWebView: false,
+        headers: <String, String>{'my_header_key': 'my_header_value'},
+      )) {
+        throw 'Could not launch $url';
+      }
     }
-  }
+
+    Future<void> _makePhoneCall(String phoneNumber) async {
+      final Uri launchUri = Uri(
+        scheme: 'tel',
+        path: phoneNumber,
+      );
+      await launch(launchUri.toString());
+    }
 
   final TextEditingController _textFieldController = TextEditingController();
 
@@ -93,7 +102,7 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     SystemChrome.setSystemUIOverlayStyle(
         const SystemUiOverlayStyle(statusBarColor: primary));
-    const String toLaunch = 'https://blucash.net';
+    
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
@@ -104,81 +113,81 @@ class _HomePageState extends State<HomePage> {
             height: 70,
             width: 130,
             child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 10.0),
-              child: Hero(
-                tag: "logo",
-                child: Image.asset(
-                  'assets/icon/logo.png',
-                ),
+              padding: const EdgeInsets.symmetric(horizontal: 5.0),
+              child: Image.asset(
+                'assets/icon/logo.png',
               ),
             ),
           ),
-          actions: <Widget>[
+          actions: [
             IconButton(
-              icon: const Icon(Icons.info_outline_rounded),
+          icon: const Icon(Icons.autorenew_rounded),
+          tooltip: 'Rafraîchir',
+          onPressed: () {
+            setState(() {
+              print('object');
+            });
+          },
+        ),
+          Theme(
+            data: Theme.of(context).copyWith(
+                // textTheme: const TextTheme().apply(),
+                dividerColor: Colors.grey,
+                iconTheme: const IconThemeData(color: Colors.white)),
+            child: PopupMenuButton<int>(
               color: Colors.white,
-              onPressed: () {
-                showDialog<String>(
-                  context: context,
-                  builder: (BuildContext context) => AlertDialog(
-                    shape: const RoundedRectangleBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(0.0))),
-                    title: const Text('Confirmation'),
-                    content: const Text(
-                        'Vous allez être redirigé.'),
-                    actions: <Widget>[
-                      TextButton(
-                        onPressed: () => Navigator.pop(context, 'Annuler'),
-                        child: const Text('Annuler'),
-                      ),
-                      TextButton(
-                        onPressed: () {
-                            _launched = _launchInBrowser(toLaunch);
-                        },
-                        child: const Text('Allez'),
-                      ),
-                    ],
-                  ),
-                );
-              },
+              itemBuilder: (context) => [
+                PopupMenuItem<int>(
+                    value: 0,
+                    child: Row(
+                      children:const [
+                        Icon(
+                          Icons.phone,
+                          color: dark,
+                        ),
+                        SizedBox(
+                          width: 7,
+                        ),
+                        Text("Assistance")
+                      ],
+                    ),
+                ),
+                PopupMenuItem<int>(
+                    value: 1,
+                    child: Row(
+                      children:const [
+                        Icon(
+                          Icons.help,
+                          color: dark,
+                        ),
+                        SizedBox(
+                          width: 7,
+                        ),
+                        Text("Aide")
+                      ],
+                    ),
+                ),
+                const PopupMenuDivider(),
+                PopupMenuItem<int>(
+                    value: 2,
+                    child: Row(
+                      children:const [
+                        Icon(
+                          Icons.logout,
+                          color: dark,
+                        ),
+                        SizedBox(
+                          width: 7,
+                        ),
+                        Text("Déconnexion")
+                      ],
+                    ),
+                ),
+              ],
+              onSelected: (item) => SelectedItem(context, item),
             ),
-            Padding(
-              padding: const EdgeInsets.only(right: 25.0),
-              child: TextButton(
-                  onPressed: () {
-                    showDialog<String>(
-                      context: context,
-                      builder: (BuildContext context) => AlertDialog(
-                        shape: const RoundedRectangleBorder(
-                            borderRadius:
-                                BorderRadius.all(Radius.circular(0.0))),
-                        title: const Text('Confirmation'),
-                        content: const Text(
-                            'Vous êtes sur le point de vous déconnecter.'),
-                        actions: <Widget>[
-                          TextButton(
-                            onPressed: () => Navigator.pop(context, 'Annuler'),
-                            child: const Text('Annuler'),
-                          ),
-                          TextButton(
-                            onPressed: () async {
-                              await logOut(context);
-                            },
-                            child: const Text('OK'),
-                          ),
-                        ],
-                      ),
-                    );
-                  },
-                  child: const Text(
-                    "Quitter",
-                    style: TextStyle(
-                        fontSize: 20,
-                        color: Colors.white70,
-                        fontWeight: FontWeight.w400),
-                  )),
-            ),
-          ],
+          ),
+        ],
         ),
         resizeToAvoidBottomInset: false,
         body: Container(
@@ -186,7 +195,7 @@ class _HomePageState extends State<HomePage> {
             minHeight: MediaQuery.of(context).size.height,
           ),
           width: MediaQuery.of(context).size.width,
-          decoration: BoxDecoration(
+          decoration: const BoxDecoration(
             color: white,
           ),
           padding:
@@ -235,7 +244,7 @@ class _HomePageState extends State<HomePage> {
                       Column(
                         children: [
                           Text(
-                            "Solde courant".toUpperCase(),
+                            "Dette courante".toUpperCase(),
                             style: const TextStyle(
                                 fontSize: 15,
                                 fontWeight: FontWeight.w400,
@@ -307,22 +316,44 @@ class _HomePageState extends State<HomePage> {
               const SizedBox(
                 height: 10,
               ),
-              const Center(
+               Center(
                 child: SizedBox(
-                  child: Text(
-                    "Dernière Identification",
+                  child: showAgent ?
+                  type == "agent" ? 
+                  const Text(
+                    "Agent Commercial",
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       fontSize: 16,
                       color: Colors.black54,
                       fontWeight: FontWeight.w700,
                     ),
-                  ),
+                  )
+                  :
+                  const Text(
+                    "Gestionnaire",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: Colors.black54,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ):
+                  const Text(
+                    "Identification",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: Colors.black54,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  )
+                  
                 ),
               ),
               Padding(
                 padding:
-                    const EdgeInsets.symmetric(horizontal: 0.0, vertical: 8),
+                    const EdgeInsets.symmetric(horizontal: 120.0, vertical: 8),
                 child: Container(
                   color: Colors.grey[100],
                   height: 2,
@@ -444,8 +475,9 @@ class _HomePageState extends State<HomePage> {
   }
 
   void verifyCode(String? code) async {
-    var url = Uri.parse('http://192.168.8.110');
 
+if (_textFieldController.text.isNotEmpty) {
+    var url = Uri.parse('https://www.blucash.net/client/identify/code');
     try {
       var response = await http.post(url, body: {'st': token, 'code': code});
 
@@ -453,11 +485,11 @@ class _HomePageState extends State<HomePage> {
       if (jsondata["status"] == true) {
         print('true');
         print(jsondata);
-        String? val = imgAgent;
+        String? val = image;
         if (val != "") {
-          CachedNetworkImage.evictFromCache(imgAgent);
+          CachedNetworkImage.evictFromCache(image);
         }
-        pageroute(jsondata["imgAgent"], jsondata["agent"], jsondata["date"]);
+        pageroute(jsondata["image"], jsondata["agent"], jsondata["dateof"]);
       } else {
         print('false');
         print(jsondata);
@@ -468,20 +500,123 @@ class _HomePageState extends State<HomePage> {
       Navigator.of(context)
           .push(MaterialPageRoute(builder: (context) => const ScanError()));
     }
+    } else {
+      showDialog<String>(
+          context: context,
+          builder: (BuildContext context) => AlertDialog(
+            shape: const RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(0.0))),
+            title: const Text('Erreur'),
+            content: const Text(
+                'Remplir le formulaire !'),
+            actions: <Widget>[
+              TextButton(
+                onPressed: () => Navigator.pop(context, 'Annuler'),
+                child: const Text('OK'),
+              ),
+            ],
+          ),
+        );
+    }
   }
+  
 
-  void pageroute(String imgAgent, String agent, String date) async {
-    saveSession(imgAgent, agent, date);
+  void pageroute(String image, String agent, String dateof) async {
+    saveSession(image, agent, dateof);
     Navigator.of(context).pushAndRemoveUntil(
         MaterialPageRoute(builder: (context) => const HomePage()),
         (route) => false);
   }
 
-  void saveSession(String imgAgent, String agent, String date) async {
+  void saveSession(String image, String agent, String dateof) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.setString("imgAgent", json.encode(imgAgent));
+    prefs.setString("image", json.encode(image));
     prefs.setString("agent", json.encode(agent));
-    prefs.setString("date", json.encode(date));
+    prefs.setString("dateof", json.encode(dateof));
+  }
+
+static const String toLaunch = 'https://blucash.net';
+String phoneSuper = '+237656541861';
+  Future<void>? launched;
+
+  void SelectedItem(BuildContext context, item) {
+    switch (item) {
+      case 0:
+        showDialog<String>(
+          context: context,
+          builder: (BuildContext context) => AlertDialog(
+            shape: const RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(0.0))),
+            title: const Text('Confirmation'),
+            content: const Text(
+                'Vous allez être redirigé.'),
+            actions: <Widget>[
+              TextButton(
+                onPressed: () => Navigator.pop(context, 'Annuler'),
+                child: const Text('Annuler'),
+              ),
+              TextButton(
+                onPressed: () {
+                    setState(() {
+                          launched = _makePhoneCall(support);
+                        });
+                },
+                child: const Text('Allez'),
+              ),
+            ],
+          ),
+        );
+        break;
+      case 1:
+        showDialog<String>(
+          context: context,
+          builder: (BuildContext context) => AlertDialog(
+            shape: const RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(0.0))),
+            title: const Text('Confirmation'),
+            content: const Text(
+                'Vous allez être redirigé.'),
+            actions: <Widget>[
+              TextButton(
+                onPressed: () => Navigator.pop(context, 'Annuler'),
+                child: const Text('Annuler'),
+              ),
+              TextButton(
+                onPressed: () {
+                    launched = _launchInBrowser(toLaunch);
+                },
+                child: const Text('Allez'),
+              ),
+            ],
+          ),
+        );
+        break;
+      case 2:
+        showDialog<String>(
+          context: context,
+          builder: (BuildContext context) => AlertDialog(
+            shape: const RoundedRectangleBorder(
+                borderRadius:
+                    BorderRadius.all(Radius.circular(0.0))),
+            title: const Text('Confirmation'),
+            content: const Text(
+                'Vous êtes sur le point de vous déconnecter.'),
+            actions: <Widget>[
+              TextButton(
+                onPressed: () => Navigator.pop(context, 'Annuler'),
+                child: const Text('Annuler'),
+              ),
+              TextButton(
+                onPressed: () async {
+                  await logOut(context);
+                },
+                child: const Text('OK'),
+              ),
+            ],
+          ),
+        );
+        break;
+    }
   }
 
   Future<void> logOut(BuildContext context) async {
@@ -492,13 +627,13 @@ class _HomePageState extends State<HomePage> {
     await prefs.remove('phone');
     await prefs.remove('business');
     await prefs.remove('balance');
-    await prefs.remove('imgAgent');
+    await prefs.remove('image');
     await prefs.remove('agent');
-    await prefs.remove('date');
+    await prefs.remove('dateof');
     await prefs.remove('login');
-    String? val = imgAgent;
+    String? val = image;
     if (val != "") {
-      CachedNetworkImage.evictFromCache(imgAgent);
+      CachedNetworkImage.evictFromCache(image);
     }
     Navigator.of(context).pushAndRemoveUntil(
         MaterialPageRoute(builder: (context) => const LoginPage()),
@@ -553,21 +688,24 @@ class _HomePageState extends State<HomePage> {
             CircleAvatar(
               backgroundColor: container,
               radius: 110,
-              child: CachedNetworkImage(
-                fit: BoxFit.cover,
-                imageUrl: imgAgent,
-                progressIndicatorBuilder: (context, url, downloadProgress) =>
-                    CircularProgressIndicator(value: downloadProgress.progress),
-                errorWidget: (context, url, error) => const CircleAvatar(
-                  backgroundColor: Colors.white,
-                  radius: 110,
-                  child: CircleAvatar(
-                    backgroundColor: Color.fromARGB(255, 250, 249, 249),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(110.0),
+                child: CachedNetworkImage(
+                  // fit: BoxFit.contain,
+                  imageUrl: image,
+                  progressIndicatorBuilder: (context, url, downloadProgress) =>
+                      CircularProgressIndicator(value: downloadProgress.progress),
+                  errorWidget: (context, url, error) => const CircleAvatar(
+                    backgroundColor: Colors.white,
                     radius: 110,
-                    child: Icon(
-                      Icons.error_outline_sharp,
-                      size: 100,
-                      color: Color.fromARGB(255, 189, 187, 187),
+                    child: CircleAvatar(
+                      backgroundColor: Color.fromARGB(255, 250, 249, 249),
+                      radius: 110,
+                      child: Icon(
+                        Icons.error_outline_sharp,
+                        size: 100,
+                        color: Color.fromARGB(255, 189, 187, 187),
+                      ),
                     ),
                   ),
                 ),
@@ -577,17 +715,26 @@ class _HomePageState extends State<HomePage> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
-                  Text(
-                    agent,
-                    style: const TextStyle(
-                        fontSize: 26,
-                        color: secondary,
-                        fontWeight: FontWeight.bold),
+                  Center(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          agent,
+                          style: const TextStyle(
+                              fontSize: 26,
+                              color: secondary,
+                              fontWeight: FontWeight.bold),
+                        ),
+                        const Icon(Icons.verified_rounded, size: 20, color: primary,),
+                      ],
+                    ),
                   ),
                   Padding(
                     padding: const EdgeInsets.only(top: 2.0),
                     child: Text(
-                      "Identifié le $date",
+                      "Authentifié le $dateof",
                       style: const TextStyle(
                           fontSize: 14,
                           color: Colors.black45,

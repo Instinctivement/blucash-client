@@ -22,7 +22,7 @@ class _QrScanPageState extends State<QrScanPage> {
   Barcode? result;
   QRViewController? controller;
   late String token = "";
-  late String imgAgent = "";
+  late String image = "";
   late bool showprogress;
   final GlobalKey qrKey = GlobalKey(debugLabel: 'QR');
 
@@ -39,49 +39,47 @@ class _QrScanPageState extends State<QrScanPage> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
       token = prefs.getString("login")!.replaceAll("\"", "");
-      imgAgent = prefs.getString("imgAgent")!.replaceAll("\"", "");
+      image = prefs.getString("image")!.replaceAll("\"", "");
     });
   }
 
   void sendcode(String? code) async {
-    var url = Uri.parse('http://192.168.8.110');
+    var url = Uri.parse('https://www.blucash.net/client/identify/qr');
+     try {
+       var response = await http.post(url, body: {'st': token, 'code': code});
 
-    try {
-      var response = await http.post(url, body: {'st': token, 'code': code});
-
-      final jsondata = json.decode(response.body);
-      if (jsondata["status"] == true) {
-        print('true');
-        print(jsondata);
-        String? val = imgAgent;
-        if (val != "") {
-          CachedNetworkImage.evictFromCache(imgAgent);
-        }
-        pageroute(jsondata["imgAgent"], jsondata["agent"], jsondata["date"]);
-      } else {
-        print('false');
-        print(jsondata);
-        Navigator.of(context)
-          .push(MaterialPageRoute(builder: (context) => const ScanError()));
-      }
-    } catch (e) {
-      Navigator.of(context)
-          .push(MaterialPageRoute(builder: (context) => const ScanError()));
-    }
+       final jsondata = json.decode(response.body);
+       if (jsondata["status"] == 'true') {
+         print('true');
+         print(jsondata);
+         String? val = image;
+         if (val != "") {
+           CachedNetworkImage.evictFromCache(image);
+         }
+         pageroute(jsondata["image"], jsondata["agent"], jsondata["dateof"], jsondata["type"]);
+       } else {
+         Navigator.of(context)
+           .push(MaterialPageRoute(builder: (context) => const ScanError()));
+       }
+     } catch (e) {
+       Navigator.of(context)
+           .push(MaterialPageRoute(builder: (context) => const ScanError()));
+     }
   }
 
-  void pageroute(String imgAgent, String agent, String date) async {
-    saveSession(imgAgent, agent, date);
+  void pageroute(String image, String agent, String dateof, String type) async {
+    saveSession(image, agent, dateof, type);
     Navigator.of(context).pushAndRemoveUntil(
         MaterialPageRoute(builder: (context) => const HomePage()),
         (route) => false);
   }
 
-  void saveSession(String imgAgent, String agent, String date) async {
+  void saveSession(String image, String agent, String dateof, String type) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.setString("imgAgent", json.encode(imgAgent));
+    prefs.setString("image", json.encode(image));
     prefs.setString("agent", json.encode(agent));
-    prefs.setString("date", json.encode(date));
+    prefs.setString("dateof", json.encode(dateof));
+    prefs.setString("type", json.encode(type));
   }
 
   @override
@@ -105,19 +103,21 @@ class _QrScanPageState extends State<QrScanPage> {
     if (result != null) {
       String? code = result!.code;
       if (checkcode(code)) {
+
         print('true');
         showprogress = true;
         Vibration.vibrate(duration: 100);
         controller!.pauseCamera();
-        print("Le code est : ${result!.code}");
+          print("Le code est : ${result!.code}");
+        //  print("Le code token : $token");
         controller!.dispose();
         sendcode(code);
       } else {
         showprogress = true;
         Vibration.vibrate(duration: 100);
         controller!.pauseCamera();
-        // print('false');
-        // print(code);
+         print('false');
+         print(code);
         WidgetsBinding.instance?.addPostFrameCallback((_) {
           _showDialog(context);
         });

@@ -7,7 +7,7 @@ const Color grey = Color(0xFF7D97A1);
 const Color dark = Color(0xFF212529);
 const Color container = Color(0xFFF2F5F8);
 Color alert = Colors.yellow.shade200;
-Color white = Colors.white;
+const Color white = Color(0xFFFFFFFF);
 
  checkcode(String? code) {
   bool isUrl = isURL(code!); 
@@ -18,6 +18,4 @@ Color white = Colors.white;
   } else {
     return true;
   }
-  
-
 }

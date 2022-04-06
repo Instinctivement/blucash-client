@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:blucash_client/tools/error.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:blucash_client/pages/homepage.dart';
@@ -18,20 +19,21 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPage extends State<LoginPage> {
-  late String errormsg;
+  late String? errormsg;
   late bool error, showprogress;
   late String phone, pin;
 
   final _phone = TextEditingController();
   final _pin = TextEditingController();
 
-  void saveSession(String name, String phone, String code, String business, String balance, String token) async {
+  void saveSession(String name, String phone, String code, String business, String balance, String support, String token) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setString("name", json.encode(name));
     prefs.setString("phone", json.encode(phone));
     prefs.setString("code", json.encode(code));
     prefs.setString("business", json.encode(business));
     prefs.setString("balance", json.encode(balance));
+    prefs.setString("support", json.encode(support));
     prefs.setString("login", json.encode(token));
   }
 
@@ -47,10 +49,11 @@ class _LoginPage extends State<LoginPage> {
         final jsondata = json.decode(response.body);
 
         if (jsondata["status"] != 'true') {
+          String? errorM = jsondata["error"];
           setState(() {
             showprogress = false; //don't show progress indicator
             error = true;
-            errormsg = jsondata["error"];
+            errormsg = errorMap[errorM];
           });
         } else {
           setState(() {
@@ -58,7 +61,7 @@ class _LoginPage extends State<LoginPage> {
             showprogress = false;
           });
           pageroute(jsondata["name"], jsondata["phone"], jsondata["code"],
-              jsondata["business"], jsondata["balance"], jsondata['token']);
+              jsondata["business"], jsondata["balance"], jsondata["support"], jsondata['token']);
         }
       } catch (e) {
         setState(() {
@@ -76,12 +79,11 @@ class _LoginPage extends State<LoginPage> {
     }
   }
 
-  void pageroute(String name, String phone, String code, String business,
-      String balance, String token) async {
-    saveSession(name, phone, code, business, balance, token);
-    Navigator.of(context).pushAndRemoveUntil(
-        MaterialPageRoute(builder: (context) => const HomePage()),
-        (route) => false);
+  void pageroute(String name, String phone, String code, String business, String balance, String support, String token) async {
+      saveSession(name, phone, code, business, balance, support, token);
+      Navigator.of(context).pushAndRemoveUntil(
+          MaterialPageRoute(builder: (context) => const HomePage()),
+          (route) => false);
   }
 
    @override
@@ -118,8 +120,8 @@ class _LoginPage extends State<LoginPage> {
           Center(
             child: Expanded(
               child: Container(
-                width: 120,
-                height: 120,
+                width: 80,
+                height: 80,
                 margin: const EdgeInsets.symmetric(vertical: 20),   
                 child: Image.asset(
                   'assets/icon/icon.png',
@@ -145,16 +147,13 @@ class _LoginPage extends State<LoginPage> {
             ), //subtitle text
           ),
           Container(
-            //show error message here
-            margin: const EdgeInsets.only(top: 30),
+            margin: const EdgeInsets.only(top: 20),
             padding: const EdgeInsets.only(top: 10, bottom: 10),
-            child: error ? errmsg(errormsg) : Container(),
-            //if error == true then show error message
-            //else set empty container as child
+            child: error ? errmsg(errormsg!) : Container(),
           ),
           Container(
             padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
-            margin: const EdgeInsets.only(top: 10),
+            margin: const EdgeInsets.only(top: 0.0),
             child: TextField(
               autofocus: true,
               controller: _phone, //set phone controller
@@ -176,7 +175,7 @@ class _LoginPage extends State<LoginPage> {
             ),
           ),
           Container(
-            padding: const EdgeInsets.only(top: 20, bottom: 10),
+            padding: const EdgeInsets.only(top: 10, bottom: 10),
             child: TextField(
               controller: _pin, //set pin controller
               style: const TextStyle(color: Colors.black45, fontSize: 20),
@@ -343,6 +342,9 @@ class _LoginPage extends State<LoginPage> {
           margin: const EdgeInsets.only(right: 0.00),
           child: const Icon(Icons.info, color: dark),
         ), // icon for error message
+        const SizedBox(
+          width: 10,
+        ),
 
         Text(text, style: const TextStyle(color: dark, fontSize: 18)),
         //show error message text
