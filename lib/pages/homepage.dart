@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:blucash_client/pages/scanerror.dart';
+import 'package:blucash_client/tools/error.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -21,16 +22,10 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  late String name = "",
-      phone = "",
-      code = "",
-      business = "",
-      balance = "",
-      support = "",
-      token = "";
-
+  late String name = "", phone = "", code = "", business = "", balance = "", support = "", token = "";
+  late String image = "", user = "", dateof = "", role = "", scanerror = "";
+  String valueText = "";
   bool isVisible = true;
-  late String image = "", agent = "", dateof = "", type = "";
 
   @override
   void initState() {
@@ -38,6 +33,7 @@ class _HomePageState extends State<HomePage> {
     showAgent = false;
     getCred();
     checkAgent();
+    checkErrorScan();
   }
 
   void getCred() async {
@@ -57,9 +53,9 @@ class _HomePageState extends State<HomePage> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
       image = prefs.getString("image")!.replaceAll("\"", "");
-      agent = prefs.getString("agent")!.replaceAll("\"", "");
+      user = prefs.getString("user")!.replaceAll("\"", "");
       dateof = prefs.getString("dateof")!.replaceAll("\"", "");
-      type = prefs.getString("type")!.replaceAll("\"", "");
+      role = prefs.getString("role")!.replaceAll("\"", "");
     });
   }
 
@@ -75,34 +71,29 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
-    Future<void> _launchInBrowser(String url) async {
-      if (!await launch(
-        url,
-        forceSafariVC: false,
-        forceWebView: false,
-        headers: <String, String>{'my_header_key': 'my_header_value'},
-      )) {
-        throw 'Could not launch $url';
-      }
+  void checkErrorScan() async {
+    //here we will check if the user is alrady login
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? val = prefs.getString("scanerror");
+    if (val != null) {
+      getErrorScan();
+      _errorScanDialog(context);
+      showAgent = false;
     }
+  }
 
-    Future<void> _makePhoneCall(String phoneNumber) async {
-      final Uri launchUri = Uri(
-        scheme: 'tel',
-        path: phoneNumber,
-      );
-      await launch(launchUri.toString());
-    }
+  void getErrorScan() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      scanerror = prefs.getString("scanerror")!.replaceAll("\"", "");
+    });
+  }
 
   final TextEditingController _textFieldController = TextEditingController();
 
-  String valueText = "";
-
   @override
   Widget build(BuildContext context) {
-    SystemChrome.setSystemUIOverlayStyle(
-        const SystemUiOverlayStyle(statusBarColor: primary));
-    
+    SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(statusBarColor: primary));
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
@@ -184,7 +175,7 @@ class _HomePageState extends State<HomePage> {
                     ),
                 ),
               ],
-              onSelected: (item) => SelectedItem(context, item),
+              onSelected: (item) => selectedItem(context, item),
             ),
           ),
         ],
@@ -319,7 +310,7 @@ class _HomePageState extends State<HomePage> {
                Center(
                 child: SizedBox(
                   child: showAgent ?
-                  type == "agent" ? 
+                  role == "agent" ? 
                   const Text(
                     "Agent Commercial",
                     textAlign: TextAlign.center,
@@ -475,33 +466,35 @@ class _HomePageState extends State<HomePage> {
   }
 
   void verifyCode(String? code) async {
-
-if (_textFieldController.text.isNotEmpty) {
-    var url = Uri.parse('https://www.blucash.net/client/identify/code');
-    try {
-      var response = await http.post(url, body: {'st': token, 'code': code});
-
-      final jsondata = json.decode(response.body);
-      if (jsondata["status"] == true) {
-        print('true');
-        print(jsondata);
-        String? val = image;
-        if (val != "") {
-          CachedNetworkImage.evictFromCache(image);
+      if (_textFieldController.text.isNotEmpty) {
+      var url = Uri.parse('https://www.blucash.net/client/identify/code');
+        try {
+          var response = await http.post(url, body: {'st': token, 'code': code});
+          final jsondata = json.decode(response.body);
+          if (jsondata["status"] == true) {
+            String? val = image;
+            if (val != "") {
+              CachedNetworkImage.evictFromCache(image);
+            }
+            pageroute(jsondata["image"], jsondata["user"], jsondata["dateof"], jsondata["role"]);
+          } else {
+              String? errorM = errorMap[jsondata["error"]];
+              SharedPreferences prefs = await SharedPreferences.getInstance();
+              if (errorM != null) {
+                prefs.setString("scanerror", json.encode(errorM));
+              }
+            Navigator.pop(context, 'Error');
+          }
+        } catch (e) {
+          _internetDialog(context);
         }
-        pageroute(jsondata["image"], jsondata["agent"], jsondata["dateof"]);
       } else {
-        print('false');
-        print(jsondata);
-        Navigator.of(context)
-            .push(MaterialPageRoute(builder: (context) => const ScanError()));
+        emptyForm();
       }
-    } catch (e) {
-      Navigator.of(context)
-          .push(MaterialPageRoute(builder: (context) => const ScanError()));
-    }
-    } else {
-      showDialog<String>(
+  }
+
+  Future<String?> emptyForm() {
+    return showDialog<String>(
           context: context,
           builder: (BuildContext context) => AlertDialog(
             shape: const RoundedRectangleBorder(
@@ -517,29 +510,48 @@ if (_textFieldController.text.isNotEmpty) {
             ],
           ),
         );
-    }
   }
   
 
-  void pageroute(String image, String agent, String dateof) async {
-    saveSession(image, agent, dateof);
+  void pageroute(String image, String user, String dateof, String role) async {
+    saveSession(image, user, dateof, role);
     Navigator.of(context).pushAndRemoveUntil(
         MaterialPageRoute(builder: (context) => const HomePage()),
         (route) => false);
   }
 
-  void saveSession(String image, String agent, String dateof) async {
+  void saveSession(String image, String user, String dateof, String role) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setString("image", json.encode(image));
-    prefs.setString("agent", json.encode(agent));
+    prefs.setString("user", json.encode(user));
     prefs.setString("dateof", json.encode(dateof));
+    prefs.setString("role", json.encode(role));
   }
 
-static const String toLaunch = 'https://blucash.net';
-String phoneSuper = '+237656541861';
+  Future<void> _launchInBrowser(String url) async {
+    if (!await launch(
+      url,
+      forceSafariVC: false,
+      forceWebView: false,
+      headers: <String, String>{'my_header_key': 'my_header_value'},
+    )) {
+      throw 'Could not launch $url';
+    }
+  }
+
+  Future<void> _makePhoneCall(String phoneNumber) async {
+    final Uri launchUri = Uri(
+      scheme: 'tel',
+      path: phoneNumber,
+    );
+    await launch(launchUri.toString());
+  }
+
+  static const String toLaunch = 'https://blucash.net';
+  String phoneSuper = '+237656541861';
   Future<void>? launched;
 
-  void SelectedItem(BuildContext context, item) {
+  void selectedItem(BuildContext context, item) {
     switch (item) {
       case 0:
         showDialog<String>(
@@ -620,17 +632,8 @@ String phoneSuper = '+237656541861';
   }
 
   Future<void> logOut(BuildContext context) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.remove('id');
-    await prefs.remove('name');
-    await prefs.remove('code');
-    await prefs.remove('phone');
-    await prefs.remove('business');
-    await prefs.remove('balance');
-    await prefs.remove('image');
-    await prefs.remove('agent');
-    await prefs.remove('dateof');
-    await prefs.remove('login');
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    await preferences.clear();
     String? val = image;
     if (val != "") {
       CachedNetworkImage.evictFromCache(image);
@@ -642,7 +645,7 @@ String phoneSuper = '+237656541861';
 
   Padding defaultAgent(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8.0),
+      padding: const EdgeInsets.only(top: 0.0, bottom: 8.0),
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 15.0),
         width: double.infinity,
@@ -721,7 +724,7 @@ String phoneSuper = '+237656541861';
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         Text(
-                          agent,
+                          user,
                           style: const TextStyle(
                               fontSize: 26,
                               color: secondary,
@@ -749,4 +752,48 @@ String phoneSuper = '+237656541861';
       ),
     );
   }
+  
+  void _errorScanDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text("Message"),
+          content: Text(scanerror),
+          actions: <Widget>[
+            TextButton(
+              child: const Text("OK"),
+              onPressed: () async {
+                  SharedPreferences prefs = await SharedPreferences.getInstance();
+                  await prefs.remove('scanerror');
+                  Navigator.pop(context, 'Annuler');
+                },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _internetDialog(BuildContext context) {
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: const Text("Erreur de connexion"),
+            content: const Text(
+                "Vérifier votre connexion puis réessayer."),
+            actions: <Widget>[
+              TextButton(
+                child: const Text("OK"),
+                onPressed: () {
+                  Navigator.pop(context, 'Annuler');
+                },
+              ),
+            ],
+          );
+        },
+      );
+    }
+
 }

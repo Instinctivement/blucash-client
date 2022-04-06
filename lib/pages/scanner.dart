@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:blucash_client/pages/homepage.dart';
 import 'package:blucash_client/pages/scanerror.dart';
 import 'package:blucash_client/tools/colors.dart';
+import 'package:blucash_client/tools/error.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -26,13 +27,11 @@ class _QrScanPageState extends State<QrScanPage> {
   late bool showprogress;
   final GlobalKey qrKey = GlobalKey(debugLabel: 'QR');
 
-  void _onQRViewCreated(QRViewController controller) {
-    setState(() => this.controller = controller);
-    controller.scannedDataStream.listen((scanData) {
-      setState(() {
-        result = scanData;
-      });
-    });
+  @override
+  void initState() {
+    super.initState();
+    showprogress = false;
+    getCred();
   }
 
   void getCred() async {
@@ -43,6 +42,16 @@ class _QrScanPageState extends State<QrScanPage> {
     });
   }
 
+  void _onQRViewCreated(QRViewController controller) {
+    setState(() => this.controller = controller);
+    controller.scannedDataStream.listen((scanData) {
+      setState(() {
+        result = scanData;
+      });
+    });
+  }
+
+
   void sendcode(String? code) async {
     var url = Uri.parse('https://www.blucash.net/client/identify/qr');
      try {
@@ -50,16 +59,19 @@ class _QrScanPageState extends State<QrScanPage> {
 
        final jsondata = json.decode(response.body);
        if (jsondata["status"] == 'true') {
-         print('true');
-         print(jsondata);
          String? val = image;
          if (val != "") {
            CachedNetworkImage.evictFromCache(image);
          }
-         pageroute(jsondata["image"], jsondata["agent"], jsondata["dateof"], jsondata["type"]);
-       } else {
-         Navigator.of(context)
-           .push(MaterialPageRoute(builder: (context) => const ScanError()));
+         pageroute(jsondata["image"], jsondata["user"], jsondata["dateof"], jsondata["role"]);
+       } 
+       else {
+         String? errorM = errorMap[jsondata["error"]];
+         SharedPreferences prefs = await SharedPreferences.getInstance();
+         if (errorM != null) {
+          prefs.setString("scanerror", json.encode(errorM));
+         }
+         Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) => const HomePage()),(route) => false);
        }
      } catch (e) {
        Navigator.of(context)
@@ -67,26 +79,19 @@ class _QrScanPageState extends State<QrScanPage> {
      }
   }
 
-  void pageroute(String image, String agent, String dateof, String type) async {
-    saveSession(image, agent, dateof, type);
+  void pageroute(String image, String user, String dateof, String role) async {
+    saveSession(image, user, dateof, role);
     Navigator.of(context).pushAndRemoveUntil(
         MaterialPageRoute(builder: (context) => const HomePage()),
         (route) => false);
   }
 
-  void saveSession(String image, String agent, String dateof, String type) async {
+  void saveSession(String image, String user, String dateof, String role) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setString("image", json.encode(image));
-    prefs.setString("agent", json.encode(agent));
+    prefs.setString("user", json.encode(user));
     prefs.setString("dateof", json.encode(dateof));
-    prefs.setString("type", json.encode(type));
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    showprogress = false;
-    getCred();
+    prefs.setString("role", json.encode(role));
   }
 
   @override
@@ -103,26 +108,20 @@ class _QrScanPageState extends State<QrScanPage> {
     if (result != null) {
       String? code = result!.code;
       if (checkcode(code)) {
-
-        print('true');
         showprogress = true;
         Vibration.vibrate(duration: 100);
         controller!.pauseCamera();
-          print("Le code est : ${result!.code}");
-        //  print("Le code token : $token");
         controller!.dispose();
         sendcode(code);
       } else {
         showprogress = true;
         Vibration.vibrate(duration: 100);
         controller!.pauseCamera();
-         print('false');
-         print(code);
         WidgetsBinding.instance?.addPostFrameCallback((_) {
           _showDialog(context);
         });
-        controller!.dispose();
       }
+        controller!.dispose();
     }
   }
 
@@ -252,7 +251,7 @@ class _QrScanPageState extends State<QrScanPage> {
         color: Colors.white24,
       ),
       child: showprogress
-          ? SizedBox(
+          ? const SizedBox(
               height: 24,
               width: 24,
               child: CircularProgressIndicator(
@@ -263,7 +262,7 @@ class _QrScanPageState extends State<QrScanPage> {
             )
           : Text(
               result != null
-                  ? "Type: ${describeEnum(result!.format)}"
+                  ? "role: ${describeEnum(result!.format)}"
                   : "Scan a code !",
             ),
     );
