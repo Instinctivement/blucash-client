@@ -63,12 +63,8 @@ class _QrScanPageState extends State<QrScanPage> {
            CachedNetworkImage.evictFromCache(image);
          }
          if (jsondata["role"] == 'agent') {
-           print('agent');
-           print(jsondata);
             pageroute(jsondata["image"], jsondata["user"], jsondata["dateof"], jsondata["role"]);
          } else {
-           print('manager');
-           print(jsondata);
             pageRouteManager(jsondata["image"], jsondata["user"], jsondata["dateof"], jsondata["role"]);
          }
        } 

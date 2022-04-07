@@ -20,7 +20,13 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  late String name = "", phone = "", code = "", business = "", balance = "", support = "", token = "";
+  late String name = "",
+      phone = "",
+      code = "",
+      business = "",
+      balance = "",
+      support = "",
+      token = "";
   late String image = "", user = "", dateof = "", role = "", scanerror = "";
   late String imageM = "", userM = "", dateofM = "", roleM = "";
   String valueText = "";
@@ -87,9 +93,8 @@ class _HomePageState extends State<HomePage> {
           dateofM = prefs.getString("dateofM")!.replaceAll("\"", "");
           roleM = prefs.getString("roleM")!.replaceAll("\"", "");
         });
-      _managerScanDialog(context);
+        _managerScanDialog(context);
       }
-      
     }
   }
 
@@ -100,12 +105,12 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
-
   final TextEditingController _textFieldController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
-    SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(statusBarColor: primary));
+    SystemChrome.setSystemUIOverlayStyle(
+        const SystemUiOverlayStyle(statusBarColor: primary));
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
@@ -124,43 +129,44 @@ class _HomePageState extends State<HomePage> {
           ),
           actions: [
             IconButton(
-          icon: const Icon(Icons.autorenew_rounded),
-          tooltip: 'Rafraîchir',
-          onPressed: () {
-            setState(() {
-              // refresh();
-              _onLoading();
-            });
-          },
-        ),
-          Theme(
-            data: Theme.of(context).copyWith(
-                // textTheme: const TextTheme().apply(),
-                dividerColor: Colors.grey,
-                iconTheme: const IconThemeData(color: Colors.white)),
-            child: PopupMenuButton<int>(
-              color: Colors.white,
-              itemBuilder: (context) => [
-                PopupMenuItem<int>(
+              icon: const Icon(Icons.autorenew_rounded),
+              tooltip: 'Rafraîchir',
+              onPressed: () {
+                setState(() {
+                  // refresh();
+                  _onLoading();
+                });
+              },
+            ),
+            Theme(
+              data: Theme.of(context).copyWith(
+                  // textTheme: const TextTheme().apply(),
+                  dividerColor: Colors.grey,
+                  iconTheme: const IconThemeData(color: Colors.white)),
+              child: PopupMenuButton<int>(
+                color: Colors.white,
+                itemBuilder: (context) => [
+                  PopupMenuItem<int>(
                     value: 0,
-                    child: support != "" ?
-                    Row(
-                      children:const [
-                        Icon(
-                          Icons.phone,
-                          color: dark,
-                        ),
-                        SizedBox(
-                          width: 7,
-                        ),
-                        Text("Assistance")
-                      ],
-                    ): Container(),
-                ),
-                PopupMenuItem<int>(
+                    child: support != ""
+                        ? Row(
+                            children: const [
+                              Icon(
+                                Icons.phone,
+                                color: dark,
+                              ),
+                              SizedBox(
+                                width: 7,
+                              ),
+                              Text("Assistance")
+                            ],
+                          )
+                        : Container(),
+                  ),
+                  PopupMenuItem<int>(
                     value: 1,
                     child: Row(
-                      children:const [
+                      children: const [
                         Icon(
                           Icons.help,
                           color: dark,
@@ -171,12 +177,12 @@ class _HomePageState extends State<HomePage> {
                         Text("Aide")
                       ],
                     ),
-                ),
-                const PopupMenuDivider(),
-                PopupMenuItem<int>(
+                  ),
+                  const PopupMenuDivider(),
+                  PopupMenuItem<int>(
                     value: 2,
                     child: Row(
-                      children:const [
+                      children: const [
                         Icon(
                           Icons.logout,
                           color: dark,
@@ -187,12 +193,12 @@ class _HomePageState extends State<HomePage> {
                         Text("Déconnexion")
                       ],
                     ),
-                ),
-              ],
-              onSelected: (item) => selectedItem(context, item),
+                  ),
+                ],
+                onSelected: (item) => selectedItem(context, item),
+              ),
             ),
-          ),
-        ],
+          ],
         ),
         resizeToAvoidBottomInset: false,
         body: Container(
@@ -297,7 +303,8 @@ class _HomePageState extends State<HomePage> {
                             ElevatedButton(
                               child: Text(
                                 'Saisir code'.toUpperCase(),
-                                style: const TextStyle(fontSize: 18, color: white),
+                                style:
+                                    const TextStyle(fontSize: 18, color: white),
                               ),
                               onPressed: () {
                                 enterCode(context);
@@ -321,30 +328,27 @@ class _HomePageState extends State<HomePage> {
               const SizedBox(
                 height: 10,
               ),
-               Center(
+              Center(
                 child: SizedBox(
-                  child: showAgent ?
-                  const Text(
-                    "Agent Commercial",
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontSize: 16,
-                      color: Colors.black54,
-                      fontWeight: FontWeight.w700,
-                    ),
-                  )
-                  :
-                  const Text(
-                    "Identification",
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontSize: 16,
-                      color: Colors.black54,
-                      fontWeight: FontWeight.w700,
-                    ),
-                  )
-                  
-                ),
+                    child: showAgent
+                        ? const Text(
+                            "Agent Commercial",
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              fontSize: 16,
+                              color: Colors.black54,
+                              fontWeight: FontWeight.w700,
+                            ),
+                          )
+                        : const Text(
+                            "Identification",
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              fontSize: 16,
+                              color: Colors.black54,
+                              fontWeight: FontWeight.w700,
+                            ),
+                          )),
               ),
               Padding(
                 padding:
@@ -470,132 +474,131 @@ class _HomePageState extends State<HomePage> {
   }
 
   void verifyCode(String? code) async {
-      if (_textFieldController.text.isNotEmpty) {
+    if (_textFieldController.text.isNotEmpty) {
       var url = Uri.parse('https://www.blucash.net/client/identify/code');
-        try {
-          var response = await http.post(url, body: {'st': token, 'code': code});
-          final jsondata = json.decode(response.body);
-          if (jsondata["status"] == true) {
-            String? val = image;
-            if (val != "") {
-              CachedNetworkImage.evictFromCache(image);
-            }
-            pageroute(jsondata["image"], jsondata["user"], jsondata["dateof"], jsondata["role"]);
-          } else {
-              String? errorM = errorMap[jsondata["error"]];
-              SharedPreferences prefs = await SharedPreferences.getInstance();
-              if (errorM != null) {
-                prefs.setString("scanerror", json.encode(errorM));
-              }
-            Navigator.pop(context, 'Error');
+      try {
+        var response = await http.post(url, body: {'st': token, 'code': code});
+        final jsondata = json.decode(response.body);
+        if (jsondata["status"] == true) {
+          String? val = image;
+          if (val != "") {
+            CachedNetworkImage.evictFromCache(image);
           }
-        } catch (e) {
-          _internetDialog(context);
+          pageroute(jsondata["image"], jsondata["user"], jsondata["dateof"],
+              jsondata["role"]);
+        } else {
+          String? errorM = errorMap[jsondata["error"]];
+          SharedPreferences prefs = await SharedPreferences.getInstance();
+          if (errorM != null) {
+            prefs.setString("scanerror", json.encode(errorM));
+          }
+          Navigator.pop(context, 'Error');
         }
-      } else {
-        emptyForm();
+      } catch (e) {
+        _internetDialog(context);
       }
+    } else {
+      emptyForm();
+    }
   }
 
   void refresh() async {
-      if (_textFieldController.text.isNotEmpty) {
       var url = Uri.parse('https://www.blucash.net/client/identify/refresh');
-        try {
-          var response = await http.post(url, body: {'st': token});
-          final jsondata = json.decode(response.body);
-          if (jsondata["status"] == true) {
-            String? val = image;
-            if (val != "") {
-              CachedNetworkImage.evictFromCache(image);
-            }
-            pageroute(jsondata["image"], jsondata["user"], jsondata["dateof"], jsondata["role"]);
-          } else {
-              String? errorM = errorMap[jsondata["error"]];
-              SharedPreferences prefs = await SharedPreferences.getInstance();
-              if (errorM != null) {
-                prefs.setString("scanerror", json.encode(errorM));
-              }
-            Navigator.pop(context, 'Error');
+      try {
+        var response = await http.post(url, body: {'st': token});
+        final jsondata = json.decode(response.body);
+        if (jsondata["status"] == true) {
+          String? val = image;
+          if (val != "") {
+            CachedNetworkImage.evictFromCache(image);
           }
-        } catch (e) {
-          _internetDialog(context);
+          pagerouteRefresh(
+            jsondata["name"], jsondata["phone"], jsondata["code"],jsondata["business"], jsondata["balance"], jsondata["support"],
+            jsondata["image"], jsondata["user"], jsondata["dateof"],jsondata["role"]);
+        } else {
+          Future.delayed(const Duration(seconds: 5), () async {
+            await logOut(context);
+          });
         }
-      } else {
-        emptyForm();
+      } catch (e) {
+        Future.delayed(const Duration(seconds: 5), () {//pop dialog
+          _internetDialog(context);
+        });
+        
       }
   }
 
-void _onLoading() {
-  showDialog(
-    context: context,
-    barrierDismissible: false,
-    builder: (BuildContext context) {
-      return Dialog(
+  void pagerouteRefresh(String name, String phone, String code, String business, String balance, String support, String image, String user, String dateof, String role) async {
+    saveSessionRefresh(name, phone, code, business, balance, support, image, user, dateof, role);
+    Navigator.pop(context);
+  }
+
+  void saveSessionRefresh(String name, String phone, String code, String business, String balance, String support, String image, String user, String dateof, String role) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setString("name", json.encode(name));
+    prefs.setString("phone", json.encode(phone));
+    prefs.setString("code", json.encode(code));
+    prefs.setString("business", json.encode(business));
+    prefs.setString("balance", json.encode(balance));
+    prefs.setString("support", json.encode(support));
+    prefs.setString("image", json.encode(image));
+    prefs.setString("user", json.encode(user));
+    prefs.setString("dateof", json.encode(dateof));
+    prefs.setString("role", json.encode(role));
+  }
+
+  void _onLoading() {
+    showDialog(
+      context: context,
+      builder: (_) => AlertDialog(
+        backgroundColor: Colors.grey.shade400,
+        insetPadding: const EdgeInsets.symmetric(horizontal: 130),
         shape: const RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(Radius.circular(10.0))),
-        child: Container(
-          padding: const EdgeInsets.all(20),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: const [
-             CircularProgressIndicator(),
-             SizedBox(height: 10,),
-             Text("Loading...", style: TextStyle(fontSize: 20, color: primary),),
-            ],
-          ),
-        ),
-      );
-    },
-  );
-  Future.delayed(const Duration(seconds: 3), () {
-    Navigator.pop(context); //pop dialog
-    // _login();
-  });
-}
-// Container(
-//             width: 120,
-//             height: 120,
-//             padding: EdgeInsets.all(20),
-//             color: Color.fromARGB(255, 206, 218, 223),
-//             child: Row(
-//               // mainAxisSize: MainAxisSize.min,
-//               mainAxisAlignment: MainAxisAlignment.center,
-//               crossAxisAlignment: CrossAxisAlignment.center,
-//               children:  [
-//                 Column(
-//                   children: const [
-//                     CircularProgressIndicator(
-//                               strokeWidth: 2.0,
-//                               backgroundColor: Colors.transparent,
-//                               valueColor: AlwaysStoppedAnimation<Color>(white),
-//                             ),
-//                             SizedBox(height: 10,),
-//                     Text("Loading", style: TextStyle(fontSize: 20, color: white, ),),
-//                   ],
-//                 ),
-//               ],
-//             ),
-//           ),
+        borderRadius:BorderRadius.all(Radius.circular(0.0))),
+        title: SizedBox(
+                  height: 80,
+                  child: Center(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: const [
+                        CircularProgressIndicator(
+                          strokeWidth: 2.0,
+                                backgroundColor: Colors.transparent,
+                                valueColor: AlwaysStoppedAnimation<Color>(white),
+                        ),
+                        SizedBox(
+                          height: 10,
+                        ),
+                        Text(
+                          "Loading...",
+                          style: TextStyle(fontSize: 20, color: white),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+      ),
+    );
+      refresh();
+  }
 
   Future<String?> emptyForm() {
     return showDialog<String>(
-          context: context,
-          builder: (BuildContext context) => AlertDialog(
-            shape: const RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(Radius.circular(0.0))),
-            title: const Text('Erreur'),
-            content: const Text(
-                'Remplir le formulaire !'),
-            actions: <Widget>[
-              TextButton(
-                onPressed: () => Navigator.pop(context, 'Annuler'),
-                child: const Text('OK'),
-              ),
-            ],
+      context: context,
+      builder: (BuildContext context) => AlertDialog(
+        shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(0.0))),
+        title: const Text('Erreur'),
+        content: const Text('Remplir le formulaire !'),
+        actions: <Widget>[
+          TextButton(
+            onPressed: () => Navigator.pop(context, 'Annuler'),
+            child: const Text('OK'),
           ),
-        );
+        ],
+      ),
+    );
   }
-  
 
   void pageroute(String image, String user, String dateof, String role) async {
     saveSession(image, user, dateof, role);
@@ -638,7 +641,9 @@ void _onLoading() {
     switch (item) {
       case 0:
         Navigator.pop(context, 'Annuler');
-        setState(() {launched = _makePhoneCall(support);});
+        setState(() {
+          launched = _makePhoneCall(support);
+        });
         break;
       case 1:
         showDialog<String>(
@@ -647,8 +652,7 @@ void _onLoading() {
             shape: const RoundedRectangleBorder(
                 borderRadius: BorderRadius.all(Radius.circular(0.0))),
             title: const Text('Confirmation'),
-            content: const Text(
-                'Vous allez être redirigé.'),
+            content: const Text('Vous allez être redirigé.'),
             actions: <Widget>[
               TextButton(
                 onPressed: () => Navigator.pop(context, 'Annuler'),
@@ -657,7 +661,7 @@ void _onLoading() {
               TextButton(
                 onPressed: () {
                   Navigator.pop(context, 'Annuler');
-                    launched = _launchInBrowser(toLaunch);
+                  launched = _launchInBrowser(toLaunch);
                 },
                 child: const Text('Allez'),
               ),
@@ -670,11 +674,9 @@ void _onLoading() {
           context: context,
           builder: (BuildContext context) => AlertDialog(
             shape: const RoundedRectangleBorder(
-                borderRadius:
-                    BorderRadius.all(Radius.circular(0.0))),
+                borderRadius: BorderRadius.all(Radius.circular(0.0))),
             title: const Text('Confirmation'),
-            content: const Text(
-                'Vous êtes sur le point de vous déconnecter.'),
+            content: const Text('Vous êtes sur le point de vous déconnecter.'),
             actions: <Widget>[
               TextButton(
                 onPressed: () => Navigator.pop(context, 'Annuler'),
@@ -758,7 +760,8 @@ void _onLoading() {
                 child: CachedNetworkImage(
                   imageUrl: image,
                   progressIndicatorBuilder: (context, url, downloadProgress) =>
-                      CircularProgressIndicator(value: downloadProgress.progress),
+                      CircularProgressIndicator(
+                          value: downloadProgress.progress),
                   errorWidget: (context, url, error) => const CircleAvatar(
                     backgroundColor: Colors.white,
                     radius: 110,
@@ -791,7 +794,11 @@ void _onLoading() {
                               color: primary,
                               fontWeight: FontWeight.bold),
                         ),
-                        const Icon(Icons.verified_rounded, size: 20, color: primary,),
+                        const Icon(
+                          Icons.verified_rounded,
+                          size: 20,
+                          color: primary,
+                        ),
                       ],
                     ),
                   ),
@@ -813,8 +820,8 @@ void _onLoading() {
       ),
     );
   }
-  
-void _errorScanDialog(BuildContext context) {
+
+  void _errorScanDialog(BuildContext context) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -825,10 +832,10 @@ void _errorScanDialog(BuildContext context) {
             TextButton(
               child: const Text("OK"),
               onPressed: () async {
-                  SharedPreferences prefs = await SharedPreferences.getInstance();
-                  await prefs.remove('scanerror');
-                  Navigator.pop(context, 'Annuler');
-                },
+                SharedPreferences prefs = await SharedPreferences.getInstance();
+                await prefs.remove('scanerror');
+                Navigator.pop(context, 'Annuler');
+              },
             ),
           ],
         );
@@ -843,106 +850,126 @@ void _errorScanDialog(BuildContext context) {
       builder: (BuildContext context) {
         return AlertDialog(
           shape: const RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(Radius.circular(0.0))),
+              borderRadius: BorderRadius.all(Radius.circular(0.0))),
           content: SizedBox(
             height: MediaQuery.of(context).size.height * 0.40,
             child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              CircleAvatar(
-              backgroundColor: container,
-              radius: 110,
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(110.0),
-                child: CachedNetworkImage(
-                  imageUrl: imageM,
-                  progressIndicatorBuilder: (context, url, downloadProgress) =>
-                      CircularProgressIndicator(value: downloadProgress.progress),
-                  errorWidget: (context, url, error) => const CircleAvatar(
-                    backgroundColor: Colors.white,
-                    radius: 110,
-                    child: CircleAvatar(
-                      backgroundColor: Color.fromARGB(255, 250, 249, 249),
-                      radius: 110,
-                      child: Icon(
-                        Icons.error_outline_sharp,
-                        size: 100,
-                        color: Color.fromARGB(255, 189, 187, 187),
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                CircleAvatar(
+                  backgroundColor: container,
+                  radius: 110,
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(110.0),
+                    child: CachedNetworkImage(
+                      imageUrl: imageM,
+                      progressIndicatorBuilder:
+                          (context, url, downloadProgress) =>
+                              CircularProgressIndicator(
+                                  value: downloadProgress.progress),
+                      errorWidget: (context, url, error) => const CircleAvatar(
+                        backgroundColor: Colors.white,
+                        radius: 110,
+                        child: CircleAvatar(
+                          backgroundColor: Color.fromARGB(255, 250, 249, 249),
+                          radius: 110,
+                          child: Icon(
+                            Icons.error_outline_sharp,
+                            size: 100,
+                            color: Color.fromARGB(255, 189, 187, 187),
+                          ),
+                        ),
                       ),
                     ),
                   ),
                 ),
-              ),
-            ),
-              const SizedBox(height: 10,),
-              Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    Center(
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Text(
-                            userM,
-                            style: const TextStyle(
-                                fontSize: 26,
-                                color: primary,
-                                fontWeight: FontWeight.bold),
-                          ),
-                          const Icon(Icons.verified_rounded, size: 20, color: primary,),
-                        ],
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(top: 2.0),
-                      child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
+                const SizedBox(
+                  height: 10,
+                ),
+                Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
-                      const Text(
-                        "Gestionnaire chez",
-                        style: TextStyle(
-                            fontSize: 14,
-                            color: Colors.black45,
-                            fontWeight: FontWeight.w400),
+                      Center(
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text(
+                              userM,
+                              style: const TextStyle(
+                                  fontSize: 26,
+                                  color: primary,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                            const Icon(
+                              Icons.verified_rounded,
+                              size: 20,
+                              color: primary,
+                            ),
+                          ],
+                        ),
                       ),
-                      Text(
-                        business,
-                        style: const TextStyle(
-                            fontSize: 14,
-                            color: Colors.black45,
-                            fontWeight: FontWeight.w400),
+                      Padding(
+                        padding: const EdgeInsets.only(top: 2.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            const Text(
+                              "Gestionnaire chez",
+                              style: TextStyle(
+                                  fontSize: 14,
+                                  color: Colors.black45,
+                                  fontWeight: FontWeight.w400),
+                            ),
+                            Text(
+                              business,
+                              style: const TextStyle(
+                                  fontSize: 14,
+                                  color: Colors.black45,
+                                  fontWeight: FontWeight.w400),
+                            ),
+                          ],
+                        ),
                       ),
                     ],
                   ),
-                      
-                    ),
-                  ],
                 ),
-              ),
-            ],
-        ),
+              ],
+            ),
           ),
           actions: <Widget>[
-            TextButton(
-              child: Container(
-                width: double.infinity,
-                height: 50,
-                color: Colors.grey.shade200,
+            SizedBox(
+              width: double.infinity,
+              height: 50,
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(0.0),
+                  ),
+                  primary: primary,
+                  padding: const EdgeInsets.symmetric(vertical: 10),
+                  textStyle: const TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
                 child: const Center(
-                  child: Text("OK",
-                 style:  TextStyle(fontWeight: FontWeight.bold, color: dark, fontSize: 20,),),),),
-              onPressed: () async {
-                print(imageM);
+                  child: Text(
+                    "OK",
+                  ),
+                ),
+                onPressed: () async {
                   CachedNetworkImage.evictFromCache(imageM);
-                  SharedPreferences prefs = await SharedPreferences.getInstance();
+                  SharedPreferences prefs =
+                      await SharedPreferences.getInstance();
                   await prefs.remove('imageM');
                   await prefs.remove('userM');
                   await prefs.remove('dateofM');
                   await prefs.remove('roleM');
                   Navigator.pop(context, 'Annuler');
                 },
+              ),
             ),
           ],
         );
@@ -956,8 +983,7 @@ void _errorScanDialog(BuildContext context) {
       builder: (BuildContext context) {
         return AlertDialog(
           title: const Text("Erreur de connexion"),
-          content: const Text(
-              "Vérifier votre connexion puis réessayer."),
+          content: const Text("Vérifier votre connexion puis réessayer."),
           actions: <Widget>[
             TextButton(
               child: const Text("OK"),
@@ -970,5 +996,4 @@ void _errorScanDialog(BuildContext context) {
       },
     );
   }
-
 }
