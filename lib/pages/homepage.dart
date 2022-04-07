@@ -22,6 +22,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   late String name = "", phone = "", code = "", business = "", balance = "", support = "", token = "";
   late String image = "", user = "", dateof = "", role = "", scanerror = "";
+  late String imageM = "", userM = "", dateofM = "", roleM = "";
   String valueText = "";
   bool isVisible = true;
 
@@ -53,7 +54,6 @@ class _HomePageState extends State<HomePage> {
       image = prefs.getString("image")!.replaceAll("\"", "");
       user = prefs.getString("user")!.replaceAll("\"", "");
       dateof = prefs.getString("dateof")!.replaceAll("\"", "");
-      role = prefs.getString("role")!.replaceAll("\"", "");
     });
   }
 
@@ -73,10 +73,23 @@ class _HomePageState extends State<HomePage> {
     //here we will check if the user is alrady login
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? val = prefs.getString("scanerror");
+    String? valM = prefs.getString("roleM");
     if (val != null) {
       getErrorScan();
       _errorScanDialog(context);
-      showAgent = false;
+    }
+    if (valM != null) {
+      String? valMa = prefs.getString("roleM")!.replaceAll("\"", "");
+      if (valMa == "manager") {
+        setState(() {
+          imageM = prefs.getString("imageM")!.replaceAll("\"", "");
+          userM = prefs.getString("userM")!.replaceAll("\"", "");
+          dateofM = prefs.getString("dateofM")!.replaceAll("\"", "");
+          roleM = prefs.getString("roleM")!.replaceAll("\"", "");
+        });
+      _managerScanDialog(context);
+      }
+      
     }
   }
 
@@ -86,6 +99,7 @@ class _HomePageState extends State<HomePage> {
       scanerror = prefs.getString("scanerror")!.replaceAll("\"", "");
     });
   }
+
 
   final TextEditingController _textFieldController = TextEditingController();
 
@@ -114,7 +128,8 @@ class _HomePageState extends State<HomePage> {
           tooltip: 'Rafraîchir',
           onPressed: () {
             setState(() {
-              refresh();
+              // refresh();
+              _onLoading();
             });
           },
         ),
@@ -309,7 +324,6 @@ class _HomePageState extends State<HomePage> {
                Center(
                 child: SizedBox(
                   child: showAgent ?
-                  role == "agent" ? 
                   const Text(
                     "Agent Commercial",
                     textAlign: TextAlign.center,
@@ -320,15 +334,6 @@ class _HomePageState extends State<HomePage> {
                     ),
                   )
                   :
-                  const Text(
-                    "Gestionnaire",
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontSize: 16,
-                      color: Colors.black54,
-                      fontWeight: FontWeight.w700,
-                    ),
-                  ):
                   const Text(
                     "Identification",
                     textAlign: TextAlign.center,
@@ -494,9 +499,9 @@ class _HomePageState extends State<HomePage> {
 
   void refresh() async {
       if (_textFieldController.text.isNotEmpty) {
-      var url = Uri.parse('https://www.blucash.net/client/identify/code');
+      var url = Uri.parse('https://www.blucash.net/client/identify/refresh');
         try {
-          var response = await http.post(url, body: {'st': token, 'code': code});
+          var response = await http.post(url, body: {'st': token});
           final jsondata = json.decode(response.body);
           if (jsondata["status"] == true) {
             String? val = image;
@@ -519,6 +524,58 @@ class _HomePageState extends State<HomePage> {
         emptyForm();
       }
   }
+
+void _onLoading() {
+  showDialog(
+    context: context,
+    barrierDismissible: false,
+    builder: (BuildContext context) {
+      return Dialog(
+        shape: const RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(10.0))),
+        child: Container(
+          padding: const EdgeInsets.all(20),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: const [
+             CircularProgressIndicator(),
+             SizedBox(height: 10,),
+             Text("Loading...", style: TextStyle(fontSize: 20, color: primary),),
+            ],
+          ),
+        ),
+      );
+    },
+  );
+  Future.delayed(const Duration(seconds: 3), () {
+    Navigator.pop(context); //pop dialog
+    // _login();
+  });
+}
+// Container(
+//             width: 120,
+//             height: 120,
+//             padding: EdgeInsets.all(20),
+//             color: Color.fromARGB(255, 206, 218, 223),
+//             child: Row(
+//               // mainAxisSize: MainAxisSize.min,
+//               mainAxisAlignment: MainAxisAlignment.center,
+//               crossAxisAlignment: CrossAxisAlignment.center,
+//               children:  [
+//                 Column(
+//                   children: const [
+//                     CircularProgressIndicator(
+//                               strokeWidth: 2.0,
+//                               backgroundColor: Colors.transparent,
+//                               valueColor: AlwaysStoppedAnimation<Color>(white),
+//                             ),
+//                             SizedBox(height: 10,),
+//                     Text("Loading", style: TextStyle(fontSize: 20, color: white, ),),
+//                   ],
+//                 ),
+//               ],
+//             ),
+//           ),
 
   Future<String?> emptyForm() {
     return showDialog<String>(
@@ -580,29 +637,8 @@ class _HomePageState extends State<HomePage> {
   void selectedItem(BuildContext context, item) {
     switch (item) {
       case 0:
-        showDialog<String>(
-          context: context,
-          builder: (BuildContext context) => AlertDialog(
-            shape: const RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(Radius.circular(0.0))),
-            title: const Text('Confirmation'),
-            content: const Text(
-                'Vous allez être redirigé.'),
-            actions: <Widget>[
-              TextButton(
-                onPressed: () => Navigator.pop(context, 'Annuler'),
-                child: const Text('Annuler'),
-              ),
-              TextButton(
-                onPressed: () {
-                  Navigator.pop(context, 'Annuler');
-                  setState(() {launched = _makePhoneCall(support);});
-                },
-                child: const Text('Allez'),
-              ),
-            ],
-          ),
-        );
+        Navigator.pop(context, 'Annuler');
+        setState(() {launched = _makePhoneCall(support);});
         break;
       case 1:
         showDialog<String>(
@@ -720,7 +756,6 @@ class _HomePageState extends State<HomePage> {
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(110.0),
                 child: CachedNetworkImage(
-                  // fit: BoxFit.contain,
                   imageUrl: image,
                   progressIndicatorBuilder: (context, url, downloadProgress) =>
                       CircularProgressIndicator(value: downloadProgress.progress),
@@ -753,7 +788,7 @@ class _HomePageState extends State<HomePage> {
                           user,
                           style: const TextStyle(
                               fontSize: 26,
-                              color: secondary,
+                              color: primary,
                               fontWeight: FontWeight.bold),
                         ),
                         const Icon(Icons.verified_rounded, size: 20, color: primary,),
@@ -779,7 +814,7 @@ class _HomePageState extends State<HomePage> {
     );
   }
   
-  void _errorScanDialog(BuildContext context) {
+void _errorScanDialog(BuildContext context) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -792,6 +827,120 @@ class _HomePageState extends State<HomePage> {
               onPressed: () async {
                   SharedPreferences prefs = await SharedPreferences.getInstance();
                   await prefs.remove('scanerror');
+                  Navigator.pop(context, 'Annuler');
+                },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _managerScanDialog(BuildContext context) {
+    showDialog(
+      barrierDismissible: false,
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          shape: const RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(0.0))),
+          content: SizedBox(
+            height: MediaQuery.of(context).size.height * 0.40,
+            child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              CircleAvatar(
+              backgroundColor: container,
+              radius: 110,
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(110.0),
+                child: CachedNetworkImage(
+                  imageUrl: imageM,
+                  progressIndicatorBuilder: (context, url, downloadProgress) =>
+                      CircularProgressIndicator(value: downloadProgress.progress),
+                  errorWidget: (context, url, error) => const CircleAvatar(
+                    backgroundColor: Colors.white,
+                    radius: 110,
+                    child: CircleAvatar(
+                      backgroundColor: Color.fromARGB(255, 250, 249, 249),
+                      radius: 110,
+                      child: Icon(
+                        Icons.error_outline_sharp,
+                        size: 100,
+                        color: Color.fromARGB(255, 189, 187, 187),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+              const SizedBox(height: 10,),
+              Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    Center(
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(
+                            userM,
+                            style: const TextStyle(
+                                fontSize: 26,
+                                color: primary,
+                                fontWeight: FontWeight.bold),
+                          ),
+                          const Icon(Icons.verified_rounded, size: 20, color: primary,),
+                        ],
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(top: 2.0),
+                      child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      const Text(
+                        "Gestionnaire chez",
+                        style: TextStyle(
+                            fontSize: 14,
+                            color: Colors.black45,
+                            fontWeight: FontWeight.w400),
+                      ),
+                      Text(
+                        business,
+                        style: const TextStyle(
+                            fontSize: 14,
+                            color: Colors.black45,
+                            fontWeight: FontWeight.w400),
+                      ),
+                    ],
+                  ),
+                      
+                    ),
+                  ],
+                ),
+              ),
+            ],
+        ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: Container(
+                width: double.infinity,
+                height: 50,
+                color: Colors.grey.shade200,
+                child: const Center(
+                  child: Text("OK",
+                 style:  TextStyle(fontWeight: FontWeight.bold, color: dark, fontSize: 20,),),),),
+              onPressed: () async {
+                print(imageM);
+                  CachedNetworkImage.evictFromCache(imageM);
+                  SharedPreferences prefs = await SharedPreferences.getInstance();
+                  await prefs.remove('imageM');
+                  await prefs.remove('userM');
+                  await prefs.remove('dateofM');
+                  await prefs.remove('roleM');
                   Navigator.pop(context, 'Annuler');
                 },
             ),

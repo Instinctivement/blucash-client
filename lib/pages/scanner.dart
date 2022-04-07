@@ -62,7 +62,15 @@ class _QrScanPageState extends State<QrScanPage> {
          if (val != "") {
            CachedNetworkImage.evictFromCache(image);
          }
-         pageroute(jsondata["image"], jsondata["user"], jsondata["dateof"], jsondata["role"]);
+         if (jsondata["role"] == 'agent') {
+           print('agent');
+           print(jsondata);
+            pageroute(jsondata["image"], jsondata["user"], jsondata["dateof"], jsondata["role"]);
+         } else {
+           print('manager');
+           print(jsondata);
+            pageRouteManager(jsondata["image"], jsondata["user"], jsondata["dateof"], jsondata["role"]);
+         }
        } 
        else {
          String? errorM = errorMap[jsondata["error"]];
@@ -84,12 +92,27 @@ class _QrScanPageState extends State<QrScanPage> {
         (route) => false);
   }
 
+  void pageRouteManager(String imageM, String userM, String dateofM, String roleM) async {
+    saveSessionManager(imageM, userM, dateofM, roleM);
+    Navigator.of(context).pushAndRemoveUntil(
+        MaterialPageRoute(builder: (context) => const HomePage()),
+        (route) => false);
+  }
+
   void saveSession(String image, String user, String dateof, String role) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setString("image", json.encode(image));
     prefs.setString("user", json.encode(user));
     prefs.setString("dateof", json.encode(dateof));
     prefs.setString("role", json.encode(role));
+  }
+
+  void saveSessionManager(String imageM, String userM, String dateofM, String roleM) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setString("imageM", json.encode(imageM));
+    prefs.setString("userM", json.encode(userM));
+    prefs.setString("dateofM", json.encode(dateofM));
+    prefs.setString("roleM", json.encode(roleM));
   }
 
   @override
