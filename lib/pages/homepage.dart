@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'package:blucash_client/tools/error.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -21,14 +20,12 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   late String name = "",
-      phone = "",
-      code = "",
       business = "",
       balance = "",
       support = "",
       token = "";
-  late String image = "", user = "", dateof = "", role = "", scanerror = "";
-  late String imageM = "", userM = "", dateofM = "", roleM = "";
+  late String image = "", user = "", dateof = "", scanerror = "";
+  late String imageS = "", userS = "", dateofS = "", roleS = "", assignedS= "";
   String valueText = "";
   bool isVisible = true;
 
@@ -45,8 +42,6 @@ class _HomePageState extends State<HomePage> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
       name = prefs.getString("name")!.replaceAll("\"", "");
-      phone = prefs.getString("phone")!.replaceAll("\"", "");
-      code = prefs.getString("code")!.replaceAll("\"", "");
       business = prefs.getString("business")!.replaceAll("\"", "");
       balance = prefs.getString("balance")!.replaceAll("\"", "");
       support = prefs.getString("support")!.replaceAll("\"", "");
@@ -79,22 +74,20 @@ class _HomePageState extends State<HomePage> {
     //here we will check if the user is alrady login
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? val = prefs.getString("scanerror");
-    String? valM = prefs.getString("roleM");
+    String? valS = prefs.getString("roleS");
     if (val != null) {
       getErrorScan();
       _errorScanDialog(context);
     }
-    if (valM != null) {
-      String? valMa = prefs.getString("roleM")!.replaceAll("\"", "");
-      if (valMa == "manager") {
+    if (valS != null) {
         setState(() {
-          imageM = prefs.getString("imageM")!.replaceAll("\"", "");
-          userM = prefs.getString("userM")!.replaceAll("\"", "");
-          dateofM = prefs.getString("dateofM")!.replaceAll("\"", "");
-          roleM = prefs.getString("roleM")!.replaceAll("\"", "");
+          imageS = prefs.getString("imageS")!.replaceAll("\"", "");
+          userS = prefs.getString("userS")!.replaceAll("\"", "");
+          dateofS = prefs.getString("dateofS")!.replaceAll("\"", "");
+          roleS = prefs.getString("roleS")!.replaceAll("\"", "");
+          assignedS = prefs.getString("assignedS")!.replaceAll("\"", "");
         });
         _managerScanDialog(context);
-      }
     }
   }
 
@@ -104,8 +97,6 @@ class _HomePageState extends State<HomePage> {
       scanerror = prefs.getString("scanerror")!.replaceAll("\"", "");
     });
   }
-
-  final TextEditingController _textFieldController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -209,8 +200,7 @@ class _HomePageState extends State<HomePage> {
           decoration: const BoxDecoration(
             color: white,
           ),
-          padding:
-              const EdgeInsets.only(top: 15.0, bottom: 10, left: 24, right: 24),
+          padding: const EdgeInsets.only(top: 15.0, bottom: 10, left: 24, right: 24),
           child: Column(
             children: [
               Center(
@@ -300,24 +290,7 @@ class _HomePageState extends State<HomePage> {
                                 ),
                               ),
                             ),
-                            ElevatedButton(
-                              child: Text(
-                                'Saisir code'.toUpperCase(),
-                                style:
-                                    const TextStyle(fontSize: 18, color: white),
-                              ),
-                              onPressed: () {
-                                enterCode(context);
-                              },
-                              style: ElevatedButton.styleFrom(
-                                primary: secondary,
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 10, vertical: 10),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(0.0),
-                                ),
-                              ),
-                            ),
+                            
                           ],
                         ),
                       ),
@@ -341,7 +314,7 @@ class _HomePageState extends State<HomePage> {
                             ),
                           )
                         : const Text(
-                            "Identification",
+                            "Aucune assignation en-cours",
                             textAlign: TextAlign.center,
                             style: TextStyle(
                               fontSize: 16,
@@ -403,148 +376,67 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Future<String?> enterCode(BuildContext context) {
-    return showDialog<String>(
-      context: context,
-      builder: (BuildContext context) => AlertDialog(
-        shape: const RoundedRectangleBorder(
-            borderRadius: BorderRadius.all(Radius.circular(0.0))),
-        actionsPadding: const EdgeInsets.symmetric(horizontal: 8.0),
-        title: const Text('Entrer code agent'),
-        content: Container(
-          padding: const EdgeInsets.only(top: 20, bottom: 10),
-          child: TextField(
-            controller: _textFieldController, //set pin controller
-            style: const TextStyle(color: Colors.black45, fontSize: 20),
-            keyboardType: TextInputType.number,
-            inputFormatters: <TextInputFormatter>[
-              FilteringTextInputFormatter.digitsOnly
-            ],
-            maxLength: 32,
-            decoration: InputDecoration(
-              hintText: 'Code...', //show label as placeholder
-              hintStyle: TextStyle(
-                  color: Colors.grey[500], fontSize: 20), //hint text style
-              prefixIcon: Padding(
-                  padding: const EdgeInsets.only(left: 20, right: 10),
-                  child: Icon(
-                    Icons.lock,
-                    color: Colors.grey[300],
-                  )
-                  //padding and icon for prefix
-                  ),
-              counter: const Offstage(),
-
-              contentPadding: const EdgeInsets.fromLTRB(30, 20, 30, 20),
-              enabledBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(0.0),
-                  borderSide: const BorderSide(
-                      color: dark, width: 1)), //default border of input
-
-              focusedBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(0.0),
-                  borderSide: const BorderSide(
-                      color: Colors.blueAccent, width: 1)), //focus border
-
-              fillColor: white,
-              filled: true, //set true if you want to show input background
-            ),
-            onChanged: (value) {
-              // change pin text
-              setState(() {
-                valueText = value;
-              });
-            },
-          ),
-        ),
-        actions: <Widget>[
-          TextButton(
-            onPressed: () => Navigator.pop(context, 'Annuler'),
-            child: const Text('Annuler'),
-          ),
-          TextButton(
-            onPressed: () async {
-              verifyCode(valueText);
-            },
-            child: const Text('Valider'),
-          ),
-        ],
-      ),
-    );
-  }
-
-  void verifyCode(String? code) async {
-    if (_textFieldController.text.isNotEmpty) {
-      var url = Uri.parse('https://www.blucash.net/client/identify/code');
-      try {
-        var response = await http.post(url, body: {'st': token, 'code': code});
-        final jsondata = json.decode(response.body);
-        if (jsondata["status"] == true) {
-          String? val = image;
-          if (val != "") {
-            CachedNetworkImage.evictFromCache(image);
-          }
-          pageroute(jsondata["image"], jsondata["user"], jsondata["dateof"],
-              jsondata["role"]);
-        } else {
-          String? errorM = errorMap[jsondata["error"]];
-          SharedPreferences prefs = await SharedPreferences.getInstance();
-          if (errorM != null) {
-            prefs.setString("scanerror", json.encode(errorM));
-          }
-          Navigator.pop(context, 'Error');
-        }
-      } catch (e) {
-        _internetDialog(context);
-      }
-    } else {
-      emptyForm();
-    }
-  }
-
   void refresh() async {
-      var url = Uri.parse('https://www.blucash.net/client/identify/refresh');
-      try {
-        var response = await http.post(url, body: {'st': token});
-        final jsondata = json.decode(response.body);
-        if (jsondata["status"] == true) {
-          String? val = image;
-          if (val != "") {
-            CachedNetworkImage.evictFromCache(image);
-          }
-          pagerouteRefresh(
-            jsondata["name"], jsondata["phone"], jsondata["code"],jsondata["business"], jsondata["balance"], jsondata["support"],
-            jsondata["image"], jsondata["user"], jsondata["dateof"],jsondata["role"]);
-        } else {
-          Future.delayed(const Duration(seconds: 5), () async {
-            await logOut(context);
-          });
-        }
-      } catch (e) {
-        Future.delayed(const Duration(seconds: 5), () {//pop dialog
-          _internetDialog(context);
-        });
-        
-      }
+      var url = Uri.parse('https://www.blucash.net/client/refresh');
+       try {
+         var response = await http.post(url, body: {'st': token});
+         final jsondata = json.decode(response.body);
+         if (jsondata["status"] == "true") {
+           String? val = image;
+            if (val != "") {
+              CachedNetworkImage.evictFromCache(image);
+            }
+            var agent = jsondata["agent"];
+           if (agent.isEmpty) {
+              pagerouteRefreshS(jsondata["name"], jsondata["balance"],jsondata["support"]);
+            Navigator.pop(context, 'Annuler');
+           } else {
+              pagerouteRefresh(jsondata["name"], jsondata["balance"], jsondata["support"], agent['image'], agent['user'], agent['dateof']);
+           }
+           
+         } else {
+           Future.delayed(const Duration(seconds: 2), () async {
+             Navigator.pop(context, 'Annuler');
+             await logOut(context);
+           });
+         }
+       } catch (e) {
+         Future.delayed(const Duration(seconds: 2), () {//pop dialog
+            Navigator.pop(context, 'Annuler');
+           _internetDialog(context);
+         });
+       }
   }
 
-  void pagerouteRefresh(String name, String phone, String code, String business, String balance, String support, String image, String user, String dateof, String role) async {
-    saveSessionRefresh(name, phone, code, business, balance, support, image, user, dateof, role);
-    Navigator.pop(context);
-  }
-
-  void saveSessionRefresh(String name, String phone, String code, String business, String balance, String support, String image, String user, String dateof, String role) async {
+  void pagerouteRefreshS(String nameR, String balanceR, String supportR) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.setString("name", json.encode(name));
-    prefs.setString("phone", json.encode(phone));
-    prefs.setString("code", json.encode(code));
-    prefs.setString("business", json.encode(business));
-    prefs.setString("balance", json.encode(balance));
-    prefs.setString("support", json.encode(support));
-    prefs.setString("image", json.encode(image));
-    prefs.setString("user", json.encode(user));
-    prefs.setString("dateof", json.encode(dateof));
-    prefs.setString("role", json.encode(role));
+     await prefs.remove('image');
+     await prefs.remove('user');
+     await prefs.remove('dateof');
+    prefs.setString("name", json.encode(nameR));
+    prefs.setString("balance", json.encode(balanceR));
+    prefs.setString("support", json.encode(supportR));
+     WidgetsBinding.instance?.addPostFrameCallback((_) {
+      Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) => const HomePage()),(route) => false);
+    });
+  }
+
+  void pagerouteRefresh(String nameR, String balanceR, String supportR, String imageR, String userR, String dateofR) async {
+    saveSessionRefresh(nameR, balanceR, supportR, imageR, userR, dateofR);
+    WidgetsBinding.instance?.addPostFrameCallback((_) {
+      Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) => const HomePage()),(route) => false);
+    });
+
+  }
+
+  void saveSessionRefresh(String nameR, String balanceR, String supportR, String imageR, String userR, String dateofR) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setString("name", json.encode(nameR));
+    prefs.setString("balance", json.encode(balanceR));
+    prefs.setString("support", json.encode(supportR));
+    prefs.setString("image", json.encode(imageR));
+    prefs.setString("user", json.encode(userR));
+    prefs.setString("dateof", json.encode(dateofR));
   }
 
   void _onLoading() {
@@ -579,7 +471,7 @@ class _HomePageState extends State<HomePage> {
                 ),
       ),
     );
-      refresh();
+    refresh();
   }
 
   Future<String?> emptyForm() {
@@ -600,19 +492,18 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  void pageroute(String image, String user, String dateof, String role) async {
-    saveSession(image, user, dateof, role);
+  void pageroute(String image, String user, String dateof) async {
+    saveSession(image, user, dateof);
     Navigator.of(context).pushAndRemoveUntil(
         MaterialPageRoute(builder: (context) => const HomePage()),
         (route) => false);
   }
 
-  void saveSession(String image, String user, String dateof, String role) async {
+  void saveSession(String image, String user, String dateof) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setString("image", json.encode(image));
     prefs.setString("user", json.encode(user));
     prefs.setString("dateof", json.encode(dateof));
-    prefs.setString("role", json.encode(role));
   }
 
   Future<void> _launchInBrowser(String url) async {
@@ -805,7 +696,7 @@ class _HomePageState extends State<HomePage> {
                   Padding(
                     padding: const EdgeInsets.only(top: 2.0),
                     child: Text(
-                      "Authentifié le $dateof",
+                      "Assigné le $dateof",
                       style: const TextStyle(
                           fontSize: 14,
                           color: Colors.black45,
@@ -849,12 +740,13 @@ class _HomePageState extends State<HomePage> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
+          contentPadding: const EdgeInsets.fromLTRB(24.0, 20.0, 24.0, 20.0),
           shape: const RoundedRectangleBorder(
               borderRadius: BorderRadius.all(Radius.circular(0.0))),
           content: SizedBox(
-            height: MediaQuery.of(context).size.height * 0.40,
+            height: roleS == "admin"? MediaQuery.of(context).size.height * 0.42 : MediaQuery.of(context).size.height * 0.48,
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 CircleAvatar(
                   backgroundColor: container,
@@ -862,7 +754,7 @@ class _HomePageState extends State<HomePage> {
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(110.0),
                     child: CachedNetworkImage(
-                      imageUrl: imageM,
+                      imageUrl: imageS,
                       progressIndicatorBuilder:
                           (context, url, downloadProgress) =>
                               CircularProgressIndicator(
@@ -888,7 +780,7 @@ class _HomePageState extends State<HomePage> {
                 ),
                 Center(
                   child: Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Center(
                         child: Row(
@@ -896,7 +788,7 @@ class _HomePageState extends State<HomePage> {
                           mainAxisSize: MainAxisSize.min,
                           children: [
                             Text(
-                              userM,
+                              userS,
                               style: const TextStyle(
                                   fontSize: 26,
                                   color: primary,
@@ -914,20 +806,80 @@ class _HomePageState extends State<HomePage> {
                         padding: const EdgeInsets.only(top: 2.0),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            const Text(
-                              "Gestionnaire chez",
-                              style: TextStyle(
-                                  fontSize: 14,
-                                  color: Colors.black45,
-                                  fontWeight: FontWeight.w400),
-                            ),
-                            Text(
-                              business,
-                              style: const TextStyle(
-                                  fontSize: 14,
-                                  color: Colors.black45,
-                                  fontWeight: FontWeight.w400),
+                          children: [ roleS == "admin"?
+                            Column(
+                              children: [
+                                const Text(
+                                  "Gestionnaire",
+                                  style: TextStyle(
+                                      fontSize: 16,
+                                      color: Colors.black87,
+                                      fontWeight: FontWeight.w700),
+                                ),
+                                const SizedBox(
+                                  height: 4,
+                                ),
+                                Text(
+                                  business,
+                                  style: const TextStyle(
+                                      fontSize: 14,
+                                      color: Colors.black45,
+                                      fontWeight: FontWeight.w400),
+                                ),
+                              ],
+                            ):
+                            Column(
+                              children: [
+                                const Text(
+                                  "Agent Commercial",
+                                  style: TextStyle(
+                                      fontSize: 16,
+                                      color: Colors.black87,
+                                      fontWeight: FontWeight.w700),
+                                ),
+                                const SizedBox(
+                                  height: 4,
+                                ),
+                                Text(
+                                  business,
+                                  style: const TextStyle(
+                                      fontSize: 14,
+                                      color: Colors.black45,
+                                      fontWeight: FontWeight.w400),
+                                ),
+                                const SizedBox(
+                                  height: 20,
+                                ),
+                                assignedS == 'true'?
+                                Container(
+                                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(30),
+                                    color: Colors.green.shade100,
+                                  ),
+                                    child: const Text(
+                                    "Cet agent vous a été assigné",
+                                    style: TextStyle(
+                                        fontSize: 14,
+                                        color: dark,
+                                        fontWeight: FontWeight.w700),
+                                  )
+                                ):
+                                Container(
+                                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(30),
+                                    color: Colors.yellow.shade100,
+                                  ),
+                                    child: const Text(
+                                  "Vous n'êtes pas lié à cet agent",
+                                  style: TextStyle(
+                                        fontSize: 14,
+                                        color: dark,
+                                        fontWeight: FontWeight.w700),
+                                  ),
+                                ),
+                              ],
                             ),
                           ],
                         ),
@@ -960,13 +912,14 @@ class _HomePageState extends State<HomePage> {
                   ),
                 ),
                 onPressed: () async {
-                  CachedNetworkImage.evictFromCache(imageM);
+                  CachedNetworkImage.evictFromCache(imageS);
                   SharedPreferences prefs =
-                      await SharedPreferences.getInstance();
-                  await prefs.remove('imageM');
-                  await prefs.remove('userM');
-                  await prefs.remove('dateofM');
-                  await prefs.remove('roleM');
+                  await SharedPreferences.getInstance();
+                  await prefs.remove('imageS');
+                  await prefs.remove('userS');
+                  await prefs.remove('dateofS');
+                  await prefs.remove('roleS');
+                  await prefs.remove('assignedS');
                   Navigator.pop(context, 'Annuler');
                 },
               ),

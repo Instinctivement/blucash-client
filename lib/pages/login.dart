@@ -26,50 +26,64 @@ class _LoginPage extends State<LoginPage> {
   final _phone = TextEditingController();
   final _pin = TextEditingController();
 
-  void saveSession(String name, String phone, String code, String business, String balance, String support, String token) async {
+  void saveSession(String name, String phone, String business, String balance, String support, String token) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setString("name", json.encode(name));
     prefs.setString("phone", json.encode(phone));
-    prefs.setString("code", json.encode(code));
     prefs.setString("business", json.encode(business));
     prefs.setString("balance", json.encode(balance));
     prefs.setString("support", json.encode(support));
     prefs.setString("login", json.encode(token));
   }
 
+  void saveSessionWithAgent(String name, String phone,String business, String balance, String support, String token, String image, String user, String dateof) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setString("name", json.encode(name));
+    prefs.setString("phone", json.encode(phone));
+    prefs.setString("business", json.encode(business));
+    prefs.setString("balance", json.encode(balance));
+    prefs.setString("support", json.encode(support));
+    prefs.setString("login", json.encode(token));
+    prefs.setString("image", json.encode(image));
+    prefs.setString("user", json.encode(user));
+    prefs.setString("dateof", json.encode(dateof));
+  }
+
   void login() async {
     if (_phone.text.isNotEmpty && _pin.text.isNotEmpty) {
-      // String apiurl = "http://192.168.8.110"; //api url
-      //dont use http://localhost , because emulator don't get that business
       var url = Uri.parse('https://www.blucash.net/client/connect');
-      try {
-        var response = await http
-            .post(url, headers: header, body: {'phone': phone, 'pin': pin});
+       try {
+         var response = await http
+             .post(url, headers: header, body: {'phone': phone, 'pin': pin});
 
-        final jsondata = json.decode(response.body);
+         final jsondata = json.decode(response.body);
 
-        if (jsondata["status"] != 'true') {
-          String? errorM = jsondata["error"];
-          setState(() {
-            showprogress = false; //don't show progress indicator
-            error = true;
-            errormsg = errorMap[errorM];
-          });
-        } else {
-          setState(() {
-            error = false;
-            showprogress = false;
-          });
-          pageroute(jsondata["name"], jsondata["phone"], jsondata["code"],
-              jsondata["business"], jsondata["balance"], jsondata["support"], jsondata['token']);
-        }
-      } catch (e) {
-        setState(() {
-          showprogress = false; //don't show progress indicator
-          error = true;
-          errormsg = "Pas de connexion internet !";
-        });
-      }
+         if (jsondata["status"] != 'true') {
+           String? errorM = jsondata["error"];
+           setState(() {
+             showprogress = false; //don't show progress indicator
+             error = true;
+             errormsg = errorMap[errorM];
+           });
+         } else {
+           setState(() {
+             error = false;
+             showprogress = false;
+           });
+          var agent = jsondata["agent"];
+           if (agent.isEmpty) {
+             pageroute(jsondata["name"], jsondata["phone"],jsondata["business"], jsondata["balance"], jsondata["support"], jsondata['token']);
+           } else {
+             pageRouteWithAgent(jsondata["name"], jsondata["phone"], jsondata["business"], jsondata["balance"], jsondata["support"], jsondata['token'], agent['image'], agent['user'], agent['dateof']);
+           }
+         }
+       } catch (e) {
+         setState(() {
+           showprogress = false; //don't show progress indicator
+           error = true;
+           errormsg = "Pas de connexion internet !";
+         });
+       }
     } else {
       setState(() {
         showprogress = false; //don't show progress indicator
@@ -79,8 +93,15 @@ class _LoginPage extends State<LoginPage> {
     }
   }
 
-  void pageroute(String name, String phone, String code, String business, String balance, String support, String token) async {
-      saveSession(name, phone, code, business, balance, support, token);
+  void pageroute(String name, String phone,String business, String balance, String support, String token) async {
+      saveSession(name, phone, business, balance, support, token);
+      Navigator.of(context).pushAndRemoveUntil(
+          MaterialPageRoute(builder: (context) => const HomePage()),
+          (route) => false);
+  }
+  
+  void pageRouteWithAgent(String name, String phone,String business, String balance, String support, String token, String image, String user, String dateof) async {
+      saveSessionWithAgent(name, phone, business, balance, support, token, image, user, dateof);
       Navigator.of(context).pushAndRemoveUntil(
           MaterialPageRoute(builder: (context) => const HomePage()),
           (route) => false);
@@ -117,14 +138,12 @@ class _LoginPage extends State<LoginPage> {
         padding: const EdgeInsets.all(32.0),
         child: Column(children: [
           Center(
-            child: Expanded(
-              child: Container(
-                width: 80,
-                height: 80,
-                margin: const EdgeInsets.symmetric(vertical: 20),   
-                child: Image.asset(
-                  'assets/icon/icon.png',
-                ),
+            child: Container(
+              width: 80,
+              height: 80,
+              margin: const EdgeInsets.symmetric(vertical: 20),   
+              child: Image.asset(
+                'assets/icon/icon.png',
               ),
             ),
           ),
