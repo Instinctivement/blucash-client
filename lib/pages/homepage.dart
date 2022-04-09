@@ -446,18 +446,14 @@ class _HomePageState extends State<HomePage> {
                   child: Center(
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
-                      children: [
-                        const CircularProgressIndicator(
+                      children: const [
+                         CircularProgressIndicator(
                           strokeWidth: 2.0,
                           backgroundColor: Colors.transparent,
                           valueColor: AlwaysStoppedAnimation<Color>(white),
                         ),
-                        const SizedBox(
+                        SizedBox(
                           height: 10,
-                        ),
-                        Text(
-                          "Recharge...",
-                          style: TextStyle(fontSize: SizeConfig.devicePixelRatio > 3.0 ? 12.0 : 16.0, color: white),
                         ),
                       ],
                     ),
