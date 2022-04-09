@@ -6,7 +6,7 @@ const Color secondary = Color(0xFF5874B9);
 const Color grey = Color(0xFF7D97A1);
 const Color dark = Color(0xFF212529);
 const Color container = Color(0xFFF2F5F8);
-Color alert = Colors.yellow.shade200;
+Color alert = Colors.yellow.shade100;
 const Color white = Color(0xFFFFFFFF);
 
  checkcode(String? code) {

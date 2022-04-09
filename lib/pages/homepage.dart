@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:blucash_client/tools/size.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -19,11 +20,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  late String name = "",
-      business = "",
-      balance = "",
-      support = "",
-      token = "";
+  late String name = "", business = "", balance = "", support = "", token = "";
   late String image = "", user = "", dateof = "", scanerror = "";
   late String imageS = "", userS = "", dateofS = "", roleS = "", assignedS= "";
   String valueText = "";
@@ -100,8 +97,8 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    SystemChrome.setSystemUIOverlayStyle(
-        const SystemUiOverlayStyle(statusBarColor: primary));
+    SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(statusBarColor: primary));
+    SizeConfig().init(context);
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
@@ -109,8 +106,8 @@ class _HomePageState extends State<HomePage> {
           automaticallyImplyLeading: false,
           backgroundColor: primary,
           title: SizedBox(
-            height: 70,
-            width: 130,
+            height: SizeConfig.devicePixelRatio > 3.0 ? 60.0 : 70.0,
+            width: SizeConfig.devicePixelRatio > 3.0 ? 115.0 : 130.0,
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 5.0),
               child: Image.asset(
@@ -124,16 +121,14 @@ class _HomePageState extends State<HomePage> {
               tooltip: 'Rafraîchir',
               onPressed: () {
                 setState(() {
-                  // refresh();
                   _onLoading();
                 });
               },
             ),
             Theme(
               data: Theme.of(context).copyWith(
-                  // textTheme: const TextTheme().apply(),
-                  dividerColor: Colors.grey,
-                  iconTheme: const IconThemeData(color: Colors.white)),
+              dividerColor: Colors.grey,
+              iconTheme: const IconThemeData(color: Colors.white)),
               child: PopupMenuButton<int>(
                 color: Colors.white,
                 itemBuilder: (context) => [
@@ -205,7 +200,7 @@ class _HomePageState extends State<HomePage> {
             children: [
               Center(
                 child: Padding(
-                  padding: const EdgeInsets.only(top: 8.0),
+                  padding: EdgeInsets.only(top: SizeConfig.devicePixelRatio > 3.0 ? 2.0 : 8.0,),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -219,8 +214,8 @@ class _HomePageState extends State<HomePage> {
                       Text(
                         business,
                         textAlign: TextAlign.center,
-                        style: const TextStyle(
-                            fontSize: 18,
+                        style: TextStyle(
+                            fontSize: SizeConfig.devicePixelRatio > 3.0 ? 14.0 : 18.0,
                             color: Colors.black54,
                             fontWeight: FontWeight.w400),
                       ),
@@ -232,7 +227,7 @@ class _HomePageState extends State<HomePage> {
                 height: 10,
               ),
               Container(
-                padding: const EdgeInsets.all(20.0),
+                padding: EdgeInsets.all(SizeConfig.devicePixelRatio > 3.0 ? 12.0 : 20.0),
                 width: double.infinity,
                 decoration: BoxDecoration(
                   color: container,
@@ -246,15 +241,15 @@ class _HomePageState extends State<HomePage> {
                         children: [
                           Text(
                             "Dette courante".toUpperCase(),
-                            style: const TextStyle(
-                                fontSize: 15,
+                            style: TextStyle(
+                                fontSize:  SizeConfig.devicePixelRatio > 3.0 ? 10.0 : 16.0,
                                 fontWeight: FontWeight.w400,
                                 color: Colors.black54),
                           ),
                           Text(
                             balance,
-                            style: const TextStyle(
-                              fontSize: 24,
+                            style: TextStyle(
+                              fontSize:  SizeConfig.devicePixelRatio > 3.0 ? 18.0 : 24.0,
                               fontWeight: FontWeight.w700,
                             ),
                           ),
@@ -275,7 +270,7 @@ class _HomePageState extends State<HomePage> {
                               ),
                               label: Text(
                                 'Scanner'.toUpperCase(),
-                                style: const TextStyle(fontSize: 18),
+                                style: TextStyle(fontSize:  SizeConfig.devicePixelRatio > 3.0 ? 12.0 : 18.0,),
                               ),
                               onPressed: () {
                                 Navigator.of(context).push(MaterialPageRoute(
@@ -304,20 +299,20 @@ class _HomePageState extends State<HomePage> {
               Center(
                 child: SizedBox(
                     child: showAgent
-                        ? const Text(
+                        ?  Text(
                             "Agent Commercial",
                             textAlign: TextAlign.center,
                             style: TextStyle(
-                              fontSize: 16,
+                              fontSize: SizeConfig.devicePixelRatio > 3.0 ? 12.0 : 16.0,
                               color: Colors.black54,
                               fontWeight: FontWeight.w700,
                             ),
                           )
-                        : const Text(
+                        : Text(
                             "Aucune assignation en-cours",
                             textAlign: TextAlign.center,
                             style: TextStyle(
-                              fontSize: 16,
+                              fontSize: SizeConfig.devicePixelRatio > 3.0 ? 12.0 : 16.0,
                               color: Colors.black54,
                               fontWeight: FontWeight.w700,
                             ),
@@ -325,7 +320,7 @@ class _HomePageState extends State<HomePage> {
               ),
               Padding(
                 padding:
-                    const EdgeInsets.symmetric(horizontal: 120.0, vertical: 8),
+                    EdgeInsets.symmetric(horizontal: SizeConfig.devicePixelRatio > 3.0 ? 110.0 : 120.0, vertical: 8),
                 child: Container(
                   color: Colors.grey[100],
                   height: 2,
@@ -333,9 +328,8 @@ class _HomePageState extends State<HomePage> {
               ),
               showAgent ? isAgent(context) : defaultAgent(context),
               Container(
-                height: 35,
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 30, vertical: 4),
+                height: SizeConfig.devicePixelRatio > 3.0 ? 28.0 : 35.0,
+                padding:EdgeInsets.symmetric(horizontal: 30, vertical: SizeConfig.devicePixelRatio > 3.0 ? 2.0 : 4.0),
                 decoration: BoxDecoration(
                   color: container,
                   borderRadius: BorderRadius.circular(50),
@@ -346,7 +340,7 @@ class _HomePageState extends State<HomePage> {
                     Text(
                       'Vous êtes connecté en tant que :',
                       style: TextStyle(
-                        fontSize: 12,
+                        fontSize: SizeConfig.devicePixelRatio > 3.0 ? 9.0 : 12.0,
                         fontWeight: FontWeight.w400,
                         color: isVisible ? Colors.black : Colors.black,
                       ),
@@ -354,7 +348,7 @@ class _HomePageState extends State<HomePage> {
                     Text(
                       name,
                       style: TextStyle(
-                        fontSize: 12,
+                        fontSize: SizeConfig.devicePixelRatio > 3.0 ? 9.0 : 12.0,
                         fontWeight: FontWeight.w700,
                         color: isVisible ? Colors.black : Colors.black,
                       ),
@@ -362,11 +356,11 @@ class _HomePageState extends State<HomePage> {
                   ],
                 ),
               ),
-              const Padding(
-                padding: EdgeInsets.only(top: 30.0),
+              Padding(
+                padding: EdgeInsets.only(top: SizeConfig.devicePixelRatio > 3.0 ? 20.0 : 30.0),
                 child: Text(
                   "Blucash Client v1.125 — OPENXTECH SARL.",
-                  style: TextStyle(color: Colors.grey, fontSize: 12),
+                  style: TextStyle(color: Colors.grey, fontSize: SizeConfig.devicePixelRatio > 3.0 ? 9.0 : 12.0,),
                 ),
               ),
             ],
@@ -443,8 +437,8 @@ class _HomePageState extends State<HomePage> {
     showDialog(
       context: context,
       builder: (_) => AlertDialog(
-        backgroundColor: Colors.grey.shade400,
-        insetPadding: const EdgeInsets.symmetric(horizontal: 130),
+        backgroundColor: Colors.transparent,
+        insetPadding: EdgeInsets.symmetric(horizontal: SizeConfig.devicePixelRatio > 3.0 ? 120.0 : 130.0,),
         shape: const RoundedRectangleBorder(
         borderRadius:BorderRadius.all(Radius.circular(0.0))),
         title: SizedBox(
@@ -452,18 +446,18 @@ class _HomePageState extends State<HomePage> {
                   child: Center(
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
-                      children: const [
-                        CircularProgressIndicator(
+                      children: [
+                        const CircularProgressIndicator(
                           strokeWidth: 2.0,
-                                backgroundColor: Colors.transparent,
-                                valueColor: AlwaysStoppedAnimation<Color>(white),
+                          backgroundColor: Colors.transparent,
+                          valueColor: AlwaysStoppedAnimation<Color>(white),
                         ),
-                        SizedBox(
+                        const SizedBox(
                           height: 10,
                         ),
                         Text(
-                          "Loading...",
-                          style: TextStyle(fontSize: 20, color: white),
+                          "Recharge...",
+                          style: TextStyle(fontSize: SizeConfig.devicePixelRatio > 3.0 ? 12.0 : 20.0, color: white),
                         ),
                       ],
                     ),
@@ -610,17 +604,17 @@ class _HomePageState extends State<HomePage> {
         ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: const [
+          children: [
             CircleAvatar(
               backgroundColor: Colors.white,
-              radius: 110,
+              radius: SizeConfig.devicePixelRatio > 3.0 ? 80.0 : 110.0,
               child: CircleAvatar(
-                backgroundColor: Color.fromARGB(255, 250, 249, 249),
-                radius: 110,
+                backgroundColor: const Color.fromARGB(255, 250, 249, 249),
+                radius: SizeConfig.devicePixelRatio > 3.0 ? 80.0 : 110.0,
                 child: Icon(
                   Icons.qr_code,
-                  size: 100,
-                  color: Color.fromARGB(255, 224, 223, 223),
+                  size: SizeConfig.devicePixelRatio > 3.0 ? 80.0 : 100.0,
+                  color: const Color.fromARGB(255, 224, 223, 223),
                 ),
               ),
             ),
@@ -632,7 +626,7 @@ class _HomePageState extends State<HomePage> {
 
   Padding isAgent(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8.0),
+      padding:  EdgeInsets.symmetric(vertical: SizeConfig.devicePixelRatio > 3.0 ? 0.0 : 8.0,),
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 15.0),
         width: double.infinity,
@@ -645,24 +639,24 @@ class _HomePageState extends State<HomePage> {
           children: [
             CircleAvatar(
               backgroundColor: container,
-              radius: 110,
+              radius: SizeConfig.devicePixelRatio > 3.0 ? 95.0 : 110.0,
               child: ClipRRect(
-                borderRadius: BorderRadius.circular(110.0),
+                borderRadius: BorderRadius.circular(SizeConfig.devicePixelRatio > 3.0 ? 95.0 : 110.0,),
                 child: CachedNetworkImage(
                   imageUrl: image,
                   progressIndicatorBuilder: (context, url, downloadProgress) =>
                       CircularProgressIndicator(
                           value: downloadProgress.progress),
-                  errorWidget: (context, url, error) => const CircleAvatar(
+                  errorWidget: (context, url, error) =>  CircleAvatar(
                     backgroundColor: Colors.white,
-                    radius: 110,
+                    radius: SizeConfig.devicePixelRatio > 3.0 ? 95.0 : 110.0,
                     child: CircleAvatar(
-                      backgroundColor: Color.fromARGB(255, 250, 249, 249),
-                      radius: 110,
+                      backgroundColor: const Color.fromARGB(255, 250, 249, 249),
+                      radius: SizeConfig.devicePixelRatio > 3.0 ? 95.0 : 110.0,
                       child: Icon(
                         Icons.error_outline_sharp,
-                        size: 100,
-                        color: Color.fromARGB(255, 189, 187, 187),
+                        size: SizeConfig.devicePixelRatio > 3.0 ? 95.0 : 100.0,
+                        color: const Color.fromARGB(255, 189, 187, 187),
                       ),
                     ),
                   ),
@@ -680,14 +674,14 @@ class _HomePageState extends State<HomePage> {
                       children: [
                         Text(
                           user,
-                          style: const TextStyle(
-                              fontSize: 26,
+                          style: TextStyle(
+                              fontSize: SizeConfig.devicePixelRatio > 3.0 ? 20.0 : 26.0,
                               color: primary,
                               fontWeight: FontWeight.bold),
                         ),
-                        const Icon(
+                       Icon(
                           Icons.verified_rounded,
-                          size: 20,
+                          size: SizeConfig.devicePixelRatio > 3.0 ? 16.0 : 20.0,
                           color: primary,
                         ),
                       ],
@@ -697,8 +691,8 @@ class _HomePageState extends State<HomePage> {
                     padding: const EdgeInsets.only(top: 2.0),
                     child: Text(
                       "Assigné le $dateof",
-                      style: const TextStyle(
-                          fontSize: 14,
+                      style:  TextStyle(
+                          fontSize: SizeConfig.devicePixelRatio > 3.0 ? 10.0 : 14.0,
                           color: Colors.black45,
                           fontWeight: FontWeight.w400),
                     ),
@@ -717,6 +711,8 @@ class _HomePageState extends State<HomePage> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
+          shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(0.0))),
           title: const Text("Message"),
           content: Text(scanerror),
           actions: <Widget>[
@@ -935,6 +931,8 @@ class _HomePageState extends State<HomePage> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
+          shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(0.0))),
           title: const Text("Erreur de connexion"),
           content: const Text("Vérifier votre connexion puis réessayer."),
           actions: <Widget>[
