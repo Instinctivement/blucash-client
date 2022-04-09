@@ -359,7 +359,7 @@ class _HomePageState extends State<HomePage> {
               Padding(
                 padding: EdgeInsets.only(top: SizeConfig.devicePixelRatio > 3.0 ? 20.0 : 30.0),
                 child: Text(
-                  "Blucash Client v1.125 — OPENXTECH SARL.",
+                  "Blucash Client — OPENXTECH SARL.",
                   style: TextStyle(color: Colors.grey, fontSize: SizeConfig.devicePixelRatio > 3.0 ? 9.0 : 12.0,),
                 ),
               ),
@@ -457,7 +457,7 @@ class _HomePageState extends State<HomePage> {
                         ),
                         Text(
                           "Recharge...",
-                          style: TextStyle(fontSize: SizeConfig.devicePixelRatio > 3.0 ? 12.0 : 20.0, color: white),
+                          style: TextStyle(fontSize: SizeConfig.devicePixelRatio > 3.0 ? 12.0 : 16.0, color: white),
                         ),
                       ],
                     ),
@@ -536,8 +536,8 @@ class _HomePageState extends State<HomePage> {
           builder: (BuildContext context) => AlertDialog(
             shape: const RoundedRectangleBorder(
                 borderRadius: BorderRadius.all(Radius.circular(0.0))),
-            title: const Text('Confirmation'),
-            content: const Text('Vous allez être redirigé.'),
+            title: Text('Confirmation', style: TextStyle(fontSize: SizeConfig.devicePixelRatio > 3.0 ? 12.0 : 16.0, fontWeight: FontWeight.bold),),
+            content: Text('Vous allez être redirigé.', style: TextStyle(fontSize: SizeConfig.devicePixelRatio > 3.0 ? 12.0 : 16.0),),
             actions: <Widget>[
               TextButton(
                 onPressed: () => Navigator.pop(context, 'Annuler'),
@@ -713,8 +713,8 @@ class _HomePageState extends State<HomePage> {
         return AlertDialog(
           shape: const RoundedRectangleBorder(
               borderRadius: BorderRadius.all(Radius.circular(0.0))),
-          title: const Text("Message"),
-          content: Text(scanerror),
+          title: Text("Message", style: TextStyle(fontSize: SizeConfig.devicePixelRatio > 3.0 ? 12.0 : 16.0, fontWeight: FontWeight.bold),),
+          content: Text(scanerror, style: TextStyle(fontSize: SizeConfig.devicePixelRatio > 3.0 ? 12.0 : 16.0),),
           actions: <Widget>[
             TextButton(
               child: const Text("OK"),
@@ -746,7 +746,7 @@ class _HomePageState extends State<HomePage> {
               children: [
                 CircleAvatar(
                   backgroundColor: container,
-                  radius: 110,
+                  radius: SizeConfig.devicePixelRatio > 3.0 ? 90.0 : 110.0,
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(110.0),
                     child: CachedNetworkImage(
@@ -755,13 +755,13 @@ class _HomePageState extends State<HomePage> {
                           (context, url, downloadProgress) =>
                               CircularProgressIndicator(
                                   value: downloadProgress.progress),
-                      errorWidget: (context, url, error) => const CircleAvatar(
+                      errorWidget: (context, url, error) => CircleAvatar(
                         backgroundColor: Colors.white,
-                        radius: 110,
+                        radius: SizeConfig.devicePixelRatio > 3.0 ? 90.0 : 110.0,
                         child: CircleAvatar(
-                          backgroundColor: Color.fromARGB(255, 250, 249, 249),
-                          radius: 110,
-                          child: Icon(
+                          backgroundColor: const Color.fromARGB(255, 250, 249, 249),
+                          radius: SizeConfig.devicePixelRatio > 3.0 ? 90.0 : 110.0,
+                          child: const Icon(
                             Icons.error_outline_sharp,
                             size: 100,
                             color: Color.fromARGB(255, 189, 187, 187),
@@ -933,8 +933,8 @@ class _HomePageState extends State<HomePage> {
         return AlertDialog(
           shape: const RoundedRectangleBorder(
               borderRadius: BorderRadius.all(Radius.circular(0.0))),
-          title: const Text("Erreur de connexion"),
-          content: const Text("Vérifier votre connexion puis réessayer."),
+          title: Text("Erreur de connexion", style: TextStyle(fontSize: SizeConfig.devicePixelRatio > 3.0 ? 12.0 : 16.0, fontWeight: FontWeight.bold),),
+          content: Text("Vérifier votre connexion puis réessayer.", style: TextStyle(fontSize: SizeConfig.devicePixelRatio > 3.0 ? 12.0 : 16.0),),
           actions: <Widget>[
             TextButton(
               child: const Text("OK"),

@@ -58,6 +58,7 @@ class _QrScanPageState extends State<QrScanPage> {
 
        final jsondata = json.decode(response.body);
        if (jsondata["status"] == 'true') {
+         print(jsondata);
          String? val = imageS;
          if (val != "") {
            CachedNetworkImage.evictFromCache(imageS);
@@ -65,6 +66,7 @@ class _QrScanPageState extends State<QrScanPage> {
          pageroute(jsondata["image"], jsondata["user"], jsondata["dateof"], jsondata["role"], jsondata["assigned"]);
        } 
        else {
+         print(jsondata);
          String? errorM = errorMap[jsondata["error"]];
          SharedPreferences prefs = await SharedPreferences.getInstance();
          if (errorM != null) {
@@ -262,7 +264,7 @@ class _QrScanPageState extends State<QrScanPage> {
               result != null
                   ? "role: ${describeEnum(result!.format)}"
                   : "Rapprochez la camera du Code",
-                  style: TextStyle(fontSize: SizeConfig.devicePixelRatio > 3.0 ? 10.0 : 14.0,),
+                  style: TextStyle(fontSize: SizeConfig.devicePixelRatio > 3.0 ? 10.0 : 16.0,),
             ),
     );
   }
@@ -274,9 +276,9 @@ class _QrScanPageState extends State<QrScanPage> {
         return AlertDialog(
           shape: const RoundedRectangleBorder(
               borderRadius: BorderRadius.all(Radius.circular(0.0))),
-          title: const Text("Qr Code Erroné"),
-          content: const Text(
-              "Ceci n'est pas un Qr Code valide, merci de réessayer."),
+          title: Text("Qr Code Erroné", style: TextStyle(fontSize: SizeConfig.devicePixelRatio > 3.0 ? 12.0 : 16.0, fontWeight: FontWeight.bold),),
+          content: Text(
+              "Ceci n'est pas un Qr Code valide, merci de réessayer.", style: TextStyle(fontSize: SizeConfig.devicePixelRatio > 3.0 ? 12.0 : 16.0),),
           actions: <Widget>[
             TextButton(
               child: const Text("OK"),
@@ -298,9 +300,8 @@ class _QrScanPageState extends State<QrScanPage> {
         return AlertDialog(
           shape: const RoundedRectangleBorder(
               borderRadius: BorderRadius.all(Radius.circular(0.0))),
-          title: const Text("Erreur de connexion"),
-          content: const Text(
-              "Vérifier votre connexion puis réessayer."),
+          title: Text("Erreur de connexion", style: TextStyle(fontSize: SizeConfig.devicePixelRatio > 3.0 ? 12.0 : 16.0, fontWeight: FontWeight.bold),),
+          content: Text("Vérifier votre connexion puis réessayer.", style: TextStyle(fontSize: SizeConfig.devicePixelRatio > 3.0 ? 12.0 : 16.0),),
           actions: <Widget>[
             TextButton(
               child: const Text("OK"),

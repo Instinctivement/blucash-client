@@ -357,9 +357,12 @@ class _LoginPage extends State<LoginPage> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text("PIN oublié ?"),
-          content: const Text(
-              "Merci de contacter votre partenaire afin d'obtenir de l'assistance."),
+          shape: const RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(0.0))),
+          title: Text("PIN oublié ?", style: TextStyle(fontSize: SizeConfig.devicePixelRatio > 3.0 ? 12.0 : 16.0, fontWeight: FontWeight.bold),),
+          content: Text(
+              "Merci de contacter votre partenaire afin d'obtenir de l'assistance.",
+              style: TextStyle(fontSize: SizeConfig.devicePixelRatio > 3.0 ? 12.0 : 16.0,),),
           actions: <Widget>[
             TextButton(
               child: const Text("OK"),
