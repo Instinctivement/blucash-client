@@ -83,7 +83,7 @@ class _LoginPage extends State<LoginPage> {
          setState(() {
            showprogress = false; //don't show progress indicator
            error = true;
-           errormsg = "Vérifiez votre connexion internet";
+           errormsg = "Vérifiez votre connexion";
          });
        }
     } else {
@@ -182,7 +182,7 @@ class _LoginPage extends State<LoginPage> {
           style: TextStyle(color: Colors.black45, fontSize: SizeConfig.deviceRelatifRatio < 1.8 ? 16.0 : 20.0,),
           decoration: 
           InputDecoration(
-        hintText: "Numéro de téléphone", //show label as placeholder
+        hintText: "Téléphone", //show label as placeholder
         hintStyle:
             TextStyle(color: Colors.grey[500], fontSize: SizeConfig.deviceRelatifRatio < 1.8 ? 16.0 : 20.0,), //hint text style
         prefixIcon: Padding(
