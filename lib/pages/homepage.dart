@@ -106,8 +106,8 @@ class _HomePageState extends State<HomePage> {
           automaticallyImplyLeading: false,
           backgroundColor: primary,
           title: SizedBox(
-            height: SizeConfig.devicePixelRatio > 3.0 ? 60.0 : 70.0,
-            width: SizeConfig.devicePixelRatio > 3.0 ? 115.0 : 130.0,
+            height: SizeConfig.deviceRelatifRatio < 1.8 ? 60.0 : 70.0,
+            width: SizeConfig.deviceRelatifRatio < 1.8 ? 115.0 : 130.0,
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 5.0),
               child: Image.asset(
@@ -200,7 +200,7 @@ class _HomePageState extends State<HomePage> {
             children: [
               Center(
                 child: Padding(
-                  padding: EdgeInsets.only(top: SizeConfig.devicePixelRatio > 3.0 ? 2.0 : 8.0,),
+                  padding: EdgeInsets.only(top: SizeConfig.deviceRelatifRatio < 1.8 ? 2.0 : 8.0,),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -215,7 +215,7 @@ class _HomePageState extends State<HomePage> {
                         business,
                         textAlign: TextAlign.center,
                         style: TextStyle(
-                            fontSize: SizeConfig.devicePixelRatio > 3.0 ? 14.0 : 18.0,
+                            fontSize: SizeConfig.deviceRelatifRatio < 1.8 ? 14.0 : 18.0,
                             color: Colors.black54,
                             fontWeight: FontWeight.w400),
                       ),
@@ -227,7 +227,7 @@ class _HomePageState extends State<HomePage> {
                 height: 10,
               ),
               Container(
-                padding: EdgeInsets.all(SizeConfig.devicePixelRatio > 3.0 ? 12.0 : 20.0),
+                padding: EdgeInsets.all(SizeConfig.deviceRelatifRatio < 1.8 ? 12.0 : 20.0),
                 width: double.infinity,
                 decoration: BoxDecoration(
                   color: container,
@@ -242,14 +242,14 @@ class _HomePageState extends State<HomePage> {
                           Text(
                             "Dette courante".toUpperCase(),
                             style: TextStyle(
-                                fontSize:  SizeConfig.devicePixelRatio > 3.0 ? 10.0 : 16.0,
+                                fontSize:  SizeConfig.deviceRelatifRatio < 1.8 ? 10.0 : 16.0,
                                 fontWeight: FontWeight.w400,
                                 color: Colors.black54),
                           ),
                           Text(
                             balance,
                             style: TextStyle(
-                              fontSize:  SizeConfig.devicePixelRatio > 3.0 ? 18.0 : 24.0,
+                              fontSize:  SizeConfig.deviceRelatifRatio < 1.8 ? 18.0 : 24.0,
                               fontWeight: FontWeight.w700,
                             ),
                           ),
@@ -270,7 +270,7 @@ class _HomePageState extends State<HomePage> {
                               ),
                               label: Text(
                                 'Scanner'.toUpperCase(),
-                                style: TextStyle(fontSize:  SizeConfig.devicePixelRatio > 3.0 ? 12.0 : 18.0,),
+                                style: TextStyle(fontSize:  SizeConfig.deviceRelatifRatio < 1.8 ? 12.0 : 18.0,),
                               ),
                               onPressed: () {
                                 Navigator.of(context).push(MaterialPageRoute(
@@ -303,7 +303,7 @@ class _HomePageState extends State<HomePage> {
                             "Agent Commercial",
                             textAlign: TextAlign.center,
                             style: TextStyle(
-                              fontSize: SizeConfig.devicePixelRatio > 3.0 ? 12.0 : 16.0,
+                              fontSize: SizeConfig.deviceRelatifRatio < 1.8 ? 12.0 : 16.0,
                               color: Colors.black54,
                               fontWeight: FontWeight.w700,
                             ),
@@ -312,7 +312,7 @@ class _HomePageState extends State<HomePage> {
                             "Aucune assignation en-cours",
                             textAlign: TextAlign.center,
                             style: TextStyle(
-                              fontSize: SizeConfig.devicePixelRatio > 3.0 ? 12.0 : 16.0,
+                              fontSize: SizeConfig.deviceRelatifRatio < 1.8 ? 12.0 : 16.0,
                               color: Colors.black54,
                               fontWeight: FontWeight.w700,
                             ),
@@ -320,7 +320,7 @@ class _HomePageState extends State<HomePage> {
               ),
               Padding(
                 padding:
-                    EdgeInsets.symmetric(horizontal: SizeConfig.devicePixelRatio > 3.0 ? 110.0 : 120.0, vertical: 8),
+                    EdgeInsets.symmetric(horizontal: SizeConfig.deviceRelatifRatio < 1.8 ? 110.0 : 120.0, vertical: 8),
                 child: Container(
                   color: Colors.grey[100],
                   height: 2,
@@ -328,8 +328,8 @@ class _HomePageState extends State<HomePage> {
               ),
               showAgent ? isAgent(context) : defaultAgent(context),
               Container(
-                height: SizeConfig.devicePixelRatio > 3.0 ? 28.0 : 35.0,
-                padding:EdgeInsets.symmetric(horizontal: 30, vertical: SizeConfig.devicePixelRatio > 3.0 ? 2.0 : 4.0),
+                height: SizeConfig.deviceRelatifRatio < 1.8 ? 28.0 : 35.0,
+                padding:EdgeInsets.symmetric(horizontal: 30, vertical: SizeConfig.deviceRelatifRatio < 1.8 ? 2.0 : 4.0),
                 decoration: BoxDecoration(
                   color: container,
                   borderRadius: BorderRadius.circular(50),
@@ -340,7 +340,7 @@ class _HomePageState extends State<HomePage> {
                     Text(
                       'Vous êtes connecté en tant que :',
                       style: TextStyle(
-                        fontSize: SizeConfig.devicePixelRatio > 3.0 ? 9.0 : 12.0,
+                        fontSize: SizeConfig.deviceRelatifRatio < 1.8 ? 9.0 : 12.0,
                         fontWeight: FontWeight.w400,
                         color: isVisible ? Colors.black : Colors.black,
                       ),
@@ -348,7 +348,7 @@ class _HomePageState extends State<HomePage> {
                     Text(
                       name,
                       style: TextStyle(
-                        fontSize: SizeConfig.devicePixelRatio > 3.0 ? 9.0 : 12.0,
+                        fontSize: SizeConfig.deviceRelatifRatio < 1.8 ? 9.0 : 12.0,
                         fontWeight: FontWeight.w700,
                         color: isVisible ? Colors.black : Colors.black,
                       ),
@@ -357,10 +357,10 @@ class _HomePageState extends State<HomePage> {
                 ),
               ),
               Padding(
-                padding: EdgeInsets.only(top: SizeConfig.devicePixelRatio > 3.0 ? 20.0 : 30.0),
+                padding: EdgeInsets.only(top: SizeConfig.deviceRelatifRatio < 1.8 ? 20.0 : 30.0),
                 child: Text(
                   "Blucash Client — OPENXTECH SARL.",
-                  style: TextStyle(color: Colors.grey, fontSize: SizeConfig.devicePixelRatio > 3.0 ? 9.0 : 12.0,),
+                  style: TextStyle(color: Colors.grey, fontSize: SizeConfig.deviceRelatifRatio < 1.8 ? 9.0 : 12.0,),
                 ),
               ),
             ],
@@ -438,7 +438,7 @@ class _HomePageState extends State<HomePage> {
       context: context,
       builder: (_) => AlertDialog(
         backgroundColor: Colors.transparent,
-        insetPadding: EdgeInsets.symmetric(horizontal: SizeConfig.devicePixelRatio > 3.0 ? 120.0 : 130.0,),
+        insetPadding: EdgeInsets.symmetric(horizontal: SizeConfig.deviceRelatifRatio < 1.8 ? 120.0 : 130.0,),
         shape: const RoundedRectangleBorder(
         borderRadius:BorderRadius.all(Radius.circular(0.0))),
         title: SizedBox(
@@ -532,8 +532,8 @@ class _HomePageState extends State<HomePage> {
           builder: (BuildContext context) => AlertDialog(
             shape: const RoundedRectangleBorder(
                 borderRadius: BorderRadius.all(Radius.circular(0.0))),
-            title: Text('Confirmation', style: TextStyle(fontSize: SizeConfig.devicePixelRatio > 3.0 ? 12.0 : 16.0, fontWeight: FontWeight.bold),),
-            content: Text('Vous allez être redirigé.', style: TextStyle(fontSize: SizeConfig.devicePixelRatio > 3.0 ? 12.0 : 16.0),),
+            title: Text('Confirmation', style: TextStyle(fontSize: SizeConfig.deviceRelatifRatio < 1.8 ? 12.0 : 16.0, fontWeight: FontWeight.bold),),
+            content: Text('Vous allez être redirigé.', style: TextStyle(fontSize: SizeConfig.deviceRelatifRatio < 1.8 ? 12.0 : 16.0),),
             actions: <Widget>[
               TextButton(
                 onPressed: () => Navigator.pop(context, 'Annuler'),
@@ -603,13 +603,13 @@ class _HomePageState extends State<HomePage> {
           children: [
             CircleAvatar(
               backgroundColor: Colors.white,
-              radius: SizeConfig.devicePixelRatio > 3.0 ? 80.0 : 110.0,
+              radius: SizeConfig.deviceRelatifRatio < 1.8 ? 80.0 : 110.0,
               child: CircleAvatar(
                 backgroundColor: const Color.fromARGB(255, 250, 249, 249),
-                radius: SizeConfig.devicePixelRatio > 3.0 ? 80.0 : 110.0,
+                radius: SizeConfig.deviceRelatifRatio < 1.8 ? 80.0 : 110.0,
                 child: Icon(
                   Icons.qr_code,
-                  size: SizeConfig.devicePixelRatio > 3.0 ? 80.0 : 100.0,
+                  size: SizeConfig.deviceRelatifRatio < 1.8 ? 80.0 : 100.0,
                   color: const Color.fromARGB(255, 224, 223, 223),
                 ),
               ),
@@ -622,7 +622,7 @@ class _HomePageState extends State<HomePage> {
 
   Padding isAgent(BuildContext context) {
     return Padding(
-      padding:  EdgeInsets.symmetric(vertical: SizeConfig.devicePixelRatio > 3.0 ? 0.0 : 8.0,),
+      padding:  EdgeInsets.symmetric(vertical: SizeConfig.deviceRelatifRatio < 1.8 ? 0.0 : 8.0,),
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 15.0),
         width: double.infinity,
@@ -635,9 +635,9 @@ class _HomePageState extends State<HomePage> {
           children: [
             CircleAvatar(
               backgroundColor: container,
-              radius: SizeConfig.devicePixelRatio > 3.0 ? 95.0 : 110.0,
+              radius: SizeConfig.deviceRelatifRatio < 1.8 ? 95.0 : 110.0,
               child: ClipRRect(
-                borderRadius: BorderRadius.circular(SizeConfig.devicePixelRatio > 3.0 ? 95.0 : 110.0,),
+                borderRadius: BorderRadius.circular(SizeConfig.deviceRelatifRatio < 1.8 ? 95.0 : 110.0,),
                 child: CachedNetworkImage(
                   imageUrl: image,
                   progressIndicatorBuilder: (context, url, downloadProgress) =>
@@ -645,13 +645,13 @@ class _HomePageState extends State<HomePage> {
                           value: downloadProgress.progress),
                   errorWidget: (context, url, error) =>  CircleAvatar(
                     backgroundColor: Colors.white,
-                    radius: SizeConfig.devicePixelRatio > 3.0 ? 95.0 : 110.0,
+                    radius: SizeConfig.deviceRelatifRatio < 1.8 ? 95.0 : 110.0,
                     child: CircleAvatar(
                       backgroundColor: const Color.fromARGB(255, 250, 249, 249),
-                      radius: SizeConfig.devicePixelRatio > 3.0 ? 95.0 : 110.0,
+                      radius: SizeConfig.deviceRelatifRatio < 1.8 ? 95.0 : 110.0,
                       child: Icon(
                         Icons.error_outline_sharp,
-                        size: SizeConfig.devicePixelRatio > 3.0 ? 95.0 : 100.0,
+                        size: SizeConfig.deviceRelatifRatio < 1.8 ? 95.0 : 100.0,
                         color: const Color.fromARGB(255, 189, 187, 187),
                       ),
                     ),
@@ -671,13 +671,13 @@ class _HomePageState extends State<HomePage> {
                         Text(
                           user,
                           style: TextStyle(
-                              fontSize: SizeConfig.devicePixelRatio > 3.0 ? 20.0 : 26.0,
+                              fontSize: SizeConfig.deviceRelatifRatio < 1.8 ? 20.0 : 26.0,
                               color: primary,
                               fontWeight: FontWeight.bold),
                         ),
                        Icon(
                           Icons.verified_rounded,
-                          size: SizeConfig.devicePixelRatio > 3.0 ? 16.0 : 20.0,
+                          size: SizeConfig.deviceRelatifRatio < 1.8 ? 16.0 : 20.0,
                           color: primary,
                         ),
                       ],
@@ -688,7 +688,7 @@ class _HomePageState extends State<HomePage> {
                     child: Text(
                       "Assigné le $dateof",
                       style:  TextStyle(
-                          fontSize: SizeConfig.devicePixelRatio > 3.0 ? 10.0 : 14.0,
+                          fontSize: SizeConfig.deviceRelatifRatio < 1.8 ? 10.0 : 14.0,
                           color: Colors.black45,
                           fontWeight: FontWeight.w400),
                     ),
@@ -709,8 +709,8 @@ class _HomePageState extends State<HomePage> {
         return AlertDialog(
           shape: const RoundedRectangleBorder(
               borderRadius: BorderRadius.all(Radius.circular(0.0))),
-          title: Text("Message", style: TextStyle(fontSize: SizeConfig.devicePixelRatio > 3.0 ? 12.0 : 16.0, fontWeight: FontWeight.bold),),
-          content: Text(scanerror, style: TextStyle(fontSize: SizeConfig.devicePixelRatio > 3.0 ? 12.0 : 16.0),),
+          title: Text("Message", style: TextStyle(fontSize: SizeConfig.deviceRelatifRatio < 1.8 ? 12.0 : 16.0, fontWeight: FontWeight.bold),),
+          content: Text(scanerror, style: TextStyle(fontSize: SizeConfig.deviceRelatifRatio < 1.8 ? 12.0 : 16.0),),
           actions: <Widget>[
             TextButton(
               child: const Text("OK"),
@@ -742,7 +742,7 @@ class _HomePageState extends State<HomePage> {
               children: [
                 CircleAvatar(
                   backgroundColor: container,
-                  radius: SizeConfig.devicePixelRatio > 3.0 ? 90.0 : 110.0,
+                  radius: SizeConfig.deviceRelatifRatio < 1.8 ? 90.0 : 110.0,
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(110.0),
                     child: CachedNetworkImage(
@@ -753,10 +753,10 @@ class _HomePageState extends State<HomePage> {
                                   value: downloadProgress.progress),
                       errorWidget: (context, url, error) => CircleAvatar(
                         backgroundColor: Colors.white,
-                        radius: SizeConfig.devicePixelRatio > 3.0 ? 90.0 : 110.0,
+                        radius: SizeConfig.deviceRelatifRatio < 1.8 ? 90.0 : 110.0,
                         child: CircleAvatar(
                           backgroundColor: const Color.fromARGB(255, 250, 249, 249),
-                          radius: SizeConfig.devicePixelRatio > 3.0 ? 90.0 : 110.0,
+                          radius: SizeConfig.deviceRelatifRatio < 1.8 ? 90.0 : 110.0,
                           child: const Icon(
                             Icons.error_outline_sharp,
                             size: 100,
@@ -929,8 +929,8 @@ class _HomePageState extends State<HomePage> {
         return AlertDialog(
           shape: const RoundedRectangleBorder(
               borderRadius: BorderRadius.all(Radius.circular(0.0))),
-          title: Text("Erreur de connexion", style: TextStyle(fontSize: SizeConfig.devicePixelRatio > 3.0 ? 12.0 : 16.0, fontWeight: FontWeight.bold),),
-          content: Text("Vérifier votre connexion puis réessayer.", style: TextStyle(fontSize: SizeConfig.devicePixelRatio > 3.0 ? 12.0 : 16.0),),
+          title: Text("Erreur de connexion", style: TextStyle(fontSize: SizeConfig.deviceRelatifRatio < 1.8 ? 12.0 : 16.0, fontWeight: FontWeight.bold),),
+          content: Text("Vérifier votre connexion puis réessayer.", style: TextStyle(fontSize: SizeConfig.deviceRelatifRatio < 1.8 ? 12.0 : 16.0),),
           actions: <Widget>[
             TextButton(
               child: const Text("OK"),

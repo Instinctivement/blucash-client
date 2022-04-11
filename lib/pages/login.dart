@@ -142,29 +142,29 @@ class _LoginPage extends State<LoginPage> {
         ),
         Center(
           child: SizedBox(
-            width: SizeConfig.devicePixelRatio > 3.0 ? 70.0 : 80.0,
-            height: SizeConfig.devicePixelRatio > 3.0 ? 70.0 : 80.0,  
+            width: SizeConfig.deviceRelatifRatio < 1.8 ? 70.0 : 80.0,
+            height: SizeConfig.deviceRelatifRatio < 1.8 ? 70.0 : 80.0,  
             child: Image.asset(
               'assets/icon/icon.png',
             ),
           ),
         ),
         SizedBox(
-          height: SizeConfig.devicePixelRatio > 3.0 ? 10.0 : 15.0,
+          height: SizeConfig.deviceRelatifRatio < 1.8 ? 10.0 : 15.0,
         ),
         Text(
           "Connectez vous",
           style: TextStyle(
-              color: dark, fontSize: SizeConfig.devicePixelRatio > 3.0 ? 25.0 : 30.0, fontWeight: FontWeight.bold,),
+              color: dark, fontSize: SizeConfig.deviceRelatifRatio < 1.8 ? 25.0 : 30.0, fontWeight: FontWeight.bold,),
         ),
         SizedBox(
-          height: SizeConfig.devicePixelRatio > 3.0 ? 10.0 : 15.0,
+          height: SizeConfig.deviceRelatifRatio < 1.8 ? 10.0 : 15.0,
         ),
         Text(
           "Utilisez les informations fournies par votre partenaire",
           textAlign: TextAlign.center,
           style: TextStyle(
-              color: dark, fontSize: SizeConfig.devicePixelRatio > 3.0 ? 15.0 : 18.0, fontWeight: FontWeight.w400),
+              color: dark, fontSize: SizeConfig.deviceRelatifRatio < 1.8 ? 15.0 : 18.0, fontWeight: FontWeight.w400),
         ),
         Container(
           padding: const EdgeInsets.only(top: 10, bottom: 10),
@@ -179,12 +179,12 @@ class _LoginPage extends State<LoginPage> {
             FilteringTextInputFormatter.digitsOnly
           ],
 
-          style: TextStyle(color: Colors.black45, fontSize: SizeConfig.devicePixelRatio > 3.0 ? 16.0 : 20.0,),
+          style: TextStyle(color: Colors.black45, fontSize: SizeConfig.deviceRelatifRatio < 1.8 ? 16.0 : 20.0,),
           decoration: 
           InputDecoration(
         hintText: "Numéro de téléphone", //show label as placeholder
         hintStyle:
-            TextStyle(color: Colors.grey[500], fontSize: SizeConfig.devicePixelRatio > 3.0 ? 16.0 : 20.0,), //hint text style
+            TextStyle(color: Colors.grey[500], fontSize: SizeConfig.deviceRelatifRatio < 1.8 ? 16.0 : 20.0,), //hint text style
         prefixIcon: Padding(
             padding: const EdgeInsets.only(left: 20, right: 10),
             child: Icon(
@@ -195,7 +195,7 @@ class _LoginPage extends State<LoginPage> {
             ),
         counter: const Offstage(),
 
-        contentPadding: EdgeInsets.fromLTRB(30, SizeConfig.devicePixelRatio > 3.0 ? 16.0 : 20.0, 30, SizeConfig.devicePixelRatio > 3.0 ? 16.0 : 20.0,),
+        contentPadding: EdgeInsets.fromLTRB(30, SizeConfig.deviceRelatifRatio < 1.8 ? 16.0 : 20.0, 30, SizeConfig.deviceRelatifRatio < 1.8 ? 16.0 : 20.0,),
         enabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(0.0),
             borderSide: const BorderSide(
@@ -215,11 +215,11 @@ class _LoginPage extends State<LoginPage> {
         },
       ),
       SizedBox(
-          height: SizeConfig.devicePixelRatio > 3.0 ? 10.0 : 16.0,
+          height: SizeConfig.deviceRelatifRatio < 1.8 ? 10.0 : 16.0,
         ),
       TextField(
         controller: _pin, //set pin controller
-        style: TextStyle(color: Colors.black45, fontSize: SizeConfig.devicePixelRatio > 3.0 ? 16.0 : 20.0,),
+        style: TextStyle(color: Colors.black45, fontSize: SizeConfig.deviceRelatifRatio < 1.8 ? 16.0 : 20.0,),
         keyboardType: TextInputType.number,
         inputFormatters: <TextInputFormatter>[
           FilteringTextInputFormatter.digitsOnly
@@ -229,7 +229,7 @@ class _LoginPage extends State<LoginPage> {
         decoration: InputDecoration(
           hintText: 'PIN', //show label as placeholder
           hintStyle: TextStyle(
-              color: Colors.grey[500], fontSize: SizeConfig.devicePixelRatio > 3.0 ? 16.0 : 20.0,), //hint text style
+              color: Colors.grey[500], fontSize: SizeConfig.deviceRelatifRatio < 1.8 ? 16.0 : 20.0,), //hint text style
           prefixIcon: Padding(
               padding: const EdgeInsets.only(left: 20, right: 10),
               child: Icon(
@@ -240,7 +240,7 @@ class _LoginPage extends State<LoginPage> {
               ),
           counter: const Offstage(),
 
-          contentPadding: EdgeInsets.fromLTRB(30, SizeConfig.devicePixelRatio > 3.0 ? 16.0 : 20.0, 30, SizeConfig.devicePixelRatio > 3.0 ? 16.0 : 20.0,),
+          contentPadding: EdgeInsets.fromLTRB(30, SizeConfig.deviceRelatifRatio < 1.8 ? 16.0 : 20.0, 30, SizeConfig.deviceRelatifRatio < 1.8 ? 16.0 : 20.0,),
           enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(0.0),
               borderSide: const BorderSide(
@@ -276,10 +276,10 @@ class _LoginPage extends State<LoginPage> {
         },
       ),
        SizedBox(
-          height: SizeConfig.devicePixelRatio > 3.0 ? 18.0 : 24.0,
+          height: SizeConfig.deviceRelatifRatio < 1.8 ? 18.0 : 24.0,
         ),
       SizedBox(
-        height: SizeConfig.devicePixelRatio > 3.0 ? 50.0 : 60.0,
+        height: SizeConfig.deviceRelatifRatio < 1.8 ? 50.0 : 60.0,
         width: double.infinity,
         child: ElevatedButton(
           style: ElevatedButton.styleFrom(
@@ -306,26 +306,26 @@ class _LoginPage extends State<LoginPage> {
                 )
               : Text(
                   "Connexion",
-                  style: TextStyle(fontSize: SizeConfig.devicePixelRatio > 3.0 ? 20.0 : 24.0,),
+                  style: TextStyle(fontSize: SizeConfig.deviceRelatifRatio < 1.8 ? 20.0 : 24.0,),
                 ),
         ),
       ),
       Container(
         padding: const EdgeInsets.symmetric(horizontal: 10),
-        margin: const EdgeInsets.only(bottom: 50, top: 10),
+        margin: EdgeInsets.only(bottom: SizeConfig.deviceRelatifRatio < 1.8 ? 40.0 : 50.0, top: 10),
         child: InkResponse(
             onTap: () {
               _showDialog(context);
             },
             child: Text(
               "Code PIN oublié?",
-              style: TextStyle(color: dark, fontSize: SizeConfig.devicePixelRatio > 3.0 ? 14.0 : 18.0,),
+              style: TextStyle(color: dark, fontSize: SizeConfig.deviceRelatifRatio < 1.8 ? 14.0 : 18.0,),
             ),
           ),
       ),
       Text(
         "Blucash Client — OPENXTECH SARL.",
-        style: TextStyle(color: Colors.grey, fontSize: SizeConfig.devicePixelRatio > 3.0 ? 10.0 : 12.0,),
+        style: TextStyle(color: Colors.grey, fontSize: SizeConfig.deviceRelatifRatio < 1.8 ? 10.0 : 12.0,),
       ),
         ]),
       ),
@@ -346,7 +346,7 @@ class _LoginPage extends State<LoginPage> {
           width: 10,
         ),
 
-        Text(text, maxLines: 1, style: TextStyle(color: dark, fontSize: SizeConfig.devicePixelRatio > 3.0 ? 14.0 : 18.0, )),
+        Text(text, maxLines: 1, style: TextStyle(color: dark, fontSize: SizeConfig.deviceRelatifRatio < 1.8 ? 14.0 : 18.0, )),
         //show error message text
       ]),
     );
@@ -359,10 +359,10 @@ class _LoginPage extends State<LoginPage> {
         return AlertDialog(
           shape: const RoundedRectangleBorder(
                 borderRadius: BorderRadius.all(Radius.circular(0.0))),
-          title: Text("PIN oublié ?", style: TextStyle(fontSize: SizeConfig.devicePixelRatio > 3.0 ? 12.0 : 16.0, fontWeight: FontWeight.bold),),
+          title: Text("PIN oublié ?", style: TextStyle(fontSize: SizeConfig.deviceRelatifRatio < 1.8 ? 12.0 : 16.0, fontWeight: FontWeight.bold),),
           content: Text(
               "Merci de contacter votre partenaire afin d'obtenir de l'assistance.",
-              style: TextStyle(fontSize: SizeConfig.devicePixelRatio > 3.0 ? 12.0 : 16.0,),),
+              style: TextStyle(fontSize: SizeConfig.deviceRelatifRatio < 1.8 ? 12.0 : 16.0,),),
           actions: <Widget>[
             TextButton(
               child: const Text("OK"),

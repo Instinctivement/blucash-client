@@ -7,6 +7,7 @@ class SizeConfig {
  static late double blockSizeHorizontal;
  static late double blockSizeVertical;
  static late double devicePixelRatio;
+ static late double deviceRelatifRatio;
  
  void init(BuildContext context) {
   _mediaQueryData = MediaQuery.of(context);
@@ -15,5 +16,6 @@ class SizeConfig {
   blockSizeHorizontal = screenWidth / 100;
   blockSizeVertical = screenHeight / 100;
   devicePixelRatio = _mediaQueryData.devicePixelRatio;
+  deviceRelatifRatio = screenHeight / screenWidth;
  }
 }

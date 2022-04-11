@@ -58,7 +58,6 @@ class _QrScanPageState extends State<QrScanPage> {
 
        final jsondata = json.decode(response.body);
        if (jsondata["status"] == 'true') {
-         print(jsondata);
          String? val = imageS;
          if (val != "") {
            CachedNetworkImage.evictFromCache(imageS);
@@ -66,7 +65,6 @@ class _QrScanPageState extends State<QrScanPage> {
          pageroute(jsondata["image"], jsondata["user"], jsondata["dateof"], jsondata["role"], jsondata["assigned"]);
        } 
        else {
-         print(jsondata);
          String? errorM = errorMap[jsondata["error"]];
          SharedPreferences prefs = await SharedPreferences.getInstance();
          if (errorM != null) {
@@ -146,7 +144,7 @@ class _QrScanPageState extends State<QrScanPage> {
                 icon: Icon(
                   Icons.arrow_back_ios_new_rounded,
                   color: Colors.white70,
-                  size: SizeConfig.devicePixelRatio > 3.0 ? 20.0 : 25.0,
+                  size: SizeConfig.deviceRelatifRatio < 1.8 ? 20.0 : 25.0,
                 ),
                 label: const Text(
                   'Retour',
@@ -158,7 +156,7 @@ class _QrScanPageState extends State<QrScanPage> {
               ),
             ),
             Positioned(
-              top: SizeConfig.devicePixelRatio > 3.0 ? MediaQuery.of(context).size.height * 0.15 : MediaQuery.of(context).size.height * 0.18,
+              top: SizeConfig.deviceRelatifRatio < 1.8 ? MediaQuery.of(context).size.height * 0.15 : MediaQuery.of(context).size.height * 0.18,
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
@@ -167,16 +165,16 @@ class _QrScanPageState extends State<QrScanPage> {
                     'Scanner le code QR',
                     style: TextStyle(
                         color: Colors.white,
-                        fontSize: SizeConfig.devicePixelRatio > 3.0 ? 18.0 : 22.0,
+                        fontSize: SizeConfig.deviceRelatifRatio < 1.8 ? 18.0 : 22.0,
                         fontWeight: FontWeight.bold),
                   ),
                   Text(
                     "Demandez à l'agent de présenter",
-                    style: TextStyle(color: Colors.white70, fontSize: SizeConfig.devicePixelRatio > 3.0 ? 12.0 : 18.0,),
+                    style: TextStyle(color: Colors.white70, fontSize: SizeConfig.deviceRelatifRatio < 1.8 ? 12.0 : 18.0,),
                   ),
                  Text(
                    "son code d'identification",
-                   style: TextStyle(color: Colors.white70, fontSize: SizeConfig.devicePixelRatio > 3.0 ? 12.0 : 15.0,),
+                   style: TextStyle(color: Colors.white70, fontSize: SizeConfig.deviceRelatifRatio < 1.8 ? 12.0 : 15.0,),
                  ),
                 ],
               ),
@@ -204,15 +202,15 @@ class _QrScanPageState extends State<QrScanPage> {
         borderRadius: 2,
         borderLength: 20,
         borderWidth: 10,
-        cutOutSize: SizeConfig.devicePixelRatio > 3.0 ? MediaQuery.of(context).size.width * 0.66 : MediaQuery.of(context).size.width * 0.7,
+        cutOutSize: SizeConfig.deviceRelatifRatio < 1.8 ? MediaQuery.of(context).size.width * 0.66 : MediaQuery.of(context).size.width * 0.7,
       ),
     );
   }
 
   Widget buildControlButtons() {
     return Container(
-      height: SizeConfig.devicePixelRatio > 3.0 ? 60.0 : 70.0,
-      width: SizeConfig.devicePixelRatio > 3.0 ? 60.0 : 70.0,
+      height: SizeConfig.deviceRelatifRatio < 1.8 ? 60.0 : 70.0,
+      width: SizeConfig.deviceRelatifRatio < 1.8 ? 60.0 : 70.0,
       padding: const EdgeInsets.all(10),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(100),
@@ -228,10 +226,10 @@ class _QrScanPageState extends State<QrScanPage> {
           builder: (context, snapshot) {
             if (snapshot.data != null) {
               return snapshot.data!
-                  ?  Icon(Icons.flash_on, size: SizeConfig.devicePixelRatio > 3.0 ? 30.0 : 40.0, color: Colors.white54)
+                  ?  Icon(Icons.flash_on, size: SizeConfig.deviceRelatifRatio < 1.8 ? 30.0 : 40.0, color: Colors.white54)
                   :  Icon(
                       Icons.flash_off,
-                      size: SizeConfig.devicePixelRatio > 3.0 ? 30.0 : 40.0,
+                      size: SizeConfig.deviceRelatifRatio < 1.8 ? 30.0 : 40.0,
                       color: Colors.white24,
                     );
             } else {
@@ -252,8 +250,8 @@ class _QrScanPageState extends State<QrScanPage> {
       ),
       child: showprogress
           ? SizedBox(
-              height: SizeConfig.devicePixelRatio > 3.0 ? 20.0 : 24.0,
-              width: SizeConfig.devicePixelRatio > 3.0 ? 20.0 : 24.0,
+              height: SizeConfig.deviceRelatifRatio < 1.8 ? 20.0 : 24.0,
+              width: SizeConfig.deviceRelatifRatio < 1.8 ? 20.0 : 24.0,
               child: const CircularProgressIndicator(
                 strokeWidth: 2.0,
                 backgroundColor: Colors.transparent,
@@ -264,7 +262,7 @@ class _QrScanPageState extends State<QrScanPage> {
               result != null
                   ? "role: ${describeEnum(result!.format)}"
                   : "Rapprochez la camera du Code",
-                  style: TextStyle(fontSize: SizeConfig.devicePixelRatio > 3.0 ? 10.0 : 16.0,),
+                  style: TextStyle(fontSize: SizeConfig.deviceRelatifRatio < 1.8 ? 10.0 : 16.0,),
             ),
     );
   }
@@ -276,9 +274,9 @@ class _QrScanPageState extends State<QrScanPage> {
         return AlertDialog(
           shape: const RoundedRectangleBorder(
               borderRadius: BorderRadius.all(Radius.circular(0.0))),
-          title: Text("Qr Code Erroné", style: TextStyle(fontSize: SizeConfig.devicePixelRatio > 3.0 ? 12.0 : 16.0, fontWeight: FontWeight.bold),),
+          title: Text("Qr Code Erroné", style: TextStyle(fontSize: SizeConfig.deviceRelatifRatio < 1.8 ? 12.0 : 16.0, fontWeight: FontWeight.bold),),
           content: Text(
-              "Ceci n'est pas un Qr Code valide, merci de réessayer.", style: TextStyle(fontSize: SizeConfig.devicePixelRatio > 3.0 ? 12.0 : 16.0),),
+              "Ceci n'est pas un Qr Code valide, merci de réessayer.", style: TextStyle(fontSize: SizeConfig.deviceRelatifRatio < 1.8 ? 12.0 : 16.0),),
           actions: <Widget>[
             TextButton(
               child: const Text("OK"),
@@ -300,8 +298,8 @@ class _QrScanPageState extends State<QrScanPage> {
         return AlertDialog(
           shape: const RoundedRectangleBorder(
               borderRadius: BorderRadius.all(Radius.circular(0.0))),
-          title: Text("Erreur de connexion", style: TextStyle(fontSize: SizeConfig.devicePixelRatio > 3.0 ? 12.0 : 16.0, fontWeight: FontWeight.bold),),
-          content: Text("Vérifier votre connexion puis réessayer.", style: TextStyle(fontSize: SizeConfig.devicePixelRatio > 3.0 ? 12.0 : 16.0),),
+          title: Text("Erreur de connexion", style: TextStyle(fontSize: SizeConfig.deviceRelatifRatio < 1.8 ? 12.0 : 16.0, fontWeight: FontWeight.bold),),
+          content: Text("Vérifier votre connexion puis réessayer.", style: TextStyle(fontSize: SizeConfig.deviceRelatifRatio < 1.8 ? 12.0 : 16.0),),
           actions: <Widget>[
             TextButton(
               child: const Text("OK"),
