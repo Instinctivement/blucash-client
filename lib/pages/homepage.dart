@@ -9,6 +9,8 @@ import 'package:blucash_client/pages/scanner.dart';
 import 'package:blucash_client/tools/colors.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:rating_dialog/rating_dialog.dart';
+import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
 
 bool showAgent = false;
 
@@ -20,11 +22,12 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  late String name = "", business = "", balance = "", support = "", token = "";
-  late String image = "", user = "", dateof = "", scanerror = "";
-  late String imageS = "", userS = "", dateofS = "", roleS = "", assignedS= "";
+  late String name = "", business = "", balance = "", support = "", bonus = "", token = "";
+  late String image = "", user = "", dateof = "", scanerror = "", id = "";
+  late String imageS = "", userS = "", dateofS = "", roleS = "", assignedS = "";
   String valueText = "";
   bool isVisible = true;
+  bool rated = false;
 
   @override
   void initState() {
@@ -42,6 +45,7 @@ class _HomePageState extends State<HomePage> {
       business = prefs.getString("business")!.replaceAll("\"", "");
       balance = prefs.getString("balance")!.replaceAll("\"", "");
       support = prefs.getString("support")!.replaceAll("\"", "");
+      bonus = prefs.getString("bonus")!.replaceAll("\"", "");
       token = prefs.getString("login")!.replaceAll("\"", "");
     });
   }
@@ -49,6 +53,7 @@ class _HomePageState extends State<HomePage> {
   void getAgent() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
+      id = prefs.getString("id")!.replaceAll("\"", "");
       image = prefs.getString("image")!.replaceAll("\"", "");
       user = prefs.getString("user")!.replaceAll("\"", "");
       dateof = prefs.getString("dateof")!.replaceAll("\"", "");
@@ -77,14 +82,14 @@ class _HomePageState extends State<HomePage> {
       _errorScanDialog(context);
     }
     if (valS != null) {
-        setState(() {
-          imageS = prefs.getString("imageS")!.replaceAll("\"", "");
-          userS = prefs.getString("userS")!.replaceAll("\"", "");
-          dateofS = prefs.getString("dateofS")!.replaceAll("\"", "");
-          roleS = prefs.getString("roleS")!.replaceAll("\"", "");
-          assignedS = prefs.getString("assignedS")!.replaceAll("\"", "");
-        });
-        _managerScanDialog(context);
+      setState(() {
+        imageS = prefs.getString("imageS")!.replaceAll("\"", "");
+        userS = prefs.getString("userS")!.replaceAll("\"", "");
+        dateofS = prefs.getString("dateofS")!.replaceAll("\"", "");
+        roleS = prefs.getString("roleS")!.replaceAll("\"", "");
+        assignedS = prefs.getString("assignedS")!.replaceAll("\"", "");
+      });
+      _managerScanDialog(context);
     }
   }
 
@@ -97,7 +102,8 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(statusBarColor: primary));
+    SystemChrome.setSystemUIOverlayStyle(
+        const SystemUiOverlayStyle(statusBarColor: white));
     SizeConfig().init(context);
     return SafeArea(
       child: Scaffold(
@@ -127,8 +133,8 @@ class _HomePageState extends State<HomePage> {
             ),
             Theme(
               data: Theme.of(context).copyWith(
-              dividerColor: Colors.grey,
-              iconTheme: const IconThemeData(color: Colors.white)),
+                  dividerColor: Colors.grey,
+                  iconTheme: const IconThemeData(color: Colors.white)),
               child: PopupMenuButton<int>(
                 color: Colors.white,
                 itemBuilder: (context) => [
@@ -195,27 +201,32 @@ class _HomePageState extends State<HomePage> {
           decoration: const BoxDecoration(
             color: white,
           ),
-          padding: const EdgeInsets.only(top: 15.0, bottom: 10, left: 24, right: 24),
+          padding:
+              const EdgeInsets.only(top: 15.0, bottom: 10, left: 24, right: 24),
           child: Column(
             children: [
               Center(
                 child: Padding(
-                  padding: EdgeInsets.only(top: SizeConfig.deviceRelatifRatio < 1.8 ? 2.0 : 8.0,),
+                  padding: EdgeInsets.only(
+                    top: SizeConfig.deviceRelatifRatio < 1.8 ? 2.0 : 8.0,
+                  ),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       const Icon(
-                        Icons.work,
+                        Icons.account_circle,
                         color: Colors.black54,
                       ),
                       const SizedBox(
-                        width: 10,
+                        width: 05,
                       ),
                       Text(
-                        business,
+                        name,
                         textAlign: TextAlign.center,
                         style: TextStyle(
-                            fontSize: SizeConfig.deviceRelatifRatio < 1.8 ? 14.0 : 18.0,
+                            fontSize: SizeConfig.deviceRelatifRatio < 1.8
+                                ? 14.0
+                                : 18.0,
                             color: Colors.black54,
                             fontWeight: FontWeight.w400),
                       ),
@@ -227,7 +238,8 @@ class _HomePageState extends State<HomePage> {
                 height: 10,
               ),
               Container(
-                padding: EdgeInsets.all(SizeConfig.deviceRelatifRatio < 1.8 ? 12.0 : 20.0),
+                padding: EdgeInsets.all(
+                    SizeConfig.deviceRelatifRatio < 1.8 ? 12.0 : 20.0),
                 width: double.infinity,
                 decoration: BoxDecoration(
                   color: container,
@@ -242,53 +254,49 @@ class _HomePageState extends State<HomePage> {
                           Text(
                             "Dette courante".toUpperCase(),
                             style: TextStyle(
-                                fontSize:  SizeConfig.deviceRelatifRatio < 1.8 ? 10.0 : 16.0,
+                                fontSize: SizeConfig.deviceRelatifRatio < 1.8
+                                    ? 10.0
+                                    : 16.0,
                                 fontWeight: FontWeight.w400,
                                 color: Colors.black54),
                           ),
                           Text(
                             balance,
                             style: TextStyle(
-                              fontSize:  SizeConfig.deviceRelatifRatio < 1.8 ? 18.0 : 24.0,
+                              fontSize: SizeConfig.deviceRelatifRatio < 1.8
+                                  ? 18.0
+                                  : 24.0,
                               fontWeight: FontWeight.w700,
                             ),
                           ),
                         ],
                       ),
-                      const SizedBox(
-                        height: 8.0,
+                      SizedBox(
+                        height: bonus != 'false' ? 8.0: 0.0,
                       ),
-                      Center(
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            ElevatedButton.icon(
-                              icon: const Icon(
-                                Icons.qr_code,
-                                color: Colors.white,
-                                size: 15.0,
-                              ),
-                              label: Text(
-                                'Scanner'.toUpperCase(),
-                                style: TextStyle(fontSize:  SizeConfig.deviceRelatifRatio < 1.8 ? 12.0 : 18.0,),
-                              ),
-                              onPressed: () {
-                                Navigator.of(context).push(MaterialPageRoute(
-                                    builder: (context) => const QrScanPage()));
-                              },
-                              style: ElevatedButton.styleFrom(
-                                primary: primary,
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 10, vertical: 10),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(0.0),
-                                ),
-                              ),
+                      bonus != 'false' ?
+                      Column(
+                        children: [
+                          Text(
+                            "Bonus Fidelite".toUpperCase(),
+                            style: TextStyle(
+                                fontSize: SizeConfig.deviceRelatifRatio < 1.8
+                                    ? 10.0
+                                    : 14.0,
+                                fontWeight: FontWeight.w400,
+                                color: Colors.black54),
+                          ),
+                          Text(
+                            bonus,
+                            style: TextStyle(
+                              fontSize: SizeConfig.deviceRelatifRatio < 1.8
+                                  ? 12.0
+                                  : 16.0,
+                              fontWeight: FontWeight.w700,
                             ),
-                            
-                          ],
-                        ),
-                      ),
+                          ),
+                        ],
+                      ): Container(),
                     ],
                   ),
                 ),
@@ -298,69 +306,100 @@ class _HomePageState extends State<HomePage> {
               ),
               Center(
                 child: SizedBox(
-                    child: showAgent
-                        ?  Text(
-                            "Agent Commercial",
+                  child: GestureDetector(
+                      child: Row(
+                        textBaseline: TextBaseline.alphabetic,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: [
+                          Text(
+                            "Consulter mon historique",
                             textAlign: TextAlign.center,
                             style: TextStyle(
-                              fontSize: SizeConfig.deviceRelatifRatio < 1.8 ? 12.0 : 16.0,
+                              fontSize: SizeConfig.deviceRelatifRatio < 1.8
+                                  ? 12.0
+                                  : 16.0,
                               color: Colors.black54,
                               fontWeight: FontWeight.w700,
                             ),
+                          ),
+                          const Icon(
+                            Icons.arrow_forward_ios,
+                            size: 12,
+                            color: Colors.black54,
                           )
-                        : Text(
-                            "Aucune assignation en-cours",
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              fontSize: SizeConfig.deviceRelatifRatio < 1.8 ? 12.0 : 16.0,
-                              color: Colors.black54,
-                              fontWeight: FontWeight.w700,
-                            ),
-                          )),
+                        ],
+                      ),
+                      onTap: () {
+                        record();
+                      }),
+                ),
               ),
               Padding(
-                padding:
-                    EdgeInsets.symmetric(horizontal: SizeConfig.deviceRelatifRatio < 1.8 ? 110.0 : 120.0, vertical: 8),
+                padding: EdgeInsets.symmetric(
+                    horizontal:
+                        SizeConfig.deviceRelatifRatio < 1.8 ? 110.0 : 120.0,
+                    vertical: 8),
                 child: Container(
                   color: Colors.grey[100],
                   height: 2,
                 ),
               ),
               showAgent ? isAgent(context) : defaultAgent(context),
-              Container(
-                height: SizeConfig.deviceRelatifRatio < 1.8 ? 28.0 : 35.0,
-                padding:EdgeInsets.symmetric(horizontal: 30, vertical: SizeConfig.deviceRelatifRatio < 1.8 ? 2.0 : 4.0),
-                decoration: BoxDecoration(
-                  color: container,
-                  borderRadius: BorderRadius.circular(50),
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
+              Center(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Text(
-                      'Vous êtes connecté en tant que :',
-                      style: TextStyle(
-                        fontSize: SizeConfig.deviceRelatifRatio < 1.8 ? 9.0 : 12.0,
-                        fontWeight: FontWeight.w400,
-                        color: isVisible ? Colors.black : Colors.black,
+                    ElevatedButton.icon(
+                      icon: const Icon(
+                        Icons.qr_code,
+                        color: Colors.white,
+                        size: 15.0,
                       ),
-                    ),
-                    Text(
-                      name,
-                      style: TextStyle(
-                        fontSize: SizeConfig.deviceRelatifRatio < 1.8 ? 9.0 : 12.0,
-                        fontWeight: FontWeight.w700,
-                        color: isVisible ? Colors.black : Colors.black,
+                      label: Text(
+                        'Scanner'.toUpperCase(),
+                        style: TextStyle(
+                          fontSize:
+                              SizeConfig.deviceRelatifRatio < 1.8 ? 12.0 : 18.0,
+                        ),
+                      ),
+                      onPressed: () {
+                        Navigator.of(context).push(MaterialPageRoute(
+                            builder: (context) => const QrScanPage()));
+                      },
+                      style: ElevatedButton.styleFrom(
+                        primary: primary,
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 10, vertical: 10),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(0.0),
+                        ),
                       ),
                     ),
                   ],
                 ),
               ),
               Padding(
-                padding: EdgeInsets.only(top: SizeConfig.deviceRelatifRatio < 1.8 ? 20.0 : 30.0),
+                padding: EdgeInsets.only(
+                    top: SizeConfig.deviceRelatifRatio < 1.8 ? 20.0 : 25.0),
+                child: Text(
+                  business,
+                  style: TextStyle(
+                      color: Colors.grey,
+                      fontSize:
+                          SizeConfig.deviceRelatifRatio < 1.8 ? 12.0 : 16.0,
+                      fontWeight: FontWeight.bold),
+                ),
+              ),
+              Padding(
+                padding: EdgeInsets.only(
+                    top: SizeConfig.deviceRelatifRatio < 1.8 ? 5.0 : 5.0),
                 child: Text(
                   "Blucash Client — OPENXTECH SARL.",
-                  style: TextStyle(color: Colors.grey, fontSize: SizeConfig.deviceRelatifRatio < 1.8 ? 9.0 : 12.0,),
+                  style: TextStyle(
+                    color: Colors.grey,
+                    fontSize: SizeConfig.deviceRelatifRatio < 1.8 ? 9.0 : 12.0,
+                  ),
                 ),
               ),
             ],
@@ -371,63 +410,76 @@ class _HomePageState extends State<HomePage> {
   }
 
   void refresh() async {
-      var url = Uri.parse('https://www.blucash.net/client/refresh');
-       try {
-         var response = await http.post(url, body: {'st': token});
-         final jsondata = json.decode(response.body);
-         if (jsondata["status"] == "true") {
-           String? val = image;
-            if (val != "") {
-              CachedNetworkImage.evictFromCache(image);
-            }
-            var agent = jsondata["agent"];
-           if (agent.isEmpty) {
-              pagerouteRefreshS(jsondata["name"], jsondata["balance"],jsondata["support"]);
-            Navigator.pop(context, 'Annuler');
-           } else {
-              pagerouteRefresh(jsondata["name"], jsondata["balance"], jsondata["support"], agent['image'], agent['user'], agent['dateof']);
-           }
-           
-         } else {
-           Future.delayed(const Duration(seconds: 2), () async {
-             Navigator.pop(context, 'Annuler');
-             await logOut(context);
-           });
-         }
-       } catch (e) {
-         Future.delayed(const Duration(seconds: 2), () {//pop dialog
-            Navigator.pop(context, 'Annuler');
-           _internetDialog(context);
-         });
-       }
+    var url = Uri.parse('https://www.blucash.net/client/refresh');
+    try {
+      var response = await http.post(url, body: {'st': token});
+      final jsondata = json.decode(response.body);
+      if (jsondata["status"] == "true") {
+        String? val = image;
+        if (val != "") {
+          CachedNetworkImage.evictFromCache(image);
+        }
+        var agent = jsondata["agent"];
+        if (agent.isEmpty) {
+          pagerouteRefreshS(
+              jsondata["name"], jsondata["balance"], jsondata["bonus"], jsondata["support"]);
+          Navigator.pop(context, 'Annuler');
+        } else {
+          pagerouteRefresh(
+              jsondata["name"],
+              jsondata["balance"],
+              jsondata["support"],
+              jsondata["bonus"],
+              agent['image'],
+              agent['user'],
+              agent['dateof']);
+        }
+      } else {
+        Future.delayed(const Duration(seconds: 2), () async {
+          Navigator.pop(context, 'Annuler');
+          await logOut(context);
+        });
+      }
+    } catch (e) {
+      Future.delayed(const Duration(seconds: 2), () {
+        //pop dialog
+        Navigator.pop(context, 'Annuler');
+        _internetDialog(context);
+      });
+    }
   }
 
-  void pagerouteRefreshS(String nameR, String balanceR, String supportR) async {
+  void pagerouteRefreshS(String nameR, String balanceR, String bonusR, String supportR) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-     await prefs.remove('image');
-     await prefs.remove('user');
-     await prefs.remove('dateof');
+    await prefs.remove('image');
+    await prefs.remove('user');
+    await prefs.remove('dateof');
     prefs.setString("name", json.encode(nameR));
     prefs.setString("balance", json.encode(balanceR));
     prefs.setString("support", json.encode(supportR));
-     WidgetsBinding.instance?.addPostFrameCallback((_) {
-      Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) => const HomePage()),(route) => false);
-    });
-  }
-
-  void pagerouteRefresh(String nameR, String balanceR, String supportR, String imageR, String userR, String dateofR) async {
-    saveSessionRefresh(nameR, balanceR, supportR, imageR, userR, dateofR);
+    prefs.setString("bonus", json.encode(bonusR));
     WidgetsBinding.instance?.addPostFrameCallback((_) {
-      Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) => const HomePage()),(route) => false);
+      Navigator.of(context).pushAndRemoveUntil(
+          MaterialPageRoute(builder: (context) => const HomePage()),
+          (route) => false);
     });
-
   }
 
-  void saveSessionRefresh(String nameR, String balanceR, String supportR, String imageR, String userR, String dateofR) async {
+  void pagerouteRefresh(String nameR, String balanceR, String supportR, String bonusR, String imageR, String userR, String dateofR) async {
+    saveSessionRefresh(nameR, balanceR, supportR, bonusR, imageR, userR, dateofR);
+    WidgetsBinding.instance?.addPostFrameCallback((_) {
+      Navigator.of(context).pushAndRemoveUntil(
+          MaterialPageRoute(builder: (context) => const HomePage()),
+          (route) => false);
+    });
+  }
+
+  void saveSessionRefresh(String nameR, String balanceR, String supportR, String bonusR, String imageR, String userR, String dateofR) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setString("name", json.encode(nameR));
     prefs.setString("balance", json.encode(balanceR));
     prefs.setString("support", json.encode(supportR));
+    prefs.setString("bonus", json.encode(bonusR));
     prefs.setString("image", json.encode(imageR));
     prefs.setString("user", json.encode(userR));
     prefs.setString("dateof", json.encode(dateofR));
@@ -438,27 +490,29 @@ class _HomePageState extends State<HomePage> {
       context: context,
       builder: (_) => AlertDialog(
         backgroundColor: Colors.transparent,
-        insetPadding: EdgeInsets.symmetric(horizontal: SizeConfig.deviceRelatifRatio < 1.8 ? 120.0 : 130.0,),
+        insetPadding: EdgeInsets.symmetric(
+          horizontal: SizeConfig.deviceRelatifRatio < 1.8 ? 120.0 : 130.0,
+        ),
         shape: const RoundedRectangleBorder(
-        borderRadius:BorderRadius.all(Radius.circular(0.0))),
+            borderRadius: BorderRadius.all(Radius.circular(0.0))),
         title: SizedBox(
-                  height: 80,
-                  child: Center(
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: const [
-                         CircularProgressIndicator(
-                          strokeWidth: 2.0,
-                          backgroundColor: Colors.transparent,
-                          valueColor: AlwaysStoppedAnimation<Color>(white),
-                        ),
-                        SizedBox(
-                          height: 10,
-                        ),
-                      ],
-                    ),
-                  ),
+          height: 80,
+          child: Center(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: const [
+                CircularProgressIndicator(
+                  strokeWidth: 2.0,
+                  backgroundColor: Colors.transparent,
+                  valueColor: AlwaysStoppedAnimation<Color>(white),
                 ),
+                SizedBox(
+                  height: 10,
+                ),
+              ],
+            ),
+          ),
+        ),
       ),
     );
     refresh();
@@ -532,8 +586,17 @@ class _HomePageState extends State<HomePage> {
           builder: (BuildContext context) => AlertDialog(
             shape: const RoundedRectangleBorder(
                 borderRadius: BorderRadius.all(Radius.circular(0.0))),
-            title: Text('Confirmation', style: TextStyle(fontSize: SizeConfig.deviceRelatifRatio < 1.8 ? 12.0 : 16.0, fontWeight: FontWeight.bold),),
-            content: Text('Vous allez être redirigé.', style: TextStyle(fontSize: SizeConfig.deviceRelatifRatio < 1.8 ? 12.0 : 16.0),),
+            title: Text(
+              'Confirmation',
+              style: TextStyle(
+                  fontSize: SizeConfig.deviceRelatifRatio < 1.8 ? 12.0 : 16.0,
+                  fontWeight: FontWeight.bold),
+            ),
+            content: Text(
+              'Vous allez être redirigé.',
+              style: TextStyle(
+                  fontSize: SizeConfig.deviceRelatifRatio < 1.8 ? 12.0 : 16.0),
+            ),
             actions: <Widget>[
               TextButton(
                 onPressed: () => Navigator.pop(context, 'Annuler'),
@@ -622,7 +685,9 @@ class _HomePageState extends State<HomePage> {
 
   Padding isAgent(BuildContext context) {
     return Padding(
-      padding:  EdgeInsets.symmetric(vertical: SizeConfig.deviceRelatifRatio < 1.8 ? 0.0 : 8.0,),
+      padding: EdgeInsets.symmetric(
+        vertical: SizeConfig.deviceRelatifRatio < 1.8 ? 0.0 : 8.0,
+      ),
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 15.0),
         width: double.infinity,
@@ -633,31 +698,68 @@ class _HomePageState extends State<HomePage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
-            CircleAvatar(
-              backgroundColor: container,
-              radius: SizeConfig.deviceRelatifRatio < 1.8 ? 95.0 : 110.0,
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(SizeConfig.deviceRelatifRatio < 1.8 ? 95.0 : 110.0,),
-                child: CachedNetworkImage(
-                  imageUrl: image,
-                  progressIndicatorBuilder: (context, url, downloadProgress) =>
-                      CircularProgressIndicator(
-                          value: downloadProgress.progress),
-                  errorWidget: (context, url, error) =>  CircleAvatar(
-                    backgroundColor: Colors.white,
-                    radius: SizeConfig.deviceRelatifRatio < 1.8 ? 95.0 : 110.0,
+            Stack(
+              children: [
+                CircleAvatar(
+                  backgroundColor: container,
+                  radius: SizeConfig.deviceRelatifRatio < 1.8 ? 95.0 : 110.0,
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(
+                      SizeConfig.deviceRelatifRatio < 1.8 ? 95.0 : 110.0,
+                    ),
                     child: CircleAvatar(
-                      backgroundColor: const Color.fromARGB(255, 250, 249, 249),
-                      radius: SizeConfig.deviceRelatifRatio < 1.8 ? 95.0 : 110.0,
-                      child: Icon(
-                        Icons.error_outline_sharp,
-                        size: SizeConfig.deviceRelatifRatio < 1.8 ? 95.0 : 100.0,
-                        color: const Color.fromARGB(255, 189, 187, 187),
+                      backgroundColor: container,
+                      radius:
+                          SizeConfig.deviceRelatifRatio < 1.8 ? 92.0 : 108.0,
+                      child: CachedNetworkImage(
+                        imageUrl: image,
+                        progressIndicatorBuilder:
+                            (context, url, downloadProgress) =>
+                                CircularProgressIndicator(
+                                    value: downloadProgress.progress),
+                        errorWidget: (context, url, error) => CircleAvatar(
+                          backgroundColor: Colors.grey,
+                          radius: SizeConfig.deviceRelatifRatio < 1.8
+                              ? 98.0
+                              : 110.0,
+                          child: CircleAvatar(
+                            backgroundColor:
+                                const Color.fromARGB(255, 250, 249, 249),
+                            radius: SizeConfig.deviceRelatifRatio < 1.8
+                                ? 95.0
+                                : 110.0,
+                            child: Icon(
+                              Icons.error_outline_sharp,
+                              size: SizeConfig.deviceRelatifRatio < 1.8
+                                  ? 95.0
+                                  : 100.0,
+                              color: const Color.fromARGB(255, 189, 187, 187),
+                            ),
+                          ),
+                        ),
                       ),
                     ),
                   ),
                 ),
-              ),
+                Positioned(
+                  bottom: 0,
+                  right: SizeConfig.deviceRelatifRatio < 1.8 ? -5 : 0,
+                  child: RawMaterialButton(
+                    onPressed: () {
+                      _showRatingDialog(context);
+                    },
+                    elevation: 4.0,
+                    fillColor: const Color(0xFFF5F6F9),
+                    child: const Icon(
+                      Icons.star_half,
+                      color: dark,
+                      size: 20,
+                    ),
+                    padding: const EdgeInsets.all(0.0),
+                    shape: const CircleBorder(),
+                  ),
+                ),
+              ],
             ),
             Center(
               child: Column(
@@ -671,13 +773,16 @@ class _HomePageState extends State<HomePage> {
                         Text(
                           user,
                           style: TextStyle(
-                              fontSize: SizeConfig.deviceRelatifRatio < 1.8 ? 20.0 : 26.0,
+                              fontSize: SizeConfig.deviceRelatifRatio < 1.8
+                                  ? 20.0
+                                  : 26.0,
                               color: primary,
                               fontWeight: FontWeight.bold),
                         ),
-                       Icon(
+                        Icon(
                           Icons.verified_rounded,
-                          size: SizeConfig.deviceRelatifRatio < 1.8 ? 16.0 : 20.0,
+                          size:
+                              SizeConfig.deviceRelatifRatio < 1.8 ? 16.0 : 20.0,
                           color: primary,
                         ),
                       ],
@@ -687,8 +792,9 @@ class _HomePageState extends State<HomePage> {
                     padding: const EdgeInsets.only(top: 2.0),
                     child: Text(
                       "Assigné le $dateof",
-                      style:  TextStyle(
-                          fontSize: SizeConfig.deviceRelatifRatio < 1.8 ? 10.0 : 14.0,
+                      style: TextStyle(
+                          fontSize:
+                              SizeConfig.deviceRelatifRatio < 1.8 ? 10.0 : 14.0,
                           color: Colors.black45,
                           fontWeight: FontWeight.w400),
                     ),
@@ -709,8 +815,17 @@ class _HomePageState extends State<HomePage> {
         return AlertDialog(
           shape: const RoundedRectangleBorder(
               borderRadius: BorderRadius.all(Radius.circular(0.0))),
-          title: Text("Message", style: TextStyle(fontSize: SizeConfig.deviceRelatifRatio < 1.8 ? 12.0 : 16.0, fontWeight: FontWeight.bold),),
-          content: Text(scanerror, style: TextStyle(fontSize: SizeConfig.deviceRelatifRatio < 1.8 ? 12.0 : 16.0),),
+          title: Text(
+            "Message",
+            style: TextStyle(
+                fontSize: SizeConfig.deviceRelatifRatio < 1.8 ? 12.0 : 16.0,
+                fontWeight: FontWeight.bold),
+          ),
+          content: Text(
+            scanerror,
+            style: TextStyle(
+                fontSize: SizeConfig.deviceRelatifRatio < 1.8 ? 12.0 : 16.0),
+          ),
           actions: <Widget>[
             TextButton(
               child: const Text("OK"),
@@ -736,7 +851,9 @@ class _HomePageState extends State<HomePage> {
           shape: const RoundedRectangleBorder(
               borderRadius: BorderRadius.all(Radius.circular(0.0))),
           content: SizedBox(
-            height: roleS == "admin"? MediaQuery.of(context).size.height * 0.42 : MediaQuery.of(context).size.height * 0.48,
+            height: roleS == "admin"
+                ? MediaQuery.of(context).size.height * 0.42
+                : MediaQuery.of(context).size.height * 0.48,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -753,10 +870,14 @@ class _HomePageState extends State<HomePage> {
                                   value: downloadProgress.progress),
                       errorWidget: (context, url, error) => CircleAvatar(
                         backgroundColor: Colors.white,
-                        radius: SizeConfig.deviceRelatifRatio < 1.8 ? 90.0 : 110.0,
+                        radius:
+                            SizeConfig.deviceRelatifRatio < 1.8 ? 90.0 : 110.0,
                         child: CircleAvatar(
-                          backgroundColor: const Color.fromARGB(255, 250, 249, 249),
-                          radius: SizeConfig.deviceRelatifRatio < 1.8 ? 90.0 : 110.0,
+                          backgroundColor:
+                              const Color.fromARGB(255, 250, 249, 249),
+                          radius: SizeConfig.deviceRelatifRatio < 1.8
+                              ? 90.0
+                              : 110.0,
                           child: const Icon(
                             Icons.error_outline_sharp,
                             size: 100,
@@ -798,81 +919,91 @@ class _HomePageState extends State<HomePage> {
                         padding: const EdgeInsets.only(top: 2.0),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [ roleS == "admin"?
-                            Column(
-                              children: [
-                                const Text(
-                                  "Gestionnaire",
-                                  style: TextStyle(
-                                      fontSize: 16,
-                                      color: Colors.black87,
-                                      fontWeight: FontWeight.w700),
-                                ),
-                                const SizedBox(
-                                  height: 4,
-                                ),
-                                Text(
-                                  business,
-                                  style: const TextStyle(
-                                      fontSize: 14,
-                                      color: Colors.black45,
-                                      fontWeight: FontWeight.w400),
-                                ),
-                              ],
-                            ):
-                            Column(
-                              children: [
-                                const Text(
-                                  "Agent Commercial",
-                                  style: TextStyle(
-                                      fontSize: 16,
-                                      color: Colors.black87,
-                                      fontWeight: FontWeight.w700),
-                                ),
-                                const SizedBox(
-                                  height: 4,
-                                ),
-                                Text(
-                                  business,
-                                  style: const TextStyle(
-                                      fontSize: 14,
-                                      color: Colors.black45,
-                                      fontWeight: FontWeight.w400),
-                                ),
-                                const SizedBox(
-                                  height: 20,
-                                ),
-                                assignedS == 'true'?
-                                Container(
-                                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(30),
-                                    color: Colors.green.shade100,
-                                  ),
-                                    child: const Text(
-                                    "Cet agent vous a été assigné",
-                                    style: TextStyle(
-                                        fontSize: 14,
-                                        color: dark,
-                                        fontWeight: FontWeight.w700),
+                          children: [
+                            roleS == "admin"
+                                ? Column(
+                                    children: [
+                                      const Text(
+                                        "Gestionnaire",
+                                        style: TextStyle(
+                                            fontSize: 16,
+                                            color: Colors.black87,
+                                            fontWeight: FontWeight.w700),
+                                      ),
+                                      const SizedBox(
+                                        height: 4,
+                                      ),
+                                      Text(
+                                        business,
+                                        style: const TextStyle(
+                                            fontSize: 14,
+                                            color: Colors.black45,
+                                            fontWeight: FontWeight.w400),
+                                      ),
+                                    ],
                                   )
-                                ):
-                                Container(
-                                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(30),
-                                    color: Colors.yellow.shade100,
+                                : Column(
+                                    children: [
+                                      const Text(
+                                        "Agent Commercial",
+                                        style: TextStyle(
+                                            fontSize: 16,
+                                            color: Colors.black87,
+                                            fontWeight: FontWeight.w700),
+                                      ),
+                                      const SizedBox(
+                                        height: 4,
+                                      ),
+                                      Text(
+                                        business,
+                                        style: const TextStyle(
+                                            fontSize: 14,
+                                            color: Colors.black45,
+                                            fontWeight: FontWeight.w400),
+                                      ),
+                                      const SizedBox(
+                                        height: 20,
+                                      ),
+                                      assignedS == 'true'
+                                          ? Container(
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                      horizontal: 12,
+                                                      vertical: 6),
+                                              decoration: BoxDecoration(
+                                                borderRadius:
+                                                    BorderRadius.circular(30),
+                                                color: Colors.green.shade100,
+                                              ),
+                                              child: const Text(
+                                                "Cet agent vous a été assigné",
+                                                style: TextStyle(
+                                                    fontSize: 14,
+                                                    color: dark,
+                                                    fontWeight:
+                                                        FontWeight.w700),
+                                              ))
+                                          : Container(
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                      horizontal: 12,
+                                                      vertical: 6),
+                                              decoration: BoxDecoration(
+                                                borderRadius:
+                                                    BorderRadius.circular(30),
+                                                color: Colors.yellow.shade100,
+                                              ),
+                                              child: const Text(
+                                                "Vous n'êtes pas lié à cet agent",
+                                                style: TextStyle(
+                                                    fontSize: 14,
+                                                    color: dark,
+                                                    fontWeight:
+                                                        FontWeight.w700),
+                                              ),
+                                            ),
+                                    ],
                                   ),
-                                    child: const Text(
-                                  "Vous n'êtes pas lié à cet agent",
-                                  style: TextStyle(
-                                        fontSize: 14,
-                                        color: dark,
-                                        fontWeight: FontWeight.w700),
-                                  ),
-                                ),
-                              ],
-                            ),
                           ],
                         ),
                       ),
@@ -906,7 +1037,7 @@ class _HomePageState extends State<HomePage> {
                 onPressed: () async {
                   CachedNetworkImage.evictFromCache(imageS);
                   SharedPreferences prefs =
-                  await SharedPreferences.getInstance();
+                      await SharedPreferences.getInstance();
                   await prefs.remove('imageS');
                   await prefs.remove('userS');
                   await prefs.remove('dateofS');
@@ -929,8 +1060,17 @@ class _HomePageState extends State<HomePage> {
         return AlertDialog(
           shape: const RoundedRectangleBorder(
               borderRadius: BorderRadius.all(Radius.circular(0.0))),
-          title: Text("Erreur de connexion", style: TextStyle(fontSize: SizeConfig.deviceRelatifRatio < 1.8 ? 12.0 : 16.0, fontWeight: FontWeight.bold),),
-          content: Text("Vérifier votre connexion puis réessayer.", style: TextStyle(fontSize: SizeConfig.deviceRelatifRatio < 1.8 ? 12.0 : 16.0),),
+          title: Text(
+            "Erreur de connexion",
+            style: TextStyle(
+                fontSize: SizeConfig.deviceRelatifRatio < 1.8 ? 12.0 : 16.0,
+                fontWeight: FontWeight.bold),
+          ),
+          content: Text(
+            "Vérifier votre connexion puis réessayer.",
+            style: TextStyle(
+                fontSize: SizeConfig.deviceRelatifRatio < 1.8 ? 12.0 : 16.0),
+          ),
           actions: <Widget>[
             TextButton(
               child: const Text("OK"),
@@ -941,6 +1081,271 @@ class _HomePageState extends State<HomePage> {
           ],
         );
       },
+    );
+  }
+
+  void _showRatingDialog(BuildContext context) {
+    showAnimatedDialog(
+      context: context,
+      barrierDismissible: true,
+      builder: (BuildContext context) {
+        return RatingDialog(
+          initialRating: 1.0,
+          title: Text(
+            "Notez votre agent",
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontSize: SizeConfig.deviceRelatifRatio < 1.8 ? 20.0 : 25.0,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          starSize: SizeConfig.deviceRelatifRatio < 1.8 ? 30.0 : 40.0,
+          showCloseButton: true,
+          starColor: primary,
+          message: Text(
+            'Appuyez sur une étoile pour définir votre niveau de satisfaction.',
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontSize: SizeConfig.deviceRelatifRatio < 1.8 ? 11.0 : 15.0,
+            ),
+          ),
+          image: CircleAvatar(
+            backgroundColor: container,
+            radius: SizeConfig.deviceRelatifRatio < 1.8 ? 70.0 : 90.0,
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(
+                SizeConfig.deviceRelatifRatio < 1.8 ? 70.0 : 90.0,
+              ),
+              child: CircleAvatar(
+                radius: SizeConfig.deviceRelatifRatio < 1.8 ? 68.0 : 88.0,
+                child: CachedNetworkImage(
+                  imageUrl: image,
+                  progressIndicatorBuilder: (context, url, downloadProgress) =>
+                      CircularProgressIndicator(
+                          value: downloadProgress.progress),
+                  errorWidget: (context, url, error) => CircleAvatar(
+                    backgroundColor: Colors.white,
+                    radius: SizeConfig.deviceRelatifRatio < 1.8 ? 70.0 : 90.0,
+                    child: CircleAvatar(
+                      backgroundColor: const Color.fromARGB(255, 250, 249, 249),
+                      radius: SizeConfig.deviceRelatifRatio < 1.8 ? 70.0 : 90.0,
+                      child: const Icon(
+                        Icons.error_outline_sharp,
+                        size: 100,
+                        color: Color.fromARGB(255, 189, 187, 187),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+          submitButtonText: 'Envoyer',
+          submitButtonTextStyle: TextStyle(
+            fontWeight: FontWeight.bold,
+            fontSize: SizeConfig.deviceRelatifRatio < 1.8 ? 14.0 : 17.0,
+          ),
+          commentHint: 'Ajoutez un commentaire...',
+          onSubmitted: (response) {
+            _onLoadingRate(response.rating.toInt(), response.comment);
+          },
+        );
+      },
+      animationType: DialogTransitionType.fade,
+      curve: Curves.fastOutSlowIn,
+      duration: const Duration(milliseconds: 700),
+    );
+  }
+
+  void _onLoadingRate(int star, String comment) {
+    showDialog(
+      context: context,
+      builder: (_) => AlertDialog(
+        backgroundColor: Colors.transparent,
+        insetPadding: EdgeInsets.symmetric(
+          horizontal: SizeConfig.deviceRelatifRatio < 1.8 ? 120.0 : 130.0,
+        ),
+        shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(0.0))),
+        title: SizedBox(
+          height: 80,
+          child: Center(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: const [
+                CircularProgressIndicator(
+                  strokeWidth: 2.0,
+                  backgroundColor: Colors.transparent,
+                  valueColor: AlwaysStoppedAnimation<Color>(white),
+                ),
+                SizedBox(
+                  height: 10,
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+    rate(star, comment);
+  }
+
+  void rate(int star, String comment) async {
+    var url = Uri.parse('https://www.blucash.net/client/review');
+    try {
+      var response = await http.post(url, body: {
+        'st': token,
+        'agent': id,
+        'star': star.toString(),
+        'comment': comment
+      });
+      final jsondata = json.decode(response.body);
+      if (jsondata["status"] == true) {
+        Navigator.pop(context, 'Annuler');
+        Future.delayed(const Duration(seconds: 1), () {
+          _rateResult(context, 'Merci pour votre avis');
+        });
+      } else {
+        Navigator.pop(context, 'Annuler');
+        Future.delayed(const Duration(seconds: 1), () {
+          _rateResult(context,
+              "Une erreur s'est produite merci de reéssayer plus tard");
+        });
+      }
+    } catch (e) {
+      Future.delayed(const Duration(seconds: 2), () {
+        _internetDialog(context);
+      });
+    }
+  }
+
+  void _rateResult(BuildContext context, String message) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(0.0))),
+          title: Text(
+            "Message",
+            style: TextStyle(
+                fontSize: SizeConfig.deviceRelatifRatio < 1.8 ? 12.0 : 16.0,
+                fontWeight: FontWeight.bold),
+          ),
+          content: Text(
+            message,
+            style: TextStyle(
+                fontSize: SizeConfig.deviceRelatifRatio < 1.8 ? 12.0 : 16.0),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: const Text("OK"),
+              onPressed: () {
+                Navigator.pop(context, 'Annuler');
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void record() {
+    showDialog(
+      context: context,
+      barrierDismissible: true,
+      builder: (_) => AlertDialog(
+        backgroundColor: Colors.transparent,
+        insetPadding: EdgeInsets.symmetric(
+          horizontal: SizeConfig.deviceRelatifRatio < 1.8 ? 120.0 : 130.0,
+        ),
+        shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(0.0),),),
+        title: SizedBox(
+          height: 80,
+          child: Center(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: const [
+                CircularProgressIndicator(
+                  strokeWidth: 2.0,
+                  backgroundColor: Colors.transparent,
+                  valueColor: AlwaysStoppedAnimation<Color>(white),
+                ),
+                SizedBox(
+                  height: 10,
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+    Future.delayed(const Duration(seconds: 2), () {
+      Navigator.pop(context, 'Annuler');
+      recordlink();
+    });
+  }
+
+  void recordlink() async {
+    openLinkRecord('https://blucash.net');
+    // var url = Uri.parse('https://www.blucash.net/client/record');
+
+    // var response = await http.post(url,
+    //     body: {'st': token});
+    // final jsondata = json.decode(response.body);
+    // print(jsondata);
+    // try {
+    //   var response = await http.post(url, body: {'st': token, 'stars': stars, 'comment': comment});
+    //   final jsondata = json.decode(response.body);
+    //   if (jsondata["status"] == "true") {
+    //      Navigator.pop(context, 'Annuler');
+    //      launched = _launchInBrowser(toLaunch);
+    //   } else {
+    //     Future.delayed(const Duration(seconds: 2), () {
+    //       String? errorM = errorMap[jsondata["error"]];
+    //       _rateResult(context, errorM);
+    //     });
+    //   }
+    // } catch (e) {
+    //   Future.delayed(const Duration(seconds: 2), () {
+    //     _internetDialog(context);
+    //   });
+    // }
+  }
+
+  void openLinkRecord(String url) {
+    showDialog<String>(
+      context: context,
+      barrierDismissible: true,
+      builder: (BuildContext context) => AlertDialog(
+        shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(0.0))),
+        title: Text(
+          'Confirmation',
+          style: TextStyle(
+              fontSize: SizeConfig.deviceRelatifRatio < 1.8 ? 12.0 : 16.0,
+              fontWeight: FontWeight.bold),
+        ),
+        content: Text(
+          'Vous allez être redirigé.',
+          style: TextStyle(
+              fontSize: SizeConfig.deviceRelatifRatio < 1.8 ? 12.0 : 16.0),
+        ),
+        actions: <Widget>[
+          TextButton(
+            onPressed: () => Navigator.pop(context, 'Annuler'),
+            child: const Text('Annuler'),
+          ),
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context, 'Annuler');
+              launched = _launchInBrowser(url);
+            },
+            child: const Text('Allez'),
+          ),
+        ],
+      ),
     );
   }
 }

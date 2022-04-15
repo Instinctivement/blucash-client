@@ -28,25 +28,28 @@ class _LoginPage extends State<LoginPage> {
   final _phone = TextEditingController();
   final _pin = TextEditingController();
 
-  void saveSession(String name, String phone, String business, String balance, String support, String token) async {
+  void saveSession(String name, String phone, String business, String balance, String support, String bonus, String token) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setString("name", json.encode(name));
     prefs.setString("phone", json.encode(phone));
     prefs.setString("business", json.encode(business));
     prefs.setString("balance", json.encode(balance));
     prefs.setString("support", json.encode(support));
+    prefs.setString("bonus", json.encode(bonus));
     prefs.setString("login", json.encode(token));
   }
 
-  void saveSessionWithAgent(String name, String phone,String business, String balance, String support, String token, String image, String user, String dateof) async {
+  void saveSessionWithAgent(String name, String phone,String business, String balance, String support, String bonus, String token, String id, String image, String user, String dateof) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setString("name", json.encode(name));
     prefs.setString("phone", json.encode(phone));
     prefs.setString("business", json.encode(business));
     prefs.setString("balance", json.encode(balance));
     prefs.setString("support", json.encode(support));
+    prefs.setString("bonus", json.encode(bonus));
     prefs.setString("login", json.encode(token));
     prefs.setString("image", json.encode(image));
+    prefs.setString("id", json.encode(id));
     prefs.setString("user", json.encode(user));
     prefs.setString("dateof", json.encode(dateof));
   }
@@ -74,9 +77,9 @@ class _LoginPage extends State<LoginPage> {
            });
           var agent = jsondata["agent"];
            if (agent.isEmpty) {
-             pageroute(jsondata["name"], jsondata["phone"],jsondata["business"], jsondata["balance"], jsondata["support"], jsondata['token']);
+             pageroute(jsondata["name"], jsondata["phone"],jsondata["business"], jsondata["balance"], jsondata["support"], jsondata["bonus"], jsondata['token']);
            } else {
-             pageRouteWithAgent(jsondata["name"], jsondata["phone"], jsondata["business"], jsondata["balance"], jsondata["support"], jsondata['token'], agent['image'], agent['user'], agent['dateof']);
+             pageRouteWithAgent(jsondata["name"], jsondata["phone"], jsondata["business"], jsondata["balance"], jsondata["support"], jsondata["bonus"], jsondata['token'], agent['id'], agent['image'], agent['user'], agent['dateof']);
            }
          }
        } catch (e) {
@@ -95,15 +98,15 @@ class _LoginPage extends State<LoginPage> {
     }
   }
 
-  void pageroute(String name, String phone,String business, String balance, String support, String token) async {
-      saveSession(name, phone, business, balance, support, token);
+  void pageroute(String name, String phone,String business, String balance, String support, String bonus, String token) async {
+      saveSession(name, phone, business, balance, support, bonus, token);
       Navigator.of(context).pushAndRemoveUntil(
           MaterialPageRoute(builder: (context) => const HomePage()),
           (route) => false);
   }
   
-  void pageRouteWithAgent(String name, String phone,String business, String balance, String support, String token, String image, String user, String dateof) async {
-      saveSessionWithAgent(name, phone, business, balance, support, token, image, user, dateof);
+  void pageRouteWithAgent(String name, String phone,String business, String balance, String support, String bonus, String token, String id, String image, String user, String dateof) async {
+      saveSessionWithAgent(name, phone, business, balance, support, bonus, token, id, image, user, dateof);
       Navigator.of(context).pushAndRemoveUntil(
           MaterialPageRoute(builder: (context) => const HomePage()),
           (route) => false);

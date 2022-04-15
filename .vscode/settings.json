@@ -1,0 +1,6 @@
+{
+    "dart.previewBazelWorkspaceCustomScripts": true,
+    "dart.previewFlutterUiGuides": true,
+    "dart.previewFlutterUiGuidesCustomTracking": false,
+    "dart.previewCommitCharacters": true
+}
