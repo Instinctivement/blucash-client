@@ -1153,7 +1153,7 @@ class _HomePageState extends State<HomePage> {
       },
       animationType: DialogTransitionType.fade,
       curve: Curves.fastOutSlowIn,
-      duration: const Duration(milliseconds: 700),
+      duration: const Duration(milliseconds: 500),
     );
   }
 
@@ -1200,7 +1200,7 @@ class _HomePageState extends State<HomePage> {
         'comment': comment
       });
       final jsondata = json.decode(response.body);
-      if (jsondata["status"] == true) {
+      if (jsondata["status"] == "true") {
         Navigator.pop(context, 'Annuler');
         Future.delayed(const Duration(seconds: 1), () {
           _rateResult(context, 'Merci pour votre avis');
@@ -1288,64 +1288,22 @@ class _HomePageState extends State<HomePage> {
   }
 
   void recordlink() async {
-    openLinkRecord('https://blucash.net');
-    // var url = Uri.parse('https://www.blucash.net/client/record');
-
-    // var response = await http.post(url,
-    //     body: {'st': token});
-    // final jsondata = json.decode(response.body);
-    // print(jsondata);
-    // try {
-    //   var response = await http.post(url, body: {'st': token, 'stars': stars, 'comment': comment});
-    //   final jsondata = json.decode(response.body);
-    //   if (jsondata["status"] == "true") {
-    //      Navigator.pop(context, 'Annuler');
-    //      launched = _launchInBrowser(toLaunch);
-    //   } else {
-    //     Future.delayed(const Duration(seconds: 2), () {
-    //       String? errorM = errorMap[jsondata["error"]];
-    //       _rateResult(context, errorM);
-    //     });
-    //   }
-    // } catch (e) {
-    //   Future.delayed(const Duration(seconds: 2), () {
-    //     _internetDialog(context);
-    //   });
-    // }
-  }
-
-  void openLinkRecord(String url) {
-    showDialog<String>(
-      context: context,
-      barrierDismissible: true,
-      builder: (BuildContext context) => AlertDialog(
-        shape: const RoundedRectangleBorder(
-            borderRadius: BorderRadius.all(Radius.circular(0.0))),
-        title: Text(
-          'Confirmation',
-          style: TextStyle(
-              fontSize: SizeConfig.deviceRelatifRatio < 1.8 ? 12.0 : 16.0,
-              fontWeight: FontWeight.bold),
-        ),
-        content: Text(
-          'Vous allez être redirigé.',
-          style: TextStyle(
-              fontSize: SizeConfig.deviceRelatifRatio < 1.8 ? 12.0 : 16.0),
-        ),
-        actions: <Widget>[
-          TextButton(
-            onPressed: () => Navigator.pop(context, 'Annuler'),
-            child: const Text('Annuler'),
-          ),
-          TextButton(
-            onPressed: () {
-              Navigator.pop(context, 'Annuler');
-              launched = _launchInBrowser(url);
-            },
-            child: const Text('Allez'),
-          ),
-        ],
-      ),
-    );
+     var url = Uri.parse('https://www.blucash.net/client/record');
+     try {
+       var response = await http.post(url, body: {'st': token});
+       final jsondata = json.decode(response.body);
+       if (jsondata["status"] == "true") {
+          launched = _launchInBrowser(jsondata["link"]);
+       } else {
+          Future.delayed(const Duration(seconds: 1), () {
+            _rateResult(context,
+                "Une erreur s'est produite merci de reéssayer plus tard");
+          });
+       }
+     } catch (e) {
+       Future.delayed(const Duration(seconds: 2), () {
+         _internetDialog(context);
+       });
+     }
   }
 }

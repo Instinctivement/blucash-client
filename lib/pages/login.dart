@@ -291,12 +291,14 @@ class _LoginPage extends State<LoginPage> {
             ),
             primary: dark,
           ),
-          onPressed: () async {
-            setState(() {
-              showprogress = true;
-            });
-            login();
-          },
+          onPressed: showprogress ? null : () async {
+              setState(() {
+                showprogress = true;
+              });
+              login();
+            },
+          
+          
           child: showprogress
               ? const SizedBox(
                   height: 24,

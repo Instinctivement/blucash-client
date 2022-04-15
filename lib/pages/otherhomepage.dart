@@ -2,6 +2,7 @@ import 'package:blucash_client/pages/homepage.dart';
 import 'package:blucash_client/pages/login.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class OtherPage extends StatefulWidget {
@@ -16,7 +17,13 @@ class _OtherPageState extends State<OtherPage> {
     @override
   void initState() {
     super.initState();
+    initialization();
     checkLogin();
+  }
+
+  void initialization() async {
+    await Future.delayed(const Duration(seconds: 1));
+    FlutterNativeSplash.remove();
   }
 
   void checkLogin() async {
